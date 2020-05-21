@@ -123,21 +123,23 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         return button
     }()
     
-    let friendsButton: UIButton = {
-        let button = UIButton()
-        button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
-        return button
-    }()
+        lazy var friendsButton: UIButton = {
+            let button = UIButton()
+            button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchUpInside)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+            return button
+        }()
     
-    let genePoolButton: UIButton = {
-        let button = UIButton()
-        button.addTarget(self, action: #selector(genePoolButtonPressed), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
-        return button
-    }()
+        lazy var genePoolButton: UIButton = {
+            let button = UIButton()
+            button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchUpInside)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+            return button
+        }()
+    
+    
     
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
@@ -153,11 +155,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         self.deviceOrientation = .portrait
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: friendsButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: genePoolButton)
-        //self.navigationController?.navigationBar.backgroundColor = UIColor.green
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) //UIImage.init(named: "transparent.png")
+        self.navigationController?.navigationBar.backgroundColor = UIColor.green
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) 
         self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.view.backgroundColor = .clear
         
         
         sendButton.isEnabled = false
@@ -515,6 +515,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
                 return .identity
         }
     }
+
     
     // MARK: Flip Camera
     

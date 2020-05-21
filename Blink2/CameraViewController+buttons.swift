@@ -74,7 +74,8 @@ extension CameraViewController {
     }
     
     @objc func friendsButtonPressed() {
-        
+        print("123")
+        present(SideBarPresentation(), animated: true, completion: nil)
     }
     
     @objc func genePoolButtonPressed() {
