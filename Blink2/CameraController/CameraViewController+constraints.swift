@@ -9,9 +9,9 @@
 import UIKit
 
 extension CameraViewController {
-    
     func setButtonConstraints() {
-        captureButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        captureButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         captureButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -75).isActive = true
         captureButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
         captureButton.widthAnchor.constraint(equalToConstant: 75).isActive = true
@@ -46,7 +46,17 @@ extension CameraViewController {
         
         genePoolButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
         genePoolButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
+            
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    func setupViewConstraints() {
+        imagePreview.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        imagePreview.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+        imagePreview.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor).isActive = true
+        imagePreview.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor).isActive = true
     }
     
     @objc func capturePhotoPressed() {
@@ -74,13 +84,13 @@ extension CameraViewController {
     }
     
     @objc func friendsButtonPressed() {
-        print("123")
-        present(SideBarPresentation(), animated: true, completion: nil)
+        handleFriendsPressed()
     }
     
     @objc func genePoolButtonPressed() {
         
     }
+    
     
     func previewAnimation() {
         UIView.animate(withDuration: 0.5, animations: {
@@ -88,6 +98,7 @@ extension CameraViewController {
             self.videoButton.frame.origin.x -= 200
             self.flipButton.frame.origin.x += 200
             self.flashButton.frame.origin.x += 200
+            self.view.layoutIfNeeded()
         })
     }
     
@@ -97,6 +108,8 @@ extension CameraViewController {
             self.videoButton.frame.origin.x += 200
             self.flipButton.frame.origin.x -= 200
             self.flashButton.frame.origin.x -= 200
+            self.view.layoutIfNeeded()
         })
     }
+    
 }

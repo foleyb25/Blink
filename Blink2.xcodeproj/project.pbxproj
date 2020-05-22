@@ -8,21 +8,29 @@
 
 /* Begin PBXBuildFile section */
 		050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050F91CA2475E96F003C29F9 /* RegisterForm.swift */; };
-		050F91CD24761E9D003C29F9 /* CameraSideViewMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050F91CC24761E9D003C29F9 /* CameraSideViewMenu.swift */; };
-		050F91CF24762682003C29F9 /* SideBarPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050F91CE24762682003C29F9 /* SideBarPresentation.swift */; };
+		05601B4024763BE600068ADE /* SlideInPresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B3F24763BE600068ADE /* SlideInPresentationManager.swift */; };
+		05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B4124763E3500068ADE /* SideBarMenu.swift */; };
+		05601B64247765B000068ADE /* SideBarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B63247765B000068ADE /* SideBarCell.swift */; };
+		05601B6624778A2300068ADE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6524778A2300068ADE /* Extensions.swift */; };
+		05601B6824779ED700068ADE /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6724779ED700068ADE /* Profile.swift */; };
+		05601B6A24779EE500068ADE /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6924779EE500068ADE /* Settings.swift */; };
 		05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917BF2474A31C000228F9 /* AppDelegate.swift */; };
 		05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917C12474A31C000228F9 /* SceneDelegate.swift */; };
 		05F917C42474A31C000228F9 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917C32474A31C000228F9 /* CameraViewController.swift */; };
 		05F917C92474A31D000228F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05F917C82474A31D000228F9 /* Assets.xcassets */; };
 		05F917CC2474A31D000228F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05F917CA2474A31D000228F9 /* LaunchScreen.storyboard */; };
-		05F917D824750287000228F9 /* CameraViewController+buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917D724750287000228F9 /* CameraViewController+buttons.swift */; };
+		05F917D824750287000228F9 /* CameraViewController+constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917D724750287000228F9 /* CameraViewController+constraints.swift */; };
 		05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917D92475A5CF000228F9 /* LoginViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		050F91CA2475E96F003C29F9 /* RegisterForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterForm.swift; sourceTree = "<group>"; };
-		050F91CC24761E9D003C29F9 /* CameraSideViewMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSideViewMenu.swift; sourceTree = "<group>"; };
-		050F91CE24762682003C29F9 /* SideBarPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarPresentation.swift; sourceTree = "<group>"; };
+		05601B3F24763BE600068ADE /* SlideInPresentationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationManager.swift; sourceTree = "<group>"; };
+		05601B4124763E3500068ADE /* SideBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarMenu.swift; sourceTree = "<group>"; };
+		05601B63247765B000068ADE /* SideBarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarCell.swift; sourceTree = "<group>"; };
+		05601B6524778A2300068ADE /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		05601B6724779ED700068ADE /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		05601B6924779EE500068ADE /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		05F917BC2474A31C000228F9 /* Blink2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blink2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05F917BF2474A31C000228F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		05F917C12474A31C000228F9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -30,7 +38,7 @@
 		05F917C82474A31D000228F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		05F917CB2474A31D000228F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		05F917CD2474A31D000228F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		05F917D724750287000228F9 /* CameraViewController+buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraViewController+buttons.swift"; sourceTree = "<group>"; };
+		05F917D724750287000228F9 /* CameraViewController+constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraViewController+constraints.swift"; sourceTree = "<group>"; };
 		05F917D92475A5CF000228F9 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -45,6 +53,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05601B3E24763BB500068ADE /* SidePullOutMenu */ = {
+			isa = PBXGroup;
+			children = (
+				05601B63247765B000068ADE /* SideBarCell.swift */,
+				05601B3F24763BE600068ADE /* SlideInPresentationManager.swift */,
+				05601B4124763E3500068ADE /* SideBarMenu.swift */,
+			);
+			path = SidePullOutMenu;
+			sourceTree = "<group>";
+		};
+		05601B6B24785C1300068ADE /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				050F91CA2475E96F003C29F9 /* RegisterForm.swift */,
+				05F917D92475A5CF000228F9 /* LoginViewController.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		05601B6C24785C2900068ADE /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				05F917BF2474A31C000228F9 /* AppDelegate.swift */,
+				05F917C12474A31C000228F9 /* SceneDelegate.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		05601B6D24785C4A00068ADE /* CameraController */ = {
+			isa = PBXGroup;
+			children = (
+				05F917C32474A31C000228F9 /* CameraViewController.swift */,
+				05F917D724750287000228F9 /* CameraViewController+constraints.swift */,
+			);
+			path = CameraController;
+			sourceTree = "<group>";
+		};
+		05601B6E24785C6F00068ADE /* PullOutMenuControllers */ = {
+			isa = PBXGroup;
+			children = (
+				05601B6724779ED700068ADE /* Profile.swift */,
+				05601B6924779EE500068ADE /* Settings.swift */,
+			);
+			path = PullOutMenuControllers;
+			sourceTree = "<group>";
+		};
 		05F917B32474A31C000228F9 = {
 			isa = PBXGroup;
 			children = (
@@ -64,14 +118,12 @@
 		05F917BE2474A31C000228F9 /* Blink2 */ = {
 			isa = PBXGroup;
 			children = (
-				05F917BF2474A31C000228F9 /* AppDelegate.swift */,
-				05F917C12474A31C000228F9 /* SceneDelegate.swift */,
-				05F917C32474A31C000228F9 /* CameraViewController.swift */,
-				050F91CC24761E9D003C29F9 /* CameraSideViewMenu.swift */,
-				05F917D724750287000228F9 /* CameraViewController+buttons.swift */,
-				050F91CE24762682003C29F9 /* SideBarPresentation.swift */,
-				05F917D92475A5CF000228F9 /* LoginViewController.swift */,
-				050F91CA2475E96F003C29F9 /* RegisterForm.swift */,
+				05601B6C24785C2900068ADE /* Utility */,
+				05601B3E24763BB500068ADE /* SidePullOutMenu */,
+				05601B6D24785C4A00068ADE /* CameraController */,
+				05601B6524778A2300068ADE /* Extensions.swift */,
+				05601B6E24785C6F00068ADE /* PullOutMenuControllers */,
+				05601B6B24785C1300068ADE /* Login */,
 				05F917C82474A31D000228F9 /* Assets.xcassets */,
 				05F917CA2474A31D000228F9 /* LaunchScreen.storyboard */,
 				05F917CD2474A31D000228F9 /* Info.plist */,
@@ -149,14 +201,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */,
 				05F917C42474A31C000228F9 /* CameraViewController.swift in Sources */,
 				05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */,
-				050F91CF24762682003C29F9 /* SideBarPresentation.swift in Sources */,
 				050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */,
-				05F917D824750287000228F9 /* CameraViewController+buttons.swift in Sources */,
+				05F917D824750287000228F9 /* CameraViewController+constraints.swift in Sources */,
+				05601B6624778A2300068ADE /* Extensions.swift in Sources */,
+				05601B6A24779EE500068ADE /* Settings.swift in Sources */,
 				05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */,
-				050F91CD24761E9D003C29F9 /* CameraSideViewMenu.swift in Sources */,
 				05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */,
+				05601B6824779ED700068ADE /* Profile.swift in Sources */,
+				05601B4024763BE600068ADE /* SlideInPresentationManager.swift in Sources */,
+				05601B64247765B000068ADE /* SideBarCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +351,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J6UP4S3UAZ;
 				INFOPLIST_FILE = Blink2/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -313,6 +370,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J6UP4S3UAZ;
 				INFOPLIST_FILE = Blink2/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

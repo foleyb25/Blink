@@ -7,6 +7,9 @@
 //
 
 
+//TODO: Add zoom gesture recognizer when video is recording
+//      Remove other gesture recognizers from view on record
+
 import UIKit
 import AVFoundation
 import Photos
@@ -38,112 +41,137 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     
     private(set) public var currentCamera = CameraSelection.rear
     private(set) public var flashMode = Flashmode.off
-    fileprivate(set) public var panGesture: UIPanGestureRecognizer!
-    public var pinchToZoom = true
-    fileprivate var previousPanTranslation: CGFloat = 0.0
-    public var swipeToZoomInverted = false
-    fileprivate var zoomScale = CGFloat(1.0)
-    public var maxZoomScale = CGFloat.greatestFiniteMagnitude
+    
+    
     private let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera], mediaType: .video, position: .unspecified)
-    public var swipeToZoom = true
-    fileprivate var beginZoomScale = CGFloat(1.0)
-    fileprivate(set) public var pinchGesture: UIPinchGestureRecognizer!
+    
     private let session = AVCaptureSession()
     private var isSessionRunning = false
-    private var isRecording = false
+    public var isRecording = false
     // Communicate with the session and other session objects on this queue.
     private let sessionQueue = DispatchQueue(label: "session queue")
     private var setupResult: SessionSetupResult = .success
-    private var image: UIImage?
+    
     @objc dynamic var videoDeviceInput: AVCaptureDeviceInput!
-    //private var movieFileOutput: AVCaptureMovieFileOutput?
     private var backgroundRecordingID: UIBackgroundTaskIdentifier?
     fileprivate var player: AVPlayer?
     fileprivate var playerLayer : AVPlayerLayer?
     private let photoOutput = AVCapturePhotoOutput()
     fileprivate var movieFileOutput: AVCaptureMovieFileOutput?
+    //private var previewLayer: AVCaptureVideoPreviewLayer!
     
-    var imagePreview: UIImageView?
+    private lazy var previewLayer: AVCaptureVideoPreviewLayer = {
+       let pl = AVCaptureVideoPreviewLayer()
+        return pl
+    }()
     
     let previewView: UIView = {
         let pv = UIView()
         pv.translatesAutoresizingMaskIntoConstraints = false
-        pv.frame = CGRect(x: 0,y: 0,width: UIScreen.main.bounds.size.width,height: UIScreen.main.bounds.size.height + 100)
-        //pv.contentMode = .scaleAspectFill
+        pv.frame = UIScreen.main.bounds
         return pv
     }()
     
-    private var previewLayer: AVCaptureVideoPreviewLayer!
-    
     let captureButton: UIButton = {
        let button = UIButton()
-        button.addTarget(self, action: #selector(capturePhotoPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(capturePhotoPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        if #available(iOS 13.0, *) {
+            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        } else {
+            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+        }
         return button
     }()
     
     let videoButton: UIButton = {
         let button = UIButton()
-        button.addTarget(self, action: #selector(recordPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(recordPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        if #available(iOS 13.0, *) {
+            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        } else {
+            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+        }
         return button
     }()
     
     let cancelButton: UIButton = {
         let button = UIButton()
-        button.addTarget(self, action: #selector(cancelPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(cancelPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        if #available(iOS 13.0, *) {
+            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        } else {
+            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+        }
         return button
     }()
     
     let flipButton: UIButton = {
         let button = UIButton()
-        button.addTarget(self, action: #selector(flipCameraPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(flipCameraPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        if #available(iOS 13.0, *) {
+            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        } else {
+            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+        }
         return button
     }()
     
     let flashButton: UIButton = {
         let button = UIButton()
-        button.addTarget(self, action: #selector(toggleFlashPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(toggleFlashPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        if #available(iOS 13.0, *) {
+            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        } else {
+            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+        }
         return button
     }()
     
     let sendButton: UIButton = {
         let button = UIButton()
-        button.addTarget(self, action: #selector(sendPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(sendPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        if #available(iOS 13.0, *) {
+            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+        } else {
+            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+        }
         return button
     }()
     
-        lazy var friendsButton: UIButton = {
-            let button = UIButton()
-            button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchUpInside)
-            button.translatesAutoresizingMaskIntoConstraints = false
+    lazy var friendsButton: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchDown)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        if #available(iOS 13.0, *) {
             button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
-            return button
-        }()
-    
-        lazy var genePoolButton: UIButton = {
-            let button = UIButton()
-            button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchUpInside)
-            button.translatesAutoresizingMaskIntoConstraints = false
+        } else {
+            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+        }
+        return button
+    }()
+
+    lazy var genePoolButton: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchDown)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        if #available(iOS 13.0, *) {
             button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
-            return button
-        }()
-    
-    
+        } else {
+            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+        }
+        return button
+    }()
     
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        sideMenu.cameraViewController = self
         view.addSubview(previewView)
         view.addSubview(captureButton)
         view.addSubview(videoButton)
@@ -152,13 +180,15 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         view.addSubview(flashButton)
         view.addSubview(sendButton)
         setButtonConstraints()
-        self.deviceOrientation = .portrait
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: friendsButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: genePoolButton)
-        self.navigationController?.navigationBar.backgroundColor = UIColor.green
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) 
-        self.navigationController?.navigationBar.shadowImage = UIImage()
+        //videoDeviceDiscoverySession.devices.
+        //makes nav bar background invisible
         
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clear
         
         sendButton.isEnabled = false
         cancelButton.isEnabled = false
@@ -169,11 +199,12 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         
         previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-        let rootLayer :CALayer = self.previewView.layer
-        rootLayer.masksToBounds=true
-        previewLayer.frame = rootLayer.bounds
-        rootLayer.addSublayer(self.previewLayer)
         
+        let rootLayer :CALayer = previewView.layer
+        previewLayer.frame = rootLayer.bounds
+        rootLayer.addSublayer(previewLayer)
+        
+        previewView.layer.addSublayer(imagePreview.layer)
         /*
          Check the video authorization status. Video access is required and audio
          access is optional. If the user denies audio access, AVCam won't
@@ -239,7 +270,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         
     }
     
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
        
@@ -273,7 +303,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             }
         }
         addGestureRecognizers()
-        toggleButtons(isInPreviewMode: false)
+        togglePreviewMode(isInPreviewMode: false)
     }
     
     
@@ -291,12 +321,18 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
                videoPreviewLayerConnection.videoOrientation = newVideoOrientation
            }
        }
+    var pinchGesture: UIPinchGestureRecognizer?
+    var tapGesture: UITapGestureRecognizer?
+    var focusTapGesture: UITapGestureRecognizer?
+    var swipeRightGesture: UISwipeGestureRecognizer?
+    var panGesture: UIGestureRecognizer?
     
+    
+    // MARK: AddGestureRecognizers
     fileprivate func addGestureRecognizers() {
         
         //pinch to zoom
-        pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoomGesture(pinch:)))
-        pinchGesture.delegate = self
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoomGesture(pinch:)))
         self.view.addGestureRecognizer(pinchGesture)
         
         //double tap to switch camera
@@ -307,18 +343,35 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         let focusTapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap(_:)))
         focusTapGesture.numberOfTapsRequired = 1
         self.view.addGestureRecognizer(focusTapGesture)
+        
+        let swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(friendsButtonPressed))
+        swipeRightGesture.direction = .right
+        self.view.addGestureRecognizer(swipeRightGesture)
+        
+        self.pinchGesture = pinchGesture
+        self.tapGesture = tapGesture
+        self.focusTapGesture = focusTapGesture
+        self.swipeRightGesture = swipeRightGesture
     }
     
+    fileprivate var beginZoomScale = CGFloat(1.0)
+    fileprivate var zoomScale = CGFloat(1.0)
+    
     @objc fileprivate func zoomGesture(pinch: UIPinchGestureRecognizer) {
-        do {
-            let captureDevice = self.videoDeviceInput.device
-            try captureDevice.lockForConfiguration()
-            zoomScale = min(maxZoomScale, max(1.0, min(beginZoomScale * pinch.scale,  captureDevice.activeFormat.videoMaxZoomFactor)))
-            captureDevice.videoZoomFactor = zoomScale
-            // Call Delegate function with current zoom scale
-            captureDevice.unlockForConfiguration()
-        } catch {
-            print("Error locking configuration")
+        let captureDevice = self.videoDeviceInput.device
+        if pinch.state == .changed {
+            do {
+                try captureDevice.lockForConfiguration()
+                  defer { captureDevice.unlockForConfiguration() }
+                zoomScale = min(max(beginZoomScale * pinch.scale, 1.0),  captureDevice.activeFormat.videoMaxZoomFactor)
+                captureDevice.videoZoomFactor = zoomScale
+                print(zoomScale)
+            } catch {
+                print("Error locking configuration")
+            }
+        }
+        if pinch.state == .ended {
+            beginZoomScale = zoomScale
         }
     }
     
@@ -364,8 +417,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         focus(with: .continuousAutoFocus, exposureMode: .continuousAutoExposure, at: devicePoint, monitorSubjectAreaChange: false)
     }
     
-    // MARK: Toggle Buttons
-    fileprivate func toggleButtons(isInPreviewMode: Bool) {
+    // MARK: Toggle Preview Mode
+    fileprivate func togglePreviewMode(isInPreviewMode: Bool) {
         if isInPreviewMode {
             captureButton.isHidden = true
             videoButton.isHidden = true
@@ -373,7 +426,11 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             flipButton.isHidden = true
             cancelButton.isHidden = false
             sendButton.isHidden = false
-            previewAnimation()
+            
+            if let gesture = tapGesture {
+                view.removeGestureRecognizer(gesture)
+            }
+            //previewAnimation()
             navigationController?.navigationBar.isHidden = true
         } else {
             captureButton.isHidden = false
@@ -382,7 +439,10 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             flipButton.isHidden = false
             cancelButton.isHidden = true
             sendButton.isHidden = true
-            undoPreviewAnimation()
+            if let gesture = tapGesture {
+                view.addGestureRecognizer(gesture)
+            }
+            //undoPreviewAnimation()
             navigationController?.navigationBar.isHidden = false
         }
     }
@@ -436,6 +496,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             session.commitConfiguration()
             return
         }
+        
         // Add an audio input device.
         do {
             let audioDevice = AVCaptureDevice.default(for: .audio)
@@ -449,25 +510,13 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         } catch {
             print("Could not create audio device input: \(error)")
         }
-        // Add the photo output.
+        
+        // Add the photo and video output.
+        let movieFileOutput = AVCaptureMovieFileOutput()
         if session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
             photoOutput.isHighResolutionCaptureEnabled = true
             
-        } else {
-            print("Could not add photo output to the session")
-            setupResult = .configurationFailed
-            session.commitConfiguration()
-            return
-        }
-        configureVideoOutput()
-        session.commitConfiguration()
-    }
-    
-    
-    fileprivate func configureVideoOutput() {
-        let movieFileOutput = AVCaptureMovieFileOutput()
-        if self.session.canAddOutput(movieFileOutput) {
             self.session.addOutput(movieFileOutput)
             self.session.sessionPreset = .high
             if let connection = movieFileOutput.connection(with: .video) {
@@ -475,8 +524,15 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
                     connection.preferredVideoStabilizationMode = .auto
                 }
             }
-        self.movieFileOutput = movieFileOutput
+            self.movieFileOutput = movieFileOutput
+            
+        } else {
+            print("Could not add photo output to the session")
+            setupResult = .configurationFailed
+            session.commitConfiguration()
+            return
         }
+        session.commitConfiguration()
     }
     
     fileprivate var deviceOrientation : UIDeviceOrientation?
@@ -502,7 +558,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         guard let deviceOrientation = self.deviceOrientation else { return forCamera == .rear ? .init(rotationAngle: .pi/2) : .init(translationX: -1, y: 1) } //rotate 90 degrees clockwise, flip
         switch deviceOrientation {
             case .portrait:
-                print("portrait")
                 return CGAffineTransform(rotationAngle: .pi/2)
             case .portraitUpsideDown:
                 return CGAffineTransform(rotationAngle: .pi)
@@ -511,32 +566,29 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             case .landscapeRight:
                 return CGAffineTransform(rotationAngle: -.pi/2)
             default:
-                print("identity")
                 return .identity
         }
     }
 
-    
     // MARK: Flip Camera
-    
     func flipCamera() {
-        captureButton.isEnabled = false
+        captureButton.isHidden = true
         sessionQueue.async {
             let currentVideoDevice = self.videoDeviceInput.device
             let currentPosition = currentVideoDevice.position
             let preferredPosition: AVCaptureDevice.Position
             let preferredDeviceType: AVCaptureDevice.DeviceType
             switch currentPosition {
-            case .unspecified, .front:
-                preferredPosition = .back
-                preferredDeviceType = .builtInDualCamera
-            case .back:
-                preferredPosition = .front
-                preferredDeviceType = .builtInTrueDepthCamera
-            @unknown default:
-                print("Unknown capture position. Defaulting to back, dual-camera.")
-                preferredPosition = .back
-                preferredDeviceType = .builtInDualCamera
+                case .unspecified, .front:
+                    preferredPosition = .back
+                    preferredDeviceType = .builtInDualCamera
+                case .back:
+                    preferredPosition = .front
+                    preferredDeviceType = .builtInTrueDepthCamera
+                @unknown default:
+                    print("Unknown capture position. Defaulting to back, dual-camera.")
+                    preferredPosition = .back
+                    preferredDeviceType = .builtInDualCamera
             }
             let devices = self.videoDeviceDiscoverySession.devices
             var newVideoDevice: AVCaptureDevice? = nil
@@ -568,9 +620,11 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
                     }
                     self.photoOutput.isDepthDataDeliveryEnabled = self.photoOutput.isDepthDataDeliverySupported
                     self.session.commitConfiguration()
+                    self.beginZoomScale = CGFloat(1.0)
                 } catch {
                     print("Error occurred while creating video device input: \(error)")
                 }
+                
             }
             if self.currentCamera == .front {
                self.currentCamera = .rear
@@ -579,7 +633,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             }
             
         }
-        captureButton.isEnabled = true
+        captureButton.isHidden = false
     }
   
     // MARK: Setting flash
@@ -597,10 +651,26 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         }
     }
     
+    
+    lazy var imagePreview: UIImageView = {
+        let viewItem = UIImageView()
+        viewItem.frame = UIScreen.main.bounds
+        viewItem.contentMode = .scaleAspectFill
+        return viewItem
+    }()
+    
+    private var image: UIImage?
+    
     // MARK: Capturing Photos
     /// - Tag: CapturePhoto
     func capturePhoto() {
         //Capture picture in a thread
+        captureButton.isHidden = true
+        videoButton.isHidden = true
+        flashButton.isHidden = true
+        flipButton.isHidden = true
+        navigationController?.navigationBar.isHidden = true
+        
         sessionQueue.async {
             var photoSettings = AVCapturePhotoSettings()
             
@@ -644,12 +714,17 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     //TODO: DISPLAY VIDEO PREVIEW
     fileprivate func setMediaPreview(isVideo: Bool) {
         
+        //setup image preview
         if isVideo == false {
-            imagePreview = UIImageView()
-            imagePreview!.frame = previewView.bounds
-            imagePreview!.contentMode = .scaleAspectFill
-            imagePreview!.image = image
-            previewView.layer.addSublayer(imagePreview!.layer)
+            if let imageTaken = image {
+                imagePreview.image = imageTaken
+            }
+            //print(image as Any)
+            //imagePreview.isHidden = false
+            //imagePreview.frame = previewView.bounds
+            //imagePreview.contentMode = .scaleAspectFill
+            //previewView.layer.addSublayer(imagePreview.layer)
+        //setup video preview
         } else {
             self.playerLayer = AVPlayerLayer(player: self.player)
             playerLayer!.frame = self.view.bounds
@@ -660,11 +735,11 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             }
             self.player!.play()
         }
-        toggleButtons(isInPreviewMode: true)
+        togglePreviewMode(isInPreviewMode: true)
     }
     
     // MARK: Recording Movies
-
+    
     func record() {
         guard let movieFileOutput = self.movieFileOutput else {
             return
@@ -674,10 +749,11 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         the Record button until recording starts or finishes.
         */
         
+        captureButton.isHidden = true
         flashButton.isHidden = true
-        captureButton.isEnabled = false
-        videoButton.isEnabled = false
+        flipButton.isHidden = true
         navigationController?.navigationBar.isHidden = true
+        
         
         /*MovieFileRecording*/
         sessionQueue.async {
@@ -707,10 +783,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     /// - Tag: DidStartRecording
     func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
         // Enable the Record button to let the user stop recording.
-        DispatchQueue.main.async {
-            self.videoButton.isEnabled = true
-            //self.recordButton.setImage(#imageLiteral(resourceName: "CaptureStop"), for: [])
-        }
     }
         
     /// - Tag: DidFinishRecording
@@ -719,7 +791,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
                     from connections: [AVCaptureConnection],
                     error: Error?) {
         DispatchQueue.main.async {
-            self.captureButton.isEnabled = true
+            
         }
         // Note: Because we use a unique file path for each recording, a new recording won't overwrite a recording mid-save.
         
@@ -757,39 +829,38 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
                 DispatchQueue.main.async{
                     self.setMediaPreview(isVideo: true)
                 }
-            }
-                
-            // Enable the Camera and Record buttons to let the user switch camera and start another recording.
-            DispatchQueue.main.async {
-                // Only enable the ability to change camera if the device has more than one camera.
-                self.videoButton.isEnabled = true
-                //self.captureModeControl.isEnabled = true
-                //self.recordButton.setImage(#imageLiteral(resourceName: "CaptureVideo"), for: [])
-            }
+            } else {
+                cleanup()
+        }
+        cleanup()
     }
           
     // MARK: Cancel Capture
-
-    
     func cancel() {
         if playerLayer != nil {
             self.playerLayer!.removeFromSuperlayer()
             self.playerLayer = nil
             self.player = nil
         } else {
-            imagePreview!.image = nil
-            imagePreview = nil
-        //image = UIImage()
+            imagePreview.image = nil
         }
-        toggleButtons(isInPreviewMode: false)
+        togglePreviewMode(isInPreviewMode: false)
     }
     
     // MARK: Send Capture Content
-
     func send() {
-        
+    
     }
     
+    public var sideMenu = SideBarMenu()
+    
+    func handleFriendsPressed() {
+        sideMenu.showSideMenu()
+    }
+    
+    func handleGenePoolPressed() {
+        
+    }
     // MARK: KVO and Notifications
     private var keyValueObservations = [NSKeyValueObservation]()
     /// - Tag: ObserveInterruption
@@ -807,6 +878,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
                 self.sendButton.isEnabled = isSessionRunning
             }
         }
+        
         keyValueObservations.append(keyValueObservation)
         let systemPressureStateObservation = observe(\.videoDeviceInput.device.systemPressureState, options: .new) { _, change in
             guard let systemPressureState = change.newValue else { return }
@@ -884,32 +956,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     }
     
     /// - Tag: HandleInterruption
-    @IBAction private func resumeInterruptedSession(_ resumeButton: UIButton) {
-        sessionQueue.async {
-            /*
-             The session might fail to start running, for example, if a phone or FaceTime call is still
-             using audio or video. This failure is communicated by the session posting a
-             runtime error notification. To avoid repeatedly failing to start the session,
-             only try to restart the session in the error handler if you aren't
-             trying to resume the session.
-             */
-            self.session.startRunning()
-            self.isSessionRunning = self.session.isRunning
-            if !self.session.isRunning {
-                DispatchQueue.main.async {
-                    let message = NSLocalizedString("Unable to resume", comment: "Alert message when unable to resume the session running")
-                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
-                    let cancelAction = UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil)
-                    alertController.addAction(cancelAction)
-                    self.present(alertController, animated: true, completion: nil)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    //self.resumeButton.isHidden = true
-                }
-            }
-        }
-    }
     
     @objc func sessionWasInterrupted(notification: NSNotification) {
         /*
@@ -927,10 +973,13 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             
             
             if reason == .audioDeviceInUseByAnotherClient || reason == .videoDeviceInUseByAnotherClient {
+                print("Video or audio device is in use by another client")
             } else if reason == .videoDeviceNotAvailableWithMultipleForegroundApps {
-                print("reason")
+                print("Video device not available with multiple foreground apps")
             } else if reason == .videoDeviceNotAvailableDueToSystemPressure {
                 print("Session stopped running due to shutdown system pressure level.")
+            } else if reason == .videoDeviceNotAvailableInBackground {
+                print("video device not available in background")
             }
         }
     }
