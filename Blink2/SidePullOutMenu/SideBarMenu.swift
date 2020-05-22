@@ -69,7 +69,8 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
     
     let cellId = "cellid"
     
-    let cellItems: [CellItem] = {
+    
+    private lazy var cellItems: [CellItem] = {
         return [CellItem(name: "Profile", imageName: "logo_no_bg", controller: Profile()), CellItem(name: "Settings", imageName: "logo_no_bg", controller: Settings())]
     }()
     
@@ -98,7 +99,7 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
         self.handleDismiss()
         let controller = cellItems[indexPath.item].controller
         camViewController.navigationController?.pushViewController(controller, animated: true)
-        //camViewController.present(controller, animated: true) {
+        
             
         
         

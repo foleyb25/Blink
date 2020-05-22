@@ -41,26 +41,32 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     
     private(set) public var currentCamera = CameraSelection.rear
     private(set) public var flashMode = Flashmode.off
-    
+    private var setupResult: SessionSetupResult = .success
     
     private let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera], mediaType: .video, position: .unspecified)
+    @objc dynamic var videoDeviceInput: AVCaptureDeviceInput!
     
     private let session = AVCaptureSession()
     private var isSessionRunning = false
     public var isRecording = false
     // Communicate with the session and other session objects on this queue.
-    private let sessionQueue = DispatchQueue(label: "session queue")
-    private var setupResult: SessionSetupResult = .success
+    let sessionQueue = DispatchQueue(label: "session queue")
     
-    @objc dynamic var videoDeviceInput: AVCaptureDeviceInput!
     private var backgroundRecordingID: UIBackgroundTaskIdentifier?
-    fileprivate var player: AVPlayer?
-    fileprivate var playerLayer : AVPlayerLayer?
+
     private let photoOutput = AVCapturePhotoOutput()
     fileprivate var movieFileOutput: AVCaptureMovieFileOutput?
     //private var previewLayer: AVCaptureVideoPreviewLayer!
     
-    private lazy var previewLayer: AVCaptureVideoPreviewLayer = {
+    internal var beginZoomScale = CGFloat(1.0)
+    internal var zoomScale = CGFloat(1.0)
+    internal var pinchGesture: UIPinchGestureRecognizer?
+    internal var tapGesture: UITapGestureRecognizer?
+    internal var focusTapGesture: UITapGestureRecognizer?
+    internal var swipeRightGesture: UISwipeGestureRecognizer?
+    internal var panGesture: UIGestureRecognizer?
+    
+    internal var previewLayer: AVCaptureVideoPreviewLayer = {
        let pl = AVCaptureVideoPreviewLayer()
         return pl
     }()
@@ -121,6 +127,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     }()
     
     let flashButton: UIButton = {
+        print("Setting flash button options")
         let button = UIButton()
         button.addTarget(self, action: #selector(toggleFlashPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -144,7 +151,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         return button
     }()
     
-    lazy var friendsButton: UIButton = {
+    // Navigation Bar buttons need to be set to lazy for them to work
+    internal lazy var friendsButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -156,7 +164,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         return button
     }()
 
-    lazy var genePoolButton: UIButton = {
+    internal lazy var genePoolButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -171,7 +179,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        sideMenu.cameraViewController = self
         view.addSubview(previewView)
         view.addSubview(captureButton)
         view.addSubview(videoButton)
@@ -205,6 +212,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         rootLayer.addSublayer(previewLayer)
         
         previewView.layer.addSublayer(imagePreview.layer)
+        previewLayer.addSublayer(playerLayer)
         /*
          Check the video authorization status. Video access is required and audio
          access is optional. If the user denies audio access, AVCam won't
@@ -321,101 +329,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
                videoPreviewLayerConnection.videoOrientation = newVideoOrientation
            }
        }
-    var pinchGesture: UIPinchGestureRecognizer?
-    var tapGesture: UITapGestureRecognizer?
-    var focusTapGesture: UITapGestureRecognizer?
-    var swipeRightGesture: UISwipeGestureRecognizer?
-    var panGesture: UIGestureRecognizer?
     
-    
-    // MARK: AddGestureRecognizers
-    fileprivate func addGestureRecognizers() {
-        
-        //pinch to zoom
-        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoomGesture(pinch:)))
-        self.view.addGestureRecognizer(pinchGesture)
-        
-        //double tap to switch camera
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(flipCameraPressed))
-        tapGesture.numberOfTapsRequired = 2
-        self.view.addGestureRecognizer(tapGesture)
-        
-        let focusTapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap(_:)))
-        focusTapGesture.numberOfTapsRequired = 1
-        self.view.addGestureRecognizer(focusTapGesture)
-        
-        let swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(friendsButtonPressed))
-        swipeRightGesture.direction = .right
-        self.view.addGestureRecognizer(swipeRightGesture)
-        
-        self.pinchGesture = pinchGesture
-        self.tapGesture = tapGesture
-        self.focusTapGesture = focusTapGesture
-        self.swipeRightGesture = swipeRightGesture
-    }
-    
-    fileprivate var beginZoomScale = CGFloat(1.0)
-    fileprivate var zoomScale = CGFloat(1.0)
-    
-    @objc fileprivate func zoomGesture(pinch: UIPinchGestureRecognizer) {
-        let captureDevice = self.videoDeviceInput.device
-        if pinch.state == .changed {
-            do {
-                try captureDevice.lockForConfiguration()
-                  defer { captureDevice.unlockForConfiguration() }
-                zoomScale = min(max(beginZoomScale * pinch.scale, 1.0),  captureDevice.activeFormat.videoMaxZoomFactor)
-                captureDevice.videoZoomFactor = zoomScale
-                print(zoomScale)
-            } catch {
-                print("Error locking configuration")
-            }
-        }
-        if pinch.state == .ended {
-            beginZoomScale = zoomScale
-        }
-    }
-    
-    @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        let devicePoint = previewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
-        focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
-    }
-    
-    private func focus(with focusMode: AVCaptureDevice.FocusMode,
-        exposureMode: AVCaptureDevice.ExposureMode,
-        at devicePoint: CGPoint,
-        monitorSubjectAreaChange: Bool) {
-        
-        sessionQueue.async {
-            let device = self.videoDeviceInput.device
-            do {
-                try device.lockForConfiguration()
-                
-                /*
-                 Setting (focus/exposure)PointOfInterest alone does not initiate a (focus/exposure) operation.
-                 Call set(Focus/Exposure)Mode() to apply the new point of interest.
-                 */
-                if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(focusMode) {
-                    device.focusPointOfInterest = devicePoint
-                    device.focusMode = focusMode
-                }
-                
-                if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(exposureMode) {
-                    device.exposurePointOfInterest = devicePoint
-                    device.exposureMode = exposureMode
-                }
-                
-                device.isSubjectAreaChangeMonitoringEnabled = monitorSubjectAreaChange
-                device.unlockForConfiguration()
-            } catch {
-                print("Could not lock device for configuration: \(error)")
-            }
-        }
-    }
-    
-    @objc func subjectAreaDidChange(notification: NSNotification) {
-        let devicePoint = CGPoint(x: 0.5, y: 0.5)
-        focus(with: .continuousAutoFocus, exposureMode: .continuousAutoExposure, at: devicePoint, monitorSubjectAreaChange: false)
-    }
     
     // MARK: Toggle Preview Mode
     fileprivate func togglePreviewMode(isInPreviewMode: Bool) {
@@ -711,7 +625,16 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
        }
     }
     
-    //TODO: DISPLAY VIDEO PREVIEW
+    
+    fileprivate var player: AVPlayer?
+    fileprivate var playerLayer : AVPlayerLayer = {
+        let layer = AVPlayerLayer()
+        layer.frame = UIScreen.main.bounds
+        layer.videoGravity = .resizeAspectFill
+        return layer
+    }()
+    
+    //MARK: SET MEDIA PREVIEW
     fileprivate func setMediaPreview(isVideo: Bool) {
         
         //setup image preview
@@ -719,19 +642,13 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             if let imageTaken = image {
                 imagePreview.image = imageTaken
             }
-            //print(image as Any)
-            //imagePreview.isHidden = false
-            //imagePreview.frame = previewView.bounds
-            //imagePreview.contentMode = .scaleAspectFill
-            //previewView.layer.addSublayer(imagePreview.layer)
         //setup video preview
         } else {
-            self.playerLayer = AVPlayerLayer(player: self.player)
-            playerLayer!.frame = self.view.bounds
-            playerLayer!.videoGravity = AVLayerVideoGravity.resizeAspectFill
-            self.previewLayer.addSublayer(playerLayer!)
+            if let videoTaken = player {
+                playerLayer.player = videoTaken
+            }
             if self.currentCamera == .front {
-                self.playerLayer!.setAffineTransform(CGAffineTransform(scaleX: -1.0, y: 1.0))
+                self.playerLayer.setAffineTransform(CGAffineTransform(scaleX: -1.0, y: 1.0))
             }
             self.player!.play()
         }
@@ -823,9 +740,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             }
             
             if success {
-                print("SUCCESS")
-                self.player = AVPlayer(url: outputFileURL)
-                self.player!.actionAtItemEnd = .none
+                let player = AVPlayer(url: outputFileURL)
+                player.actionAtItemEnd = .none
+                self.player = player
                 DispatchQueue.main.async{
                     self.setMediaPreview(isVideo: true)
                 }
@@ -837,10 +754,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
           
     // MARK: Cancel Capture
     func cancel() {
-        if playerLayer != nil {
-            self.playerLayer!.removeFromSuperlayer()
-            self.playerLayer = nil
+        if player != nil {
             self.player = nil
+            playerLayer.player = nil
         } else {
             imagePreview.image = nil
         }
@@ -852,7 +768,11 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     
     }
     
-    public var sideMenu = SideBarMenu()
+    private lazy var sideMenu: SideBarMenu = {
+        let menu = SideBarMenu()
+        menu.cameraViewController = self
+        return menu
+    }()
     
     func handleFriendsPressed() {
         sideMenu.showSideMenu()

@@ -11,9 +11,10 @@
 		05601B4024763BE600068ADE /* SlideInPresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B3F24763BE600068ADE /* SlideInPresentationManager.swift */; };
 		05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B4124763E3500068ADE /* SideBarMenu.swift */; };
 		05601B64247765B000068ADE /* SideBarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B63247765B000068ADE /* SideBarCell.swift */; };
-		05601B6624778A2300068ADE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6524778A2300068ADE /* Extensions.swift */; };
+		05601B6624778A2300068ADE /* Extensions+sidBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6524778A2300068ADE /* Extensions+sidBar.swift */; };
 		05601B6824779ED700068ADE /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6724779ED700068ADE /* Profile.swift */; };
 		05601B6A24779EE500068ADE /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6924779EE500068ADE /* Settings.swift */; };
+		05601B702478638F00068ADE /* Extension+CamGestureRecognizers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6F2478638F00068ADE /* Extension+CamGestureRecognizers.swift */; };
 		05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917BF2474A31C000228F9 /* AppDelegate.swift */; };
 		05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917C12474A31C000228F9 /* SceneDelegate.swift */; };
 		05F917C42474A31C000228F9 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917C32474A31C000228F9 /* CameraViewController.swift */; };
@@ -28,9 +29,10 @@
 		05601B3F24763BE600068ADE /* SlideInPresentationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationManager.swift; sourceTree = "<group>"; };
 		05601B4124763E3500068ADE /* SideBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarMenu.swift; sourceTree = "<group>"; };
 		05601B63247765B000068ADE /* SideBarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarCell.swift; sourceTree = "<group>"; };
-		05601B6524778A2300068ADE /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		05601B6524778A2300068ADE /* Extensions+sidBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+sidBar.swift"; sourceTree = "<group>"; };
 		05601B6724779ED700068ADE /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		05601B6924779EE500068ADE /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		05601B6F2478638F00068ADE /* Extension+CamGestureRecognizers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CamGestureRecognizers.swift"; sourceTree = "<group>"; };
 		05F917BC2474A31C000228F9 /* Blink2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blink2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05F917BF2474A31C000228F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		05F917C12474A31C000228F9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				05601B63247765B000068ADE /* SideBarCell.swift */,
 				05601B3F24763BE600068ADE /* SlideInPresentationManager.swift */,
 				05601B4124763E3500068ADE /* SideBarMenu.swift */,
+				05601B6524778A2300068ADE /* Extensions+sidBar.swift */,
 			);
 			path = SidePullOutMenu;
 			sourceTree = "<group>";
@@ -86,6 +89,7 @@
 			children = (
 				05F917C32474A31C000228F9 /* CameraViewController.swift */,
 				05F917D724750287000228F9 /* CameraViewController+constraints.swift */,
+				05601B6F2478638F00068ADE /* Extension+CamGestureRecognizers.swift */,
 			);
 			path = CameraController;
 			sourceTree = "<group>";
@@ -121,7 +125,6 @@
 				05601B6C24785C2900068ADE /* Utility */,
 				05601B3E24763BB500068ADE /* SidePullOutMenu */,
 				05601B6D24785C4A00068ADE /* CameraController */,
-				05601B6524778A2300068ADE /* Extensions.swift */,
 				05601B6E24785C6F00068ADE /* PullOutMenuControllers */,
 				05601B6B24785C1300068ADE /* Login */,
 				05F917C82474A31D000228F9 /* Assets.xcassets */,
@@ -204,9 +207,10 @@
 				05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */,
 				05F917C42474A31C000228F9 /* CameraViewController.swift in Sources */,
 				05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */,
+				05601B702478638F00068ADE /* Extension+CamGestureRecognizers.swift in Sources */,
 				050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */,
 				05F917D824750287000228F9 /* CameraViewController+constraints.swift in Sources */,
-				05601B6624778A2300068ADE /* Extensions.swift in Sources */,
+				05601B6624778A2300068ADE /* Extensions+sidBar.swift in Sources */,
 				05601B6A24779EE500068ADE /* Settings.swift in Sources */,
 				05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */,
 				05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */,
