@@ -9,7 +9,9 @@
 import UIKit
 
 class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
     let blackView = UIView()
+    
     
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -17,6 +19,8 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
         cv.backgroundColor = UIColor.white
         return cv
     }()
+    
+    let pulsatingLayer = CAShapeLayer()
     
     func showSideMenu() {
         //show menu
@@ -32,8 +36,11 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
             blackView.addGestureRecognizer(swipeLeftGesturebv)
             
             window.addSubview(blackView)
-            
             window.addSubview(collectionView)
+            
+            if cameraViewController!.isRecording {
+                animatePulsatingLayer()
+            }
             
             //let width = window.frame.width/2
             //let x = window.frame.width/2
@@ -42,7 +49,6 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
             let swipeLeftGesturecv = UISwipeGestureRecognizer(target: self, action: #selector(handleDismiss))
             swipeLeftGesturecv.direction = .left
             collectionView.addGestureRecognizer(swipeLeftGesturecv)
-            
             
             blackView.frame = window.frame
             blackView.alpha = 0
@@ -57,10 +63,21 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
         }
     }
     
+    func animatePulsatingLayer() {
+        let animation = CABasicAnimation(keyPath: "backgroundColor")
+        animation.duration = 0.75
+        animation.fromValue = UIColor.clear.cgColor
+        animation.toValue = UIColor(red: 1, green: 0, blue: 0, alpha: 0.5).cgColor
+        animation.autoreverses = true
+        animation.repeatCount = Float.infinity
+        
+        blackView.layer.add(animation, forKey: "pulsing")
+    }
+    
     @objc func handleDismiss() {
+        blackView.layer.removeAllAnimations()
         UIView.animate(withDuration: 0.50) {
             self.blackView.alpha = 0
-            
             if let window = UIApplication.shared.keyWindow {
                 self.collectionView.frame = CGRect(x: -window.frame.width, y: 0, width: self.collectionView.frame.width, height: self.collectionView.frame.height)
             }
@@ -97,6 +114,10 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
             return
         }
         self.handleDismiss()
+        if camViewController.isRecording {
+            print("Cant transition recording in process")
+            return
+        }
         let controller = cellItems[indexPath.item].controller
         camViewController.navigationController?.pushViewController(controller, animated: true)
         
