@@ -104,7 +104,6 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
         guard let camViewController = cameraViewController else {
             return
         }
-        self.handleDismiss()
         if camViewController.isRecording {
             print("Cant transition recording in process")
             return

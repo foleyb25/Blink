@@ -83,6 +83,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
        let button = UIButton()
         button.addTarget(self, action: #selector(capturePhotoPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel!.font = UIFont.systemFont(ofSize: 20)
         if #available(iOS 13.0, *) {
             button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
         } else {
@@ -711,12 +712,14 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
            switch _captureState {
             
            case .idle:
+               Animations.animateRecordButton(videoButton: videoButton, captureButton: captureButton)
                videoDataOutput?.setSampleBufferDelegate(self, queue: videoSessionQueue)
                audioDataOutput?.setSampleBufferDelegate(self, queue: videoSessionQueue)
                _captureState = .start
            case .capturing:
-                print("Setting end")
+                isRecording = false
                _captureState = .end
+               Animations.animateMoveRecordButtonBack(button: videoButton)
            default:
                 print("unknown capture state")
            }

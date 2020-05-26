@@ -33,9 +33,11 @@ class Animations {
     }
     
     static func animateMoveRecordButtonBack(button: UIButton) {
+        button.isHidden = true
         button.transform = .identity
         timer.invalidate()
         button.setTitle("", for: .normal)
+        button.layer.removeAllAnimations()
     }
     
     

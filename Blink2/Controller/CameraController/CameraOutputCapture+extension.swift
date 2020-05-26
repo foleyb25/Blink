@@ -16,28 +16,6 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
             //print(timestamp)
            switch _captureState {
            case .start:
-                /*
-               // Set up recorder
-               fileName = UUID().uuidString
-               let videoPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(fileName).mov")
-               let writer = try! AVAssetWriter(outputURL: videoPath, fileType: .mov)
-               let settings = videoDataOutput!.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
-               let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings) // [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: 1920, AVVideoHeightKey: 1080])
-               input.mediaTimeScale = CMTimeScale(bitPattern: 600)
-               input.expectsMediaDataInRealTime = true
-               input.transform = CGAffineTransform(rotationAngle: .pi/2)
-               let adapter = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: nil)
-               if writer.canAdd(input) {
-                   writer.add(input)
-               }
-               writer.startWriting()
-               writer.startSession(atSourceTime: .zero)
-               assetWriter = writer
-               assetWriterInput = input
-               adpater = adapter
-               _captureState = .capturing
-               
-                */
                 fileName = UUID().uuidString
                 let videoPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(fileName).mov")
                 videoWriter = try! AVAssetWriter(outputURL: videoPath, fileType: .mov)
@@ -68,9 +46,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
                 _captureState = .capturing
            case .capturing:
                 if videoWriterInput?.isReadyForMoreMediaData == true && output == videoDataOutput{
-                    //let epsilon = 0.14306712302235
                     let epsilon = 0.15506712302235
-                    print(timestamp-epsilon - _time)
                     let time = CMTime(seconds: timestamp-epsilon, preferredTimescale: CMTimeScale(600))
                     adapter?.append(CMSampleBufferGetImageBuffer(sampleBuffer)!, withPresentationTime: time)
                     //videoWriterInput.append(sampleBuffer)
