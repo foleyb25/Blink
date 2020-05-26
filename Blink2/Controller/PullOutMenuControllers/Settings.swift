@@ -10,4 +10,7 @@ import UIKit
 
 class Settings: UIViewController {
     
+    override func viewDidLoad() {
+        view.backgroundColor = UIColor.white
+    }
 }

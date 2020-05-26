@@ -17,7 +17,7 @@ import Photos
 /*
 class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureFileOutputRecordingDelegate, UIGestureRecognizerDelegate
 */
-class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureFileOutputRecordingDelegate, UIGestureRecognizerDelegate {
+class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIGestureRecognizerDelegate {
     
     
     internal enum CameraSelection: String {
@@ -50,8 +50,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     private var isSessionRunning = false
     internal var isRecording = false
     // Communicate with the session and other session objects on this queue.
-    internal let sessionQueue = DispatchQueue(label: "session queue")
-    
+    internal let sessionQueue = DispatchQueue(label: "session_queue")
+    // Communicate with live video recording
+    internal let videoSessionQueue = DispatchQueue(label: "video_capture_session_queue")
     private var backgroundRecordingID: UIBackgroundTaskIdentifier?
     
     // Gesture Recognizer Variables
@@ -90,10 +91,22 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         return button
     }()
     
+    internal let timingLabel: UILabel = {
+       let label = UILabel()
+        label.textAlignment = .center
+        label.backgroundColor = UIColor.clear
+        label.textColor = UIColor.white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     internal let videoButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(recordPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 35/2
+        button.layer.masksToBounds = true
+        button.setTitle("", for: .normal)
         if #available(iOS 13.0, *) {
             button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
         } else {
@@ -183,6 +196,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         view.addSubview(previewView)
         view.addSubview(captureButton)
         view.addSubview(videoButton)
+        view.addSubview(timingLabel)
         view.addSubview(cancelButton)
         view.addSubview(flipButton)
         view.addSubview(flashButton)
@@ -362,6 +376,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     private let photoOutput = AVCapturePhotoOutput()
     private var movieFileOutput: AVCaptureMovieFileOutput?
     
+    var videoDataOutput: AVCaptureVideoDataOutput?
+    var audioDataOutput: AVCaptureAudioDataOutput?
+    
     // MARK: Session Management
     // Call this on the session queue.
     private func configureSession() {
@@ -426,9 +443,28 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         }
         
         // Add the photo and video output.
-        let movieFileOutput = AVCaptureMovieFileOutput()
+        //let movieFileOutput = AVCaptureMovieFileOutput()
+        let videoDataOutput = AVCaptureVideoDataOutput() // 2
+        videoDataOutput.videoSettings = videoDataOutput.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
+        videoDataOutput.alwaysDiscardsLateVideoFrames = true
+        //dataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,]
         if session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
+        if session.canAddOutput(videoDataOutput) {
+            session.addOutput(videoDataOutput)
+            self.videoDataOutput = videoDataOutput
+        }
+        
+        let audioDataOutput = AVCaptureAudioDataOutput()
+        audioDataOutput.recommendedAudioSettingsForAssetWriter(writingTo: .mov)
+            
+        if session.canAddOutput(audioDataOutput){
+            session.addOutput(audioDataOutput)
+            self.audioDataOutput = audioDataOutput
+        }
+            
+            /*
+            //Add movie file output
             photoOutput.isHighResolutionCaptureEnabled = true
             
             self.session.addOutput(movieFileOutput)
@@ -439,7 +475,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
                 }
             }
             self.movieFileOutput = movieFileOutput
-            
+            */
         } else {
             print("Could not add photo output to the session")
             setupResult = .configurationFailed
@@ -486,7 +522,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
 
     // MARK: Flip Camera
     func flipCamera() {
-        captureButton.isHidden = true
         sessionQueue.async {
             let currentVideoDevice = self.videoDeviceInput.device
             let currentPosition = currentVideoDevice.position
@@ -547,7 +582,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             }
             
         }
-        captureButton.isHidden = false
     }
   
     // MARK: Setting flash
@@ -579,13 +613,12 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     /// - Tag: CapturePhoto
     func capturePhoto() {
         //Capture picture in a thread
-        captureButton.isHidden = true
-        videoButton.isHidden = true
-        flashButton.isHidden = true
-        flipButton.isHidden = true
-        navigationController?.navigationBar.isHidden = true
+        if self.isRecording {
+            return
+        }
         
         sessionQueue.async {
+            
             var photoSettings = AVCapturePhotoSettings()
             
             // Capture HEIF photos when supported. Enable auto-flash and high-resolution photos.
@@ -626,7 +659,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     }
     
     
-    fileprivate var player: AVPlayer?
+    var player: AVPlayer?
     
     fileprivate var playerLayer : AVPlayerLayer = {
         let layer = AVPlayerLayer()
@@ -636,8 +669,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     }()
     
     //MARK: Set Media Preview
-    fileprivate func setMediaPreview(isVideo: Bool) {
-        
+    func setMediaPreview(isVideo: Bool) {
+        print("setup media preview")
         //setup image preview
         if isVideo == false {
             if let imageTaken = image {
@@ -647,6 +680,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         } else {
             if let videoTaken = player {
                 playerLayer.player = videoTaken
+                playerLayer.frame = view.bounds
+                playerLayer.videoGravity = .resizeAspectFill
             }
             if self.currentCamera == .front {
                 self.playerLayer.setAffineTransform(CGAffineTransform(scaleX: -1.0, y: 1.0))
@@ -657,28 +692,52 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
     }
     
     // MARK: Recording Movies
+    var videoWriter: AVAssetWriter!
+    var videoWriterInput: AVAssetWriterInput!
+    var audioWriterInput: AVAssetWriterInput!
+    var sessionAtSourceTime: CMTime!
+    var isWriting = false
+    var hasStartedWritingCurrentVideo = false
+    var fileName = ""
+    var adapter: AVAssetWriterInputPixelBufferAdaptor?
+    var _time: Double = 0
+    enum _CaptureState {
+              case idle, start, capturing, end
+          }
+    var _captureState = _CaptureState.idle
     
+    func record() {
+    
+           switch _captureState {
+            
+           case .idle:
+               videoDataOutput?.setSampleBufferDelegate(self, queue: videoSessionQueue)
+               audioDataOutput?.setSampleBufferDelegate(self, queue: videoSessionQueue)
+               _captureState = .start
+           case .capturing:
+                print("Setting end")
+               _captureState = .end
+           default:
+                print("unknown capture state")
+           }
+                   
+       }
+    
+    /*
     func record() {
         guard let movieFileOutput = self.movieFileOutput else {
             return
         }
-        /*
-        Disable the Camera button until recording finishes, and disable
-        the Record button until recording starts or finishes.
-        */
-        isRecording = true
-        captureButton.isHidden = true
-        flashButton.isHidden = true
-        flipButton.isHidden = true
-        navigationController?.navigationBar.isHidden = true
-        
-        
+    }
+   
         /*MovieFileRecording*/
         sessionQueue.async {
             if !movieFileOutput.isRecording {
                 if UIDevice.current.isMultitaskingSupported {
                     self.backgroundRecordingID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
                 }
+                
+                movieFileOutput.maxRecordedDuration = CMTime(seconds: 5.0, preferredTimescale: .max)
                 // Update the orientation on the movie file output video connection before recording.
             let movieFileOutputConnection = movieFileOutput.connection(with: .video)
                 movieFileOutputConnection?.videoOrientation = .portrait
@@ -698,18 +757,31 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         }
     }
 
+    
+    
     /// - Tag: DidStartRecording
     func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
-        // Enable the Record button to let the user stop recording.
-    }
         
+         DispatchQueue.main.async {
+            Animations.animateRecordButton(videoButton: self.videoButton, captureButton: self.captureButton)
+            
+        }
+    }
+    
+       
+    
     /// - Tag: DidFinishRecording
     func fileOutput(_ output: AVCaptureFileOutput,
                     didFinishRecordingTo outputFileURL: URL,
                     from connections: [AVCaptureConnection],
                     error: Error?) {
+        
         DispatchQueue.main.async {
             self.isRecording = false
+            print("moving back")
+            Animations.animateMoveRecordButtonBack(button: self.videoButton)
+            self.videoButton.layer.removeAllAnimations()
+            self.view.addGestureRecognizer(self.tapGesture!)
         }
         // Note: Because we use a unique file path for each recording, a new recording won't overwrite a recording mid-save.
         
@@ -738,6 +810,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
             if error != nil {
                 print("Movie file finishing error: \(String(describing: error))")
                 success = (((error! as NSError).userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue)!
+                
             }
             
             if success {
@@ -752,11 +825,14 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
         }
         cleanup()
     }
-          
+       */
+    
     // MARK: Cancel Capture
     func cancel() {
         if player != nil {
-            self.player = nil
+            player = nil
+            videoWriter = nil
+            videoWriterInput = nil
             playerLayer.player = nil
         } else {
             imagePreview.image = nil

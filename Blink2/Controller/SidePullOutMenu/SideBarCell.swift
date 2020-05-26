@@ -62,8 +62,4 @@ class SideBarCell: BaseCell {
          addConstraint(NSLayoutConstraint(item: iconImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
     }
-    
-    
-    
-    
 }

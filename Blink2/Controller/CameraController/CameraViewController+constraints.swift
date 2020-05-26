@@ -16,6 +16,11 @@ extension CameraViewController {
         captureButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
         captureButton.widthAnchor.constraint(equalToConstant: 75).isActive = true
         
+//        timingLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+//        timingLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -75).isActive = true
+//        timingLabel.heightAnchor.constraint(equalToConstant: 75).isActive = true
+//        timingLabel.widthAnchor.constraint(equalToConstant: 75).isActive = true
+        
         videoButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor).isActive = true
         videoButton.rightAnchor.constraint(equalTo: captureButton.leftAnchor, constant: -35).isActive = true
         videoButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
@@ -60,10 +65,21 @@ extension CameraViewController {
     }
     
     @objc func capturePhotoPressed() {
+        captureButton.isHidden = true
+        videoButton.isHidden = true
+        flashButton.isHidden = true
+        flipButton.isHidden = true
+        navigationController?.navigationBar.isHidden = true
         capturePhoto()
     }
     
     @objc func recordPressed() {
+        isRecording = true
+        captureButton.isHidden = true
+        flashButton.isHidden = true
+        flipButton.isHidden = true
+        navigationController?.navigationBar.isHidden = true
+        view.removeGestureRecognizer(tapGesture!)
         record()
     }
     

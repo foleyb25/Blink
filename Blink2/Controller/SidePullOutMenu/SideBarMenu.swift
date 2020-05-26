@@ -10,45 +10,48 @@ import UIKit
 
 class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    let blackView = UIView()
+    lazy var blackView: UIView = {
+       let view = UIView()
+        view.backgroundColor = UIColor(white: 0, alpha: 0.5)
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
+        let swipeLeftGesturebv = UISwipeGestureRecognizer(target: self, action: #selector(handleDismiss))
+        swipeLeftGesturebv.direction = .left
+        view.addGestureRecognizer(swipeLeftGesturebv)
+        return view
+    }()
     
     
-    let collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = UIColor.white
+        let swipeLeftGesturecv = UISwipeGestureRecognizer(target: self, action: #selector(handleDismiss))
+        swipeLeftGesturecv.direction = .left
+        cv.addGestureRecognizer(swipeLeftGesturecv)
         return cv
     }()
     
-    let pulsatingLayer = CAShapeLayer()
+    override init() {
+        super.init()
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(SideBarCell.self, forCellWithReuseIdentifier: cellId)
+    }
     
     func showSideMenu() {
         //show menu
 
         if let window = UIApplication.shared.keyWindow {
             
-            blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
-            
-            blackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
-            
-            let swipeLeftGesturebv = UISwipeGestureRecognizer(target: self, action: #selector(handleDismiss))
-            swipeLeftGesturebv.direction = .left
-            blackView.addGestureRecognizer(swipeLeftGesturebv)
-            
             window.addSubview(blackView)
             window.addSubview(collectionView)
             
+            // if Camera is recording put a red pulse animation over black layer
             if cameraViewController!.isRecording {
-                animatePulsatingLayer()
+                Animations.animatePulsatingLayer(layer: blackView.layer)
             }
             
-            //let width = window.frame.width/2
-            //let x = window.frame.width/2
             collectionView.frame = CGRect(x: -window.frame.width, y: 0, width: window.frame.width/2, height: window.frame.height)
-            
-            let swipeLeftGesturecv = UISwipeGestureRecognizer(target: self, action: #selector(handleDismiss))
-            swipeLeftGesturecv.direction = .left
-            collectionView.addGestureRecognizer(swipeLeftGesturecv)
             
             blackView.frame = window.frame
             blackView.alpha = 0
@@ -63,17 +66,6 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
         }
     }
     
-    func animatePulsatingLayer() {
-        let animation = CABasicAnimation(keyPath: "backgroundColor")
-        animation.duration = 0.75
-        animation.fromValue = UIColor.clear.cgColor
-        animation.toValue = UIColor(red: 1, green: 0, blue: 0, alpha: 0.5).cgColor
-        animation.autoreverses = true
-        animation.repeatCount = Float.infinity
-        
-        blackView.layer.add(animation, forKey: "pulsing")
-    }
-    
     @objc func handleDismiss() {
         blackView.layer.removeAllAnimations()
         UIView.animate(withDuration: 0.50) {
@@ -85,7 +77,6 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
     }
     
     let cellId = "cellid"
-    
     
     private lazy var cellItems: [CellItem] = {
         return [CellItem(name: "Profile", imageName: "logo_no_bg", controller: Profile()), CellItem(name: "Settings", imageName: "logo_no_bg", controller: Settings())]
@@ -119,20 +110,11 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
             return
         }
         let controller = cellItems[indexPath.item].controller
-        camViewController.navigationController?.pushViewController(controller, animated: true)
-        
-            
-        
+        //camViewController.navigationController?.pushViewController(controller, animated: true)
+        camViewController.present(controller, animated: true, completion: nil)
         
     }
     
-    override init() {
-        super.init()
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(SideBarCell.self, forCellWithReuseIdentifier: cellId)
-    }
-
 }
 
 class CellItem: NSObject {
