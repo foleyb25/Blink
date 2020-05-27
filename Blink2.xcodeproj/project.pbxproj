@@ -16,6 +16,9 @@
 		05601B702478638F00068ADE /* Extension+CamGestureRecognizers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6F2478638F00068ADE /* Extension+CamGestureRecognizers.swift */; };
 		058A13DB2478B1160014FD48 /* Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13DA2478B1160014FD48 /* Animations.swift */; };
 		058A13E3247C8B240014FD48 /* CameraOutputCapture+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E2247C8B240014FD48 /* CameraOutputCapture+extension.swift */; };
+		058A13E5247DB1D20014FD48 /* GenePoolViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E4247DB1D20014FD48 /* GenePoolViewController.swift */; };
+		058A13E8247DB5570014FD48 /* GenderSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E7247DB5570014FD48 /* GenderSelector.swift */; };
+		058A13EA247DBCF50014FD48 /* ImageCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E9247DBCF50014FD48 /* ImageCells.swift */; };
 		05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917BF2474A31C000228F9 /* AppDelegate.swift */; };
 		05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917C12474A31C000228F9 /* SceneDelegate.swift */; };
 		05F917C42474A31C000228F9 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917C32474A31C000228F9 /* CameraViewController.swift */; };
@@ -35,6 +38,9 @@
 		05601B6F2478638F00068ADE /* Extension+CamGestureRecognizers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CamGestureRecognizers.swift"; sourceTree = "<group>"; };
 		058A13DA2478B1160014FD48 /* Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animations.swift; sourceTree = "<group>"; };
 		058A13E2247C8B240014FD48 /* CameraOutputCapture+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraOutputCapture+extension.swift"; sourceTree = "<group>"; };
+		058A13E4247DB1D20014FD48 /* GenePoolViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GenePoolViewController.swift; path = "Blink2/Controller/Gene Pool/GenePoolViewController.swift"; sourceTree = SOURCE_ROOT; };
+		058A13E7247DB5570014FD48 /* GenderSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelector.swift; sourceTree = "<group>"; };
+		058A13E9247DBCF50014FD48 /* ImageCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCells.swift; sourceTree = "<group>"; };
 		05F917BC2474A31C000228F9 /* Blink2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blink2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05F917BF2474A31C000228F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		05F917C12474A31C000228F9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -131,12 +137,23 @@
 		058A13DF247C43D70014FD48 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				058A13E6247DB1E20014FD48 /* Gene Pool */,
 				05601B6B24785C1300068ADE /* Login */,
 				05601B6E24785C6F00068ADE /* PullOutMenuControllers */,
 				05601B3E24763BB500068ADE /* SidePullOutMenu */,
 				05601B6D24785C4A00068ADE /* CameraController */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		058A13E6247DB1E20014FD48 /* Gene Pool */ = {
+			isa = PBXGroup;
+			children = (
+				058A13E4247DB1D20014FD48 /* GenePoolViewController.swift */,
+				058A13E9247DBCF50014FD48 /* ImageCells.swift */,
+				058A13E7247DB5570014FD48 /* GenderSelector.swift */,
+			);
+			path = "Gene Pool";
 			sourceTree = "<group>";
 		};
 		05F917B32474A31C000228F9 = {
@@ -244,6 +261,7 @@
 				05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */,
 				05601B702478638F00068ADE /* Extension+CamGestureRecognizers.swift in Sources */,
 				058A13E3247C8B240014FD48 /* CameraOutputCapture+extension.swift in Sources */,
+				058A13E8247DB5570014FD48 /* GenderSelector.swift in Sources */,
 				050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */,
 				05F917D824750287000228F9 /* CameraViewController+constraints.swift in Sources */,
 				058A13DB2478B1160014FD48 /* Animations.swift in Sources */,
@@ -252,7 +270,9 @@
 				05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */,
 				05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */,
 				05601B6824779ED700068ADE /* Profile.swift in Sources */,
+				058A13E5247DB1D20014FD48 /* GenePoolViewController.swift in Sources */,
 				05601B64247765B000068ADE /* SideBarCell.swift in Sources */,
+				058A13EA247DBCF50014FD48 /* ImageCells.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

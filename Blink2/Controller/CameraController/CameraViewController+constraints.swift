@@ -104,7 +104,7 @@ extension CameraViewController {
     }
     
     @objc func genePoolButtonPressed() {
-        
+        handleGenePoolPressed()
     }
     
     

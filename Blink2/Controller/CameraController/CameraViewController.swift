@@ -181,7 +181,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
 
     internal lazy var genePoolButton: UIButton = {
         let button = UIButton()
-        button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchDown)
+        button.addTarget(self, action: #selector(genePoolButtonPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
         if #available(iOS 13.0, *) {
             button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
@@ -854,12 +854,18 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
         return menu
     }()
     
+    private lazy var genePoolController: GenePoolViewController = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = GenePoolViewController(collectionViewLayout: layout)
+        return collectionView
+    }()
+    
     func handleFriendsPressed() {
         sideMenu.showSideMenu()
     }
     
     func handleGenePoolPressed() {
-        
+        navigationController?.pushViewController(genePoolController, animated: true)
     }
     // MARK: KVO and Notifications
     private var keyValueObservations = [NSKeyValueObservation]()
