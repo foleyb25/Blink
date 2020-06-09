@@ -41,7 +41,7 @@ class CameraViewController: UIViewController {
     var audioAuthorized = true
     
     private(set) public var currentCamera = CameraSelection.rear
-    private(set) public var flashMode = Flashmode.off
+    public var flashMode = Flashmode.off
     private var setupResult: SessionSetupResult = .success
     
     private let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera], mediaType: .video, position: .unspecified)
@@ -77,7 +77,7 @@ class CameraViewController: UIViewController {
     
     
     //capturing movies
-    fileprivate var playerLayer : AVPlayerLayer = {
+    internal var playerLayer : AVPlayerLayer = {
         let layer = AVPlayerLayer()
         layer.frame = UIScreen.main.bounds
         layer.videoGravity = .resizeAspectFill
@@ -391,8 +391,57 @@ class CameraViewController: UIViewController {
         previewView.layer.addSublayer(playerLayer)
     }
     
+    //MARK: Set up constraints
+    func setButtonConstraints() {
+        
+        captureButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        captureButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -75).isActive = true
+        captureButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
+        captureButton.widthAnchor.constraint(equalToConstant: 75).isActive = true
+    
+        videoButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor).isActive = true
+        videoButton.rightAnchor.constraint(equalTo: captureButton.leftAnchor, constant: -35).isActive = true
+        videoButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        videoButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        pickerButton.centerXAnchor.constraint(equalTo: captureButton.centerXAnchor).isActive = true
+        pickerButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15).isActive = true
+        pickerButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        pickerButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+
+        cancelButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 60).isActive = true
+        cancelButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+        cancelButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        cancelButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        flipButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor).isActive = true
+        flipButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -35).isActive = true
+        flipButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        flipButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        flashButton.centerXAnchor.constraint(equalTo: flipButton.centerXAnchor).isActive = true
+        flashButton.bottomAnchor.constraint(equalTo: flipButton.topAnchor, constant: -35).isActive = true
+        flashButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        flashButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        sendButton.centerXAnchor.constraint(equalTo: flipButton.centerXAnchor).isActive = true
+        sendButton.topAnchor.constraint(equalTo: flipButton.bottomAnchor, constant: 35).isActive = true
+        sendButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        sendButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        friendsButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        friendsButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        genePoolButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        genePoolButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+            
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
     // MARK: Toggle Preview Mode
-    fileprivate func togglePreviewMode(isInPreviewMode: Bool) {
+    internal func togglePreviewMode(isInPreviewMode: Bool) {
         if isInPreviewMode {
             captureButton.isHidden = true
             videoButton.isHidden = true
@@ -621,17 +670,7 @@ class CameraViewController: UIViewController {
   
     // MARK: Setting flash
     func toggleFlash() {
-        switch self.flashMode {
-        case .off:
-            self.flashMode = .auto
-            flashButton.setTitle(" Auto", for: .normal)
-        case .auto:
-            self.flashMode = .on
-            flashButton.setTitle(" On", for: .normal)
-        case .on:
-            self.flashMode = .off
-            flashButton.setTitle(" Off", for: .normal)
-        }
+        
     }
     
     //MARK: Set Media Preview
@@ -656,11 +695,6 @@ class CameraViewController: UIViewController {
         }
         togglePreviewMode(isInPreviewMode: true)
     }
-    
-    // MARK: Recording Movies
-    
-    
-    
     
     /*
     func record() {
@@ -765,47 +799,19 @@ class CameraViewController: UIViewController {
         cleanup()
     }
        */
-    
-    // MARK: Cancel Capture
-    func cancel() {
-        if player != nil {
-            player = nil
-            videoWriter = nil
-            videoWriterInput = nil
-            playerLayer.player = nil
-        } else {
-            imagePreview.image = nil
-        }
-        togglePreviewMode(isInPreviewMode: false)
-    }
-    
-    // MARK: Send Capture Content
-    func send() {
-    
-    }
-    
-    private lazy var sideMenu: SideBarMenu = {
+    //MARK: View Controller Instantiation
+    internal lazy var sideMenu: SideBarMenu = {
         let menu = SideBarMenu()
         menu.cameraViewController = self
         return menu
     }()
     
-    private lazy var genePoolController: GenePoolViewController = {
+    internal lazy var genePoolController: GenePoolViewController = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = GenePoolViewController(collectionViewLayout: layout)
         return collectionView
     }()
-    
-    func handleFriendsPressed() {
-        sideMenu.showSideMenu()
-    }
-    
-    func handleGenePoolPressed() {
-        navigationController?.pushViewController(genePoolController, animated: true)
-    }
-    
-    
-    
+
     // MARK: KVO and Notifications
     private var keyValueObservations = [NSKeyValueObservation]()
     /// - Tag: ObserveInterruption

@@ -9,65 +9,6 @@
 import UIKit
 
 extension CameraViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func setButtonConstraints() {
-        
-        captureButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        captureButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -75).isActive = true
-        captureButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
-        captureButton.widthAnchor.constraint(equalToConstant: 75).isActive = true
-        
-//        timingLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-//        timingLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -75).isActive = true
-//        timingLabel.heightAnchor.constraint(equalToConstant: 75).isActive = true
-//        timingLabel.widthAnchor.constraint(equalToConstant: 75).isActive = true
-        
-        videoButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor).isActive = true
-        videoButton.rightAnchor.constraint(equalTo: captureButton.leftAnchor, constant: -35).isActive = true
-        videoButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        videoButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        pickerButton.centerXAnchor.constraint(equalTo: captureButton.centerXAnchor).isActive = true
-        pickerButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15).isActive = true
-        pickerButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        pickerButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-
-        cancelButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 60).isActive = true
-        cancelButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-        cancelButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        cancelButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        flipButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor).isActive = true
-        flipButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -35).isActive = true
-        flipButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        flipButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        flashButton.centerXAnchor.constraint(equalTo: flipButton.centerXAnchor).isActive = true
-        flashButton.bottomAnchor.constraint(equalTo: flipButton.topAnchor, constant: -35).isActive = true
-        flashButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        flashButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        sendButton.centerXAnchor.constraint(equalTo: flipButton.centerXAnchor).isActive = true
-        sendButton.topAnchor.constraint(equalTo: flipButton.bottomAnchor, constant: 35).isActive = true
-        sendButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        sendButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        friendsButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        friendsButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        genePoolButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        genePoolButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-            
-        UIView.animate(withDuration: 0.25) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    func setupViewConstraints() {
-        imagePreview.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        imagePreview.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
-        imagePreview.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor).isActive = true
-        imagePreview.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor).isActive = true
-    }
     
     @objc func capturePhotoPressed() {
         captureButton.isHidden = true
@@ -75,6 +16,7 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
         flashButton.isHidden = true
         flipButton.isHidden = true
         navigationController?.navigationBar.isHidden = true
+        //Transfers to capture photo output delegate extension
         capturePhoto()
     }
     
@@ -85,6 +27,7 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
         flipButton.isHidden = true
         navigationController?.navigationBar.isHidden = true
         view.removeGestureRecognizer(tapGesture!)
+        //Transfers to capture video data delegate extension
         record()
     }
     
@@ -108,7 +51,15 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
     }
     
     @objc func cancelPressed() {
-        cancel()
+        if player != nil {
+            player = nil
+            videoWriter = nil
+            videoWriterInput = nil
+            playerLayer.player = nil
+        } else {
+            imagePreview.image = nil
+        }
+        togglePreviewMode(isInPreviewMode: false)
     }
     
     @objc func flipCameraPressed() {
@@ -116,19 +67,29 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
     }
     
     @objc func toggleFlashPressed() {
-        toggleFlash()
+        switch self.flashMode {
+        case .off:
+            self.flashMode = .auto
+            flashButton.setTitle(" Auto", for: .normal)
+        case .auto:
+            self.flashMode = .on
+            flashButton.setTitle(" On", for: .normal)
+        case .on:
+            self.flashMode = .off
+            flashButton.setTitle(" Off", for: .normal)
+        }
     }
     
     @objc func sendPressed() {
-        send()
+        
     }
     
     @objc func friendsButtonPressed() {
-        handleFriendsPressed()
+        sideMenu.showSideMenu()
     }
     
     @objc func genePoolButtonPressed() {
-        handleGenePoolPressed()
+        navigationController?.pushViewController(genePoolController, animated: true)
     }
     
     
