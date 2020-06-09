@@ -19,7 +19,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVC
 */
 class CameraViewController: UIViewController {
     
-    
     internal enum CameraSelection: String {
         /// Camera on the back of the device
         case rear = "rear"
@@ -35,9 +34,11 @@ class CameraViewController: UIViewController {
     
     private enum SessionSetupResult {
         case success
-        case notAuthorized
+        case camNotAuthorized
         case configurationFailed
     }
+    
+    var audioAuthorized = true
     
     private(set) public var currentCamera = CameraSelection.rear
     private(set) public var flashMode = Flashmode.off
@@ -63,6 +64,40 @@ class CameraViewController: UIViewController {
     internal var focusTapGesture: UITapGestureRecognizer?
     internal var swipeRightGesture: UISwipeGestureRecognizer?
     internal var panGesture: UIGestureRecognizer?
+    
+    //stores captured image
+    internal var image: UIImage?
+    
+    lazy var imagePreview: UIImageView = {
+        let viewItem = UIImageView()
+        viewItem.frame = UIScreen.main.bounds
+        viewItem.contentMode = .scaleAspectFill
+        return viewItem
+    }()
+    
+    
+    //capturing movies
+    fileprivate var playerLayer : AVPlayerLayer = {
+        let layer = AVPlayerLayer()
+        layer.frame = UIScreen.main.bounds
+        layer.videoGravity = .resizeAspectFill
+        return layer
+    }()
+    
+    var player: AVPlayer?
+    var videoWriter: AVAssetWriter!
+    var videoWriterInput: AVAssetWriterInput!
+    var audioWriterInput: AVAssetWriterInput!
+    var sessionAtSourceTime: CMTime!
+    var isWriting = false
+    var hasStartedWritingCurrentVideo = false
+    var fileName = ""
+    var adapter: AVAssetWriterInputPixelBufferAdaptor?
+    var _time: Double = 0
+    enum _CaptureState {
+              case idle, start, capturing, end
+          }
+    var _captureState = _CaptureState.idle
     
     internal var previewLayer: AVCaptureVideoPreviewLayer = {
        let pl = AVCaptureVideoPreviewLayer()
@@ -207,6 +242,121 @@ class CameraViewController: UIViewController {
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
+        
+        /*
+         Check the video authorization status. Video access is required and audio
+         access is optional. If the user denies audio access, AVCam won't
+         record audio during movie recording.
+         */
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            // The user has previously granted access to the camera.
+            break
+        case .notDetermined:
+            /*
+             The user has not yet been presented with the option to grant
+             video access. Suspend the session queue to delay session
+             setup until the access request has completed.
+             */
+             sessionQueue.suspend()
+             AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
+                 if !granted {
+                     self.setupResult = .camNotAuthorized
+                 }
+                 self.sessionQueue.resume()
+             })
+             /*
+             Note that audio access will be implicitly requested when we
+             create an AVCaptureDeviceInput for audio during session setup.
+             */
+        case .denied:
+            print("denied")
+            sessionQueue.suspend()
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
+                if !granted {
+                    self.setupResult = .camNotAuthorized
+                }
+                self.sessionQueue.resume()
+            })
+        case .restricted:
+            print("restricted")
+            sessionQueue.suspend()
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
+                if !granted {
+                    self.setupResult = .camNotAuthorized
+                }
+                self.sessionQueue.resume()
+            })
+        default:
+            // The user has previously denied access.
+            setupResult = .camNotAuthorized
+        }
+        /*
+         Setup the capture session.
+         In general, it's not safe to mutate an AVCaptureSession or any of its
+         inputs, outputs, or connections from multiple threads at the same time.
+        
+         Don't perform these tasks on the main queue because
+         AVCaptureSession.startRunning() is a blocking call, which can
+         take a long time. Dispatch session setup to the sessionQueue, so
+         that the main queue isn't blocked, which keeps the UI responsive.
+         */
+        sessionQueue.async {
+            self.configureSession()
+        }
+    }
+    
+    
+    //MARK: View Will Appear
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+       
+        sessionQueue.async {
+            switch self.setupResult {
+            case .success:
+                    // Only setup observers and start the session if setup succeeded.
+                if !self.audioAuthorized {
+                    DispatchQueue.main.async {
+                        let changePrivacySetting = "AVCam doesn't have permission to use the Microphone, please change privacy settings"
+                        let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the Microphone")
+                        let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"), style: .`default`, handler: { _ in UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+                            }))
+                        self.present(alertController, animated: true, completion: nil)
+                    }
+                }
+                self.addObservers()
+                self.session.startRunning()
+                self.isSessionRunning = self.session.isRunning
+                    
+            case .camNotAuthorized:
+                DispatchQueue.main.async {
+                    let changePrivacySetting = "AVCam doesn't have permission to use the camera, please change privacy settings"
+                    let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the camera")
+                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"), style: .`default`, handler: { _ in UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+                        }))
+                    self.present(alertController, animated: true, completion: nil)
+                }
+               
+            case .configurationFailed:
+                DispatchQueue.main.async {
+                    let alertMsg = "Alert message when something goes wrong during capture session configuration"
+                    let message = NSLocalizedString("Unable to capture media", comment: alertMsg)
+                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
+                    self.present(alertController, animated: true, completion: nil)
+                }
+            }
+        }
+        togglePreviewMode(isInPreviewMode: false)
+    }
+    
+    //MARK: Setup View
+    fileprivate func setupView() {
         view.addSubview(previewView)
         view.addSubview(captureButton)
         view.addSubview(pickerButton)
@@ -219,8 +369,7 @@ class CameraViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: friendsButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: genePoolButton)
         setButtonConstraints()
-        
-        
+        addGestureRecognizers()
         
         //makes nav bar background invisible
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -240,123 +389,7 @@ class CameraViewController: UIViewController {
         previewView.layer.addSublayer(previewLayer)
         previewView.layer.addSublayer(imagePreview.layer)
         previewView.layer.addSublayer(playerLayer)
-        /*
-         Check the video authorization status. Video access is required and audio
-         access is optional. If the user denies audio access, AVCam won't
-         record audio during movie recording.
-         */
-
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .authorized:
-            // The user has previously granted access to the camera.
-            break
-        case .notDetermined:
-            /*
-             The user has not yet been presented with the option to grant
-             video access. Suspend the session queue to delay session
-             setup until the access request has completed.
-             */
-             sessionQueue.suspend()
-             AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
-                 if !granted {
-                     self.setupResult = .notAuthorized
-                 }
-                 self.sessionQueue.resume()
-             })
-             /*
-             Note that audio access will be implicitly requested when we
-             create an AVCaptureDeviceInput for audio during session setup.
-             */
-        case .denied:
-            print("denied")
-            sessionQueue.suspend()
-            AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
-                if !granted {
-                    self.setupResult = .notAuthorized
-                }
-                self.sessionQueue.resume()
-            })
-        case .restricted:
-            print("restricted")
-            sessionQueue.suspend()
-            AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
-                if !granted {
-                    self.setupResult = .notAuthorized
-                }
-                self.sessionQueue.resume()
-            })
-        default:
-            // The user has previously denied access.
-            setupResult = .notAuthorized
-        }
-        /*
-         Setup the capture session.
-         In general, it's not safe to mutate an AVCaptureSession or any of its
-         inputs, outputs, or connections from multiple threads at the same time.
-        
-         Don't perform these tasks on the main queue because
-         AVCaptureSession.startRunning() is a blocking call, which can
-         take a long time. Dispatch session setup to the sessionQueue, so
-         that the main queue isn't blocked, which keeps the UI responsive.
-         */
-        sessionQueue.async {
-            self.configureSession()
-        }
-        
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-       
-        sessionQueue.async {
-            switch self.setupResult {
-            case .success:
-                    // Only setup observers and start the session if setup succeeded.
-                self.addObservers()
-                self.session.startRunning()
-                self.isSessionRunning = self.session.isRunning
-                    
-            case .notAuthorized:
-                DispatchQueue.main.async {
-                    let changePrivacySetting = "AVCam doesn't have permission to use the camera, please change privacy settings"
-                    let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the camera")
-                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"), style: .`default`, handler: { _ in UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
-                        }))
-                    self.present(alertController, animated: true, completion: nil)
-                }
-                    
-            case .configurationFailed:
-                DispatchQueue.main.async {
-                    let alertMsg = "Alert message when something goes wrong during capture session configuration"
-                    let message = NSLocalizedString("Unable to capture media", comment: alertMsg)
-                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
-                    self.present(alertController, animated: true, completion: nil)
-                }
-            }
-        }
-        addGestureRecognizers()
-        togglePreviewMode(isInPreviewMode: false)
-    }
-    
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-            print("VIEW TRANSITION")
-           super.viewWillTransition(to: size, with: coordinator)
-           
-           if let videoPreviewLayerConnection = previewLayer.connection {
-               let deviceOrientation = UIDevice.current.orientation
-               guard let newVideoOrientation = AVCaptureVideoOrientation(deviceOrientation: deviceOrientation),
-                   deviceOrientation.isPortrait || deviceOrientation.isLandscape else {
-                       return
-               }
-               
-               videoPreviewLayerConnection.videoOrientation = newVideoOrientation
-           }
-       }
-    
     
     // MARK: Toggle Preview Mode
     fileprivate func togglePreviewMode(isInPreviewMode: Bool) {
@@ -389,10 +422,10 @@ class CameraViewController: UIViewController {
     }
     
     let photoOutput = AVCapturePhotoOutput()
-    let movieFileOutput: AVCaptureMovieFileOutput? = nil
+    //let movieFileOutput: AVCaptureMovieFileOutput? = nil
     
-    var videoDataOutput: AVCaptureVideoDataOutput?
-    var audioDataOutput: AVCaptureAudioDataOutput?
+    var videoDataOutput = AVCaptureVideoDataOutput()
+    var audioDataOutput = AVCaptureAudioDataOutput()
     
     // MARK: Session Management
     // Call this on the session queue.
@@ -455,48 +488,39 @@ class CameraViewController: UIViewController {
             }
         } catch {
             print("Could not create audio device input: \(error)")
+            audioAuthorized = false
         }
         
-        // Add the photo and video output.
-        //let movieFileOutput = AVCaptureMovieFileOutput()
-        let videoDataOutput = AVCaptureVideoDataOutput() // 2
-        videoDataOutput.videoSettings = videoDataOutput.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
-        videoDataOutput.alwaysDiscardsLateVideoFrames = true
-        //dataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,]
+        // Add the photo, video, and audio output.
+
         photoOutput.isHighResolutionCaptureEnabled = true
         if session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
-        if session.canAddOutput(videoDataOutput) {
-            session.addOutput(videoDataOutput)
-            self.videoDataOutput = videoDataOutput
-        }
-        
-        let audioDataOutput = AVCaptureAudioDataOutput()
-        audioDataOutput.recommendedAudioSettingsForAssetWriter(writingTo: .mov)
-            
-        if session.canAddOutput(audioDataOutput){
-            session.addOutput(audioDataOutput)
-            self.audioDataOutput = audioDataOutput
-        }
-            
-            /*
-            //Add movie file output
-            photoOutput.isHighResolutionCaptureEnabled = true
-            
-            self.session.addOutput(movieFileOutput)
-            self.session.sessionPreset = .high
-            if let connection = movieFileOutput.connection(with: .video) {
-                if connection.isVideoStabilizationSupported {
-                    connection.preferredVideoStabilizationMode = .auto
-                }
-            }
-            self.movieFileOutput = movieFileOutput
-            */
         } else {
             print("Could not add photo output to the session")
             setupResult = .configurationFailed
             session.commitConfiguration()
             return
+        }
+        
+        videoDataOutput.videoSettings = videoDataOutput.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
+        videoDataOutput.alwaysDiscardsLateVideoFrames = true
+        if session.canAddOutput(videoDataOutput) {
+            session.addOutput(videoDataOutput)
+        } else {
+            print("Could not add video output to the session")
+            setupResult = .configurationFailed
+            session.commitConfiguration()
+            return
+        }
+        
+        audioDataOutput.recommendedAudioSettingsForAssetWriter(writingTo: .mov)
+        if session.canAddOutput(audioDataOutput){
+            session.addOutput(audioDataOutput)
+        } else {
+            //No need to return, if user disables audio they can still record/take pictures
+            print("Could not add audio output to the session")
+            audioAuthorized = false
         }
         session.commitConfiguration()
     }
@@ -578,11 +602,6 @@ class CameraViewController: UIViewController {
                     } else {
                         self.session.addInput(self.videoDeviceInput)
                     }
-                    if let connection = self.movieFileOutput?.connection(with: .video) {
-                        if connection.isVideoStabilizationSupported {
-                            connection.preferredVideoStabilizationMode = .auto
-                        }
-                    }
                     self.photoOutput.isDepthDataDeliveryEnabled = self.photoOutput.isDepthDataDeliverySupported
                     self.session.commitConfiguration()
                     self.beginZoomScale = CGFloat(1.0)
@@ -615,32 +634,6 @@ class CameraViewController: UIViewController {
         }
     }
     
-    
-    lazy var imagePreview: UIImageView = {
-        let viewItem = UIImageView()
-        viewItem.frame = UIScreen.main.bounds
-        viewItem.contentMode = .scaleAspectFill
-        return viewItem
-    }()
-    
-    internal var image: UIImage?
-    
-    // MARK: Capturing Photos
-    /// - Tag: CapturePhoto
-    
-    
-    
-    
-    
-    var player: AVPlayer?
-    
-    fileprivate var playerLayer : AVPlayerLayer = {
-        let layer = AVPlayerLayer()
-        layer.frame = UIScreen.main.bounds
-        layer.videoGravity = .resizeAspectFill
-        return layer
-    }()
-    
     //MARK: Set Media Preview
     func setMediaPreview(isVideo: Bool) {
         print("setup media preview")
@@ -665,19 +658,7 @@ class CameraViewController: UIViewController {
     }
     
     // MARK: Recording Movies
-    var videoWriter: AVAssetWriter!
-    var videoWriterInput: AVAssetWriterInput!
-    var audioWriterInput: AVAssetWriterInput!
-    var sessionAtSourceTime: CMTime!
-    var isWriting = false
-    var hasStartedWritingCurrentVideo = false
-    var fileName = ""
-    var adapter: AVAssetWriterInputPixelBufferAdaptor?
-    var _time: Double = 0
-    enum _CaptureState {
-              case idle, start, capturing, end
-          }
-    var _captureState = _CaptureState.idle
+    
     
     
     
@@ -903,7 +884,7 @@ class CameraViewController: UIViewController {
          */
         let pressureLevel = systemPressureState.level
         if pressureLevel == .serious || pressureLevel == .critical {
-            if self.movieFileOutput == nil || self.movieFileOutput?.isRecording == false {
+            if isRecording == false {
                 do {
                     try self.videoDeviceInput.device.lockForConfiguration()
                     print("WARNING: Reached elevated system pressure level: \(pressureLevel). Throttling frame rate.")

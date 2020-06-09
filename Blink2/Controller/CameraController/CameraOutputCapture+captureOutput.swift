@@ -19,7 +19,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
                 fileName = UUID().uuidString
                 let videoPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(fileName).mov")
                 videoWriter = try! AVAssetWriter(outputURL: videoPath, fileType: .mov)
-                let settings = videoDataOutput!.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
+                let settings = videoDataOutput.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
                 videoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: settings) // [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: 1920, AVVideoHeightKey: 1080])
                 videoWriterInput.transform = CGAffineTransform(rotationAngle: .pi/2)
                 adapter = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: videoWriterInput, sourcePixelBufferAttributes: nil)
@@ -126,8 +126,8 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
         
        case .idle:
            Animations.animateRecordButton(videoButton: videoButton, captureButton: captureButton)
-           videoDataOutput?.setSampleBufferDelegate(self, queue: videoSessionQueue)
-           audioDataOutput?.setSampleBufferDelegate(self, queue: videoSessionQueue)
+           videoDataOutput.setSampleBufferDelegate(self, queue: videoSessionQueue)
+           audioDataOutput.setSampleBufferDelegate(self, queue: videoSessionQueue)
            _captureState = .start
        case .capturing:
             isRecording = false
