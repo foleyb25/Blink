@@ -43,7 +43,6 @@ extension CameraViewController: UIGestureRecognizerDelegate {
                   defer { captureDevice.unlockForConfiguration() }
                 zoomScale = min(max(beginZoomScale * pinch.scale, 1.0),  captureDevice.activeFormat.videoMaxZoomFactor)
                 captureDevice.videoZoomFactor = zoomScale
-                print(zoomScale)
             } catch {
                 print("Error locking configuration")
             }

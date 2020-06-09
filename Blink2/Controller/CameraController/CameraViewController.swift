@@ -46,7 +46,6 @@ class CameraViewController: UIViewController {
     
     private let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera], mediaType: .video, position: .unspecified)
     @objc dynamic var videoDeviceInput: AVCaptureDeviceInput!
-    
     private let session = AVCaptureSession()
     private var isSessionRunning = false
     internal var isRecording = false
@@ -189,7 +188,6 @@ class CameraViewController: UIViewController {
     }()
     
     internal let flashButton: UIButton = {
-        print("Setting flash button options")
         let button = UIButton()
         button.addTarget(self, action: #selector(toggleFlashPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -622,7 +620,7 @@ class CameraViewController: UIViewController {
                     preferredDeviceType = .builtInDualCamera
                 case .back:
                     preferredPosition = .front
-                    preferredDeviceType = .builtInTrueDepthCamera
+                    preferredDeviceType = .builtInWideAngleCamera
                 @unknown default:
                     print("Unknown capture position. Defaulting to back, dual-camera.")
                     preferredPosition = .back
@@ -675,7 +673,6 @@ class CameraViewController: UIViewController {
     
     //MARK: Set Media Preview
     func setMediaPreview(isVideo: Bool) {
-        print("setup media preview")
         //setup image preview
         if isVideo == false {
             if let imageTaken = image {
