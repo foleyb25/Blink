@@ -116,6 +116,19 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
         return button
     }()
     
+    internal let pickerButton: UIButton = {
+       let button = UIButton()
+       button.addTarget(self, action: #selector(handleImagePickerButton), for: .touchDown)
+       button.translatesAutoresizingMaskIntoConstraints = false
+       button.titleLabel!.font = UIFont.systemFont(ofSize: 20)
+       if #available(iOS 13.0, *) {
+           button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+       } else {
+           button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+       }
+       return button
+    }()
+    
     internal let cancelButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(cancelPressed), for: .touchDown)
@@ -196,6 +209,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
         super.viewDidLoad()
         view.addSubview(previewView)
         view.addSubview(captureButton)
+        view.addSubview(pickerButton)
         view.addSubview(videoButton)
         view.addSubview(timingLabel)
         view.addSubview(cancelButton)
@@ -449,6 +463,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
         videoDataOutput.videoSettings = videoDataOutput.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
         //dataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,]
+        photoOutput.isHighResolutionCaptureEnabled = true
         if session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
         if session.canAddOutput(videoDataOutput) {
@@ -608,7 +623,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
         return viewItem
     }()
     
-    private var image: UIImage?
+    internal var image: UIImage?
     
     // MARK: Capturing Photos
     /// - Tag: CapturePhoto
@@ -867,6 +882,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
     func handleGenePoolPressed() {
         navigationController?.pushViewController(genePoolController, animated: true)
     }
+    
+    
+    
     // MARK: KVO and Notifications
     private var keyValueObservations = [NSKeyValueObservation]()
     /// - Tag: ObserveInterruption
@@ -961,7 +979,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
         }
     }
     
-    /// - Tag: HandleInterruption
+    
     
     @objc func sessionWasInterrupted(notification: NSNotification) {
         /*

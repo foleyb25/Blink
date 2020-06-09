@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension CameraViewController {
+extension CameraViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func setButtonConstraints() {
         
         captureButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
@@ -25,6 +25,11 @@ extension CameraViewController {
         videoButton.rightAnchor.constraint(equalTo: captureButton.leftAnchor, constant: -35).isActive = true
         videoButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
         videoButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        pickerButton.centerXAnchor.constraint(equalTo: captureButton.centerXAnchor).isActive = true
+        pickerButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15).isActive = true
+        pickerButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        pickerButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
 
         cancelButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 60).isActive = true
         cancelButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
@@ -81,6 +86,25 @@ extension CameraViewController {
         navigationController?.navigationBar.isHidden = true
         view.removeGestureRecognizer(tapGesture!)
         record()
+    }
+    
+    @objc func handleImagePickerButton() {
+         let imagePickerController = UIImagePickerController()
+               imagePickerController.delegate = self
+               imagePickerController.allowsEditing = true
+               present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            self.image = editedImage
+        } else if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            self.image = originalImage
+        }
+        
+        setMediaPreview(isVideo: false)
+        
+        dismiss(animated: true, completion: nil)
     }
     
     @objc func cancelPressed() {
