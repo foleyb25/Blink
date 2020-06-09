@@ -17,7 +17,7 @@ import Photos
 /*
 class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureFileOutputRecordingDelegate, UIGestureRecognizerDelegate
 */
-class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIGestureRecognizerDelegate {
+class CameraViewController: UIViewController {
     
     
     internal enum CameraSelection: String {
@@ -388,8 +388,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
         }
     }
     
-    private let photoOutput = AVCapturePhotoOutput()
-    private var movieFileOutput: AVCaptureMovieFileOutput?
+    let photoOutput = AVCapturePhotoOutput()
+    let movieFileOutput: AVCaptureMovieFileOutput? = nil
     
     var videoDataOutput: AVCaptureVideoDataOutput?
     var audioDataOutput: AVCaptureAudioDataOutput?
@@ -627,52 +627,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
     
     // MARK: Capturing Photos
     /// - Tag: CapturePhoto
-    func capturePhoto() {
-        //Capture picture in a thread
-        if self.isRecording {
-            return
-        }
-        
-        sessionQueue.async {
-            
-            var photoSettings = AVCapturePhotoSettings()
-            
-            // Capture HEIF photos when supported. Enable auto-flash and high-resolution photos.
-            if  self.photoOutput.availablePhotoCodecTypes.contains(.jpeg) {
-                photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
-            }
-            
-            if self.videoDeviceInput.device.isFlashAvailable {
-                switch self.flashMode {
-                case .auto:
-                    photoSettings.flashMode = .auto
-                case .on:
-                    photoSettings.flashMode = .on
-                case .off:
-                    photoSettings.flashMode = .off
-                }
-            }
-            
-            photoSettings.isHighResolutionPhotoEnabled = true
-            if !photoSettings.__availablePreviewPhotoPixelFormatTypes.isEmpty {
-                photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: photoSettings.__availablePreviewPhotoPixelFormatTypes.first!]
-            }
-            self.photoOutput.capturePhoto(with: photoSettings, delegate: self)
-        }
-    }
     
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-           //photoProcessingHandler(false)
-        if let imageData = photo.fileDataRepresentation() {
-           let dataProvider = CGDataProvider(data: imageData as CFData)
-           let cgImageRef = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: CGColorRenderingIntent.defaultIntent)
-            image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: getImageOrientation(forCamera: self.currentCamera))
-            //
-           DispatchQueue.main.async {
-            self.setMediaPreview(isVideo: false)
-           }
-       }
-    }
+    
+    
     
     
     var player: AVPlayer?
@@ -722,24 +679,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, UIG
           }
     var _captureState = _CaptureState.idle
     
-    func record() {
     
-           switch _captureState {
-            
-           case .idle:
-               Animations.animateRecordButton(videoButton: videoButton, captureButton: captureButton)
-               videoDataOutput?.setSampleBufferDelegate(self, queue: videoSessionQueue)
-               audioDataOutput?.setSampleBufferDelegate(self, queue: videoSessionQueue)
-               _captureState = .start
-           case .capturing:
-                isRecording = false
-               _captureState = .end
-               Animations.animateMoveRecordButtonBack(button: videoButton)
-           default:
-                print("unknown capture state")
-           }
-                   
-       }
     
     /*
     func record() {

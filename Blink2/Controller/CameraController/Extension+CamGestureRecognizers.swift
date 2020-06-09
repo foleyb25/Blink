@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-extension CameraViewController {
+extension CameraViewController: UIGestureRecognizerDelegate {
     internal func addGestureRecognizers() {
         
         //pinch to zoom
