@@ -15,6 +15,7 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
         videoButton.isHidden = true
         flashButton.isHidden = true
         flipButton.isHidden = true
+        pickerButton.isHidden = true
         navigationController?.navigationBar.isHidden = true
         //Transfers to capture photo output delegate extension
         capturePhoto()
@@ -25,6 +26,7 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
         captureButton.isHidden = true
         flashButton.isHidden = true
         flipButton.isHidden = true
+        pickerButton.isHidden = true
         navigationController?.navigationBar.isHidden = true
         if let tapGesture = self.tapGesture {
             view.removeGestureRecognizer(tapGesture)

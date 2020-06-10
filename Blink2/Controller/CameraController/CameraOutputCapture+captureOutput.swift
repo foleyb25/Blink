@@ -60,15 +60,12 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
                videoWriterInput?.markAsFinished()
                _captureState = .idle
                videoWriter?.finishWriting { [weak self] in
-                   //self?.assetWriter = nil
-                   //self?.assetWriterInput = nil
                    self?.player = AVPlayer(url: url)
                    self?.player?.actionAtItemEnd = .none
                    DispatchQueue.main.async {
                         self?.setMediaPreview(isVideo: true)
                    }
                }
- 
            default:
                break
            }
@@ -126,8 +123,6 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
         
        case .idle:
            Animations.animateRecordButton(videoButton: videoButton, captureButton: captureButton)
-           videoDataOutput.setSampleBufferDelegate(self, queue: videoSessionQueue)
-           audioDataOutput.setSampleBufferDelegate(self, queue: videoSessionQueue)
            _captureState = .start
        case .capturing:
             isRecording = false

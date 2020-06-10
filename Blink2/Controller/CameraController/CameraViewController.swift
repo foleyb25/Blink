@@ -38,6 +38,14 @@ class CameraViewController: UIViewController {
         case configurationFailed
     }
     
+    enum _CaptureState {
+        case idle
+        case start
+        case capturing
+        case end
+        case finished
+    }
+    
     var audioAuthorized = true
     
     private(set) public var currentCamera = CameraSelection.rear
@@ -96,9 +104,7 @@ class CameraViewController: UIViewController {
     var fileName = ""
     var adapter: AVAssetWriterInputPixelBufferAdaptor?
     var _time: Double = 0
-    enum _CaptureState {
-              case idle, start, capturing, end
-          }
+    
     var _captureState = _CaptureState.idle
     
     internal var previewLayer: AVCaptureVideoPreviewLayer = {
@@ -397,6 +403,7 @@ class CameraViewController: UIViewController {
         captureButton.isEnabled = false
         flashButton.isEnabled = false
         flipButton.isEnabled = false
+        pickerButton.isEnabled = false
         
         previewLayer.session = session
         
@@ -461,9 +468,9 @@ class CameraViewController: UIViewController {
             videoButton.isHidden = true
             flashButton.isHidden = true
             flipButton.isHidden = true
+            pickerButton.isHidden = true
             cancelButton.isHidden = false
             sendButton.isHidden = false
-            
             if let gesture = tapGesture {
                 view.removeGestureRecognizer(gesture)
             }
@@ -474,6 +481,7 @@ class CameraViewController: UIViewController {
             videoButton.isHidden = false
             flashButton.isHidden = false
             flipButton.isHidden = false
+            pickerButton.isHidden = false
             cancelButton.isHidden = true
             sendButton.isHidden = true
             if let tapgesture = tapGesture {
@@ -482,14 +490,11 @@ class CameraViewController: UIViewController {
             if let panGesture = recordPanGesture {
                 view.removeGestureRecognizer(panGesture)
             }
-            //undoPreviewAnimation()
             navigationController?.navigationBar.isHidden = false
         }
     }
     
     let photoOutput = AVCapturePhotoOutput()
-    //let movieFileOutput: AVCaptureMovieFileOutput? = nil
-    
     var videoDataOutput = AVCaptureVideoDataOutput()
     var audioDataOutput = AVCaptureAudioDataOutput()
     
@@ -571,6 +576,7 @@ class CameraViewController: UIViewController {
         
         videoDataOutput.videoSettings = videoDataOutput.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
+        videoDataOutput.setSampleBufferDelegate(self, queue: videoSessionQueue)
         if session.canAddOutput(videoDataOutput) {
             session.addOutput(videoDataOutput)
         } else {
@@ -581,6 +587,7 @@ class CameraViewController: UIViewController {
         }
         
         audioDataOutput.recommendedAudioSettingsForAssetWriter(writingTo: .mov)
+        audioDataOutput.setSampleBufferDelegate(self, queue: videoSessionQueue)
         if session.canAddOutput(audioDataOutput){
             session.addOutput(audioDataOutput)
         } else {
@@ -827,6 +834,7 @@ class CameraViewController: UIViewController {
                 self.flashButton.isEnabled = isSessionRunning
                 self.cancelButton.isEnabled = isSessionRunning
                 self.sendButton.isEnabled = isSessionRunning
+                self.pickerButton.isEnabled = isSessionRunning
             }
         }
         
