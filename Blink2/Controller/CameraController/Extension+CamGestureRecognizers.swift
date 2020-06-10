@@ -29,11 +29,16 @@ extension CameraViewController: UIGestureRecognizerDelegate {
         swipeRightGesture.direction = .right
         self.view.addGestureRecognizer(swipeRightGesture)
         
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(recordZoomGesture(pan:)))
+        
         self.pinchGesture = pinchGesture
         self.tapGesture = tapGesture
         self.focusTapGesture = focusTapGesture
         self.swipeRightGesture = swipeRightGesture
+        self.recordPanGesture = panGesture
     }
+    
+    
     
     @objc internal func zoomGesture(pinch: UIPinchGestureRecognizer) {
         let captureDevice = self.videoDeviceInput.device
@@ -51,6 +56,34 @@ extension CameraViewController: UIGestureRecognizerDelegate {
             beginZoomScale = zoomScale
         }
     }
+    
+    @objc internal func recordZoomGesture(pan: UIPanGestureRecognizer) {
+
+        let currentTranslation    = pan.translation(in: view).y
+        let translationDifference = currentTranslation - beginZoomScale
+
+        do {
+            let captureDevice = self.videoDeviceInput.device
+            
+            try captureDevice.lockForConfiguration()
+            defer { captureDevice.unlockForConfiguration() }
+
+            print(translationDifference / 10)
+            zoomScale = min(max(beginZoomScale - (translationDifference * 0.0125), 1.0),  captureDevice.activeFormat.videoMaxZoomFactor)
+
+            captureDevice.videoZoomFactor = zoomScale
+            
+
+        } catch {
+            print("Error locking configuration")
+        }
+
+        if pan.state == .ended || pan.state == .failed || pan.state == .cancelled {
+            beginZoomScale = zoomScale
+        }
+    }
+    
+    
     
     @objc internal func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
         let devicePoint = previewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))

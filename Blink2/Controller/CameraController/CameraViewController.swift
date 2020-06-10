@@ -58,11 +58,14 @@ class CameraViewController: UIViewController {
     // Gesture Recognizer Variables
     internal var beginZoomScale = CGFloat(1.0)
     internal var zoomScale = CGFloat(1.0)
+    internal var previousPanTranslation: CGFloat = 0.0
+    public var maxZoomScale = CGFloat.greatestFiniteMagnitude
+    internal var recordPanGesture: UIPanGestureRecognizer?
     internal var pinchGesture: UIPinchGestureRecognizer?
     internal var tapGesture: UITapGestureRecognizer?
     internal var focusTapGesture: UITapGestureRecognizer?
     internal var swipeRightGesture: UISwipeGestureRecognizer?
-    internal var panGesture: UIGestureRecognizer?
+   // internal var panGesture: UIGestureRecognizer?
     
     //stores captured image
     internal var image: UIImage?
@@ -235,6 +238,19 @@ class CameraViewController: UIViewController {
             button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
         }
         return button
+    }()
+    
+    //Views presented on swipe or nav bar button press
+    internal lazy var sideMenu: SideBarMenu = {
+        let menu = SideBarMenu()
+        menu.cameraViewController = self
+        return menu
+    }()
+    
+    internal lazy var genePoolController: GenePoolViewController = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = GenePoolViewController(collectionViewLayout: layout)
+        return collectionView
     }()
     
     // MARK: View Controller Life Cycle
@@ -460,8 +476,11 @@ class CameraViewController: UIViewController {
             flipButton.isHidden = false
             cancelButton.isHidden = true
             sendButton.isHidden = true
-            if let gesture = tapGesture {
-                view.addGestureRecognizer(gesture)
+            if let tapgesture = tapGesture {
+                view.addGestureRecognizer(tapgesture)
+            }
+            if let panGesture = recordPanGesture {
+                view.removeGestureRecognizer(panGesture)
             }
             //undoPreviewAnimation()
             navigationController?.navigationBar.isHidden = false
@@ -657,6 +676,7 @@ class CameraViewController: UIViewController {
                 }
                 
             }
+            
             if self.currentCamera == .front {
                self.currentCamera = .rear
             } else {
@@ -664,11 +684,6 @@ class CameraViewController: UIViewController {
             }
             
         }
-    }
-  
-    // MARK: Setting flash
-    func toggleFlash() {
-        
     }
     
     //MARK: Set Media Preview
@@ -795,19 +810,7 @@ class CameraViewController: UIViewController {
         }
         cleanup()
     }
-       */
-    //MARK: View Controller Instantiation
-    internal lazy var sideMenu: SideBarMenu = {
-        let menu = SideBarMenu()
-        menu.cameraViewController = self
-        return menu
-    }()
-    
-    internal lazy var genePoolController: GenePoolViewController = {
-        let layout = UICollectionViewFlowLayout()
-        let collectionView = GenePoolViewController(collectionViewLayout: layout)
-        return collectionView
-    }()
+    */
 
     // MARK: KVO and Notifications
     private var keyValueObservations = [NSKeyValueObservation]()
@@ -856,6 +859,7 @@ class CameraViewController: UIViewController {
         keyValueObservations.removeAll()
     }
     
+    //restarts video once the end is reached
     @objc func playerItemDidReachEnd(notification: Notification) {
            if let playerItem = notification.object as? AVPlayerItem {
                playerItem.seek(to: CMTime.zero, completionHandler: nil)

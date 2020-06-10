@@ -26,7 +26,12 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
         flashButton.isHidden = true
         flipButton.isHidden = true
         navigationController?.navigationBar.isHidden = true
-        view.removeGestureRecognizer(tapGesture!)
+        if let tapGesture = self.tapGesture {
+            view.removeGestureRecognizer(tapGesture)
+        }
+        if let panGesture = self.recordPanGesture {
+            view.addGestureRecognizer(panGesture)
+        }
         //Transfers to capture video data delegate extension
         record()
     }
