@@ -254,7 +254,9 @@ class CameraViewController: UIViewController {
     }()
     
     internal lazy var genePoolController: GenePoolViewController = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = GenePoolLayout()
+        layout.scrollDirection = .horizontal
+        layout.sectionHeadersPinToVisibleBounds = true
         let collectionView = GenePoolViewController(collectionViewLayout: layout)
         return collectionView
     }()

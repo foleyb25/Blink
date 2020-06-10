@@ -14,6 +14,8 @@
 		05601B6824779ED700068ADE /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6724779ED700068ADE /* Profile.swift */; };
 		05601B6A24779EE500068ADE /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6924779EE500068ADE /* Settings.swift */; };
 		05601B702478638F00068ADE /* Extension+CamGestureRecognizers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6F2478638F00068ADE /* Extension+CamGestureRecognizers.swift */; };
+		0563CD3C2490AFEF0082315F /* GenePoolLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563CD3B2490AFEE0082315F /* GenePoolLayout.swift */; };
+		0563CD3E2490B7A40082315F /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563CD3D2490B7A40082315F /* HeaderView.swift */; };
 		058A13DB2478B1160014FD48 /* Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13DA2478B1160014FD48 /* Animations.swift */; };
 		058A13E3247C8B240014FD48 /* CameraOutputCapture+captureOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E2247C8B240014FD48 /* CameraOutputCapture+captureOutput.swift */; };
 		058A13E5247DB1D20014FD48 /* GenePoolViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E4247DB1D20014FD48 /* GenePoolViewController.swift */; };
@@ -36,6 +38,8 @@
 		05601B6724779ED700068ADE /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		05601B6924779EE500068ADE /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		05601B6F2478638F00068ADE /* Extension+CamGestureRecognizers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CamGestureRecognizers.swift"; sourceTree = "<group>"; };
+		0563CD3B2490AFEE0082315F /* GenePoolLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenePoolLayout.swift; sourceTree = "<group>"; };
+		0563CD3D2490B7A40082315F /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		058A13DA2478B1160014FD48 /* Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animations.swift; sourceTree = "<group>"; };
 		058A13E2247C8B240014FD48 /* CameraOutputCapture+captureOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraOutputCapture+captureOutput.swift"; sourceTree = "<group>"; };
 		058A13E4247DB1D20014FD48 /* GenePoolViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GenePoolViewController.swift; path = "Blink2/Controller/Gene Pool/GenePoolViewController.swift"; sourceTree = SOURCE_ROOT; };
@@ -150,6 +154,8 @@
 			isa = PBXGroup;
 			children = (
 				058A13E4247DB1D20014FD48 /* GenePoolViewController.swift */,
+				0563CD3D2490B7A40082315F /* HeaderView.swift */,
+				0563CD3B2490AFEE0082315F /* GenePoolLayout.swift */,
 				058A13E9247DBCF50014FD48 /* ImageCells.swift */,
 				058A13E7247DB5570014FD48 /* GenderSelector.swift */,
 			);
@@ -256,11 +262,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0563CD3C2490AFEF0082315F /* GenePoolLayout.swift in Sources */,
 				05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */,
 				05F917C42474A31C000228F9 /* CameraViewController.swift in Sources */,
 				05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */,
 				05601B702478638F00068ADE /* Extension+CamGestureRecognizers.swift in Sources */,
 				058A13E3247C8B240014FD48 /* CameraOutputCapture+captureOutput.swift in Sources */,
+				0563CD3E2490B7A40082315F /* HeaderView.swift in Sources */,
 				058A13E8247DB5570014FD48 /* GenderSelector.swift in Sources */,
 				050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */,
 				05F917D824750287000228F9 /* CameraViewController+buttons.swift in Sources */,

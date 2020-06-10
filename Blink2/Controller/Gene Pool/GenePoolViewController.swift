@@ -8,7 +8,11 @@
 
 import UIKit
 
+
+
 class GenePoolViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    
+   
     
     let cellId = "CellId"
     
@@ -21,8 +25,10 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
     func setupCollectionView(){
         collectionView?.backgroundColor = UIColor.white
         collectionView?.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.contentInset = UIEdgeInsets(top: 370, left: 5, bottom: 0, right: 5)
-        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 370, left: 0, bottom: 0, right: 0)
+        collectionView?.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
+        collectionView.showsHorizontalScrollIndicator = false
+        //collectionView.contentInset = UIEdgeInsets(top: 0, left: -100, bottom: 0, right: 0)
+        collectionView?.isPagingEnabled = true
         collectionView?.bounces = false
         print(profileView.frame.height)
         print(genderSelector.frame.height)
@@ -67,7 +73,6 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
         view.addConstraintsWithFormat("H:|[v0]|", views: genderSelector)
         genderSelector.topAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
         genderSelector.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        
     }
     
     var profileViewHeightAnchor: NSLayoutConstraint?
@@ -90,22 +95,29 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
         nameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 25).isActive = true
         nameLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         nameLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-           return 10
+           return 2
        }
        
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ImageCells
+           cell.scrollDelegate = self
            return cell
        }
     
-   
+//    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+//        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath)
+//        return headerView
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+//            return CGSize(width: 100, height: 100)
+//    }
+    
      func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-           let height = (view.frame.width - 16 - 16) * 9 / 16
-           return CGSize(width: view.frame.width/2 - 7, height: height + 16 + 88)
+        return CGSize(width: view.frame.width, height: view.frame.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -117,32 +129,22 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 3
+        return 0
     }
     
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if let lastOffset = lastContentOffset {
-            
-            let delta = scrollView.contentOffset.y - lastOffset
-            let minimumConstantValue = CGFloat(-300)
-            print(lastOffset)
-            //print(delta)
-            //let range: Range<CGFloat> = (-400..<0)
-            if delta < 0 {
-                   //scrolling up
-                profileViewTopAnchor?.constant = min(profileViewTopAnchor!.constant - delta, 0)
-            } else {
-                   //scrolling down
-                profileViewTopAnchor?.constant = max(minimumConstantValue, profileViewTopAnchor!.constant - delta)
-            }
-        }
-        lastContentOffset = scrollView.contentOffset.y
+}
+
+extension GenePoolViewController: ScrollDelegate {
+    func scrollUp(delta: CGFloat) {
+        print("scroll up")
+        profileViewTopAnchor?.constant = min(profileViewTopAnchor!.constant - delta, 0)
     }
     
-    var lastContentOffset: CGFloat?
-    
-    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        lastContentOffset = scrollView.contentOffset.y
+    func scrollDown(delta: CGFloat) {
+        print("scroll down")
+        let minimumConstantValue = CGFloat(-300)
+        profileViewTopAnchor?.constant = max(minimumConstantValue, profileViewTopAnchor!.constant - delta)
     }
     
+
 }
