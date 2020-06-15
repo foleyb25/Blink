@@ -26,19 +26,19 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
     }
     
     func setupCollectionView(){
-        collectionView?.backgroundColor = UIColor.white
-        collectionView?.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
+        collectionView.backgroundColor = UIColor.white
+        collectionView.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView?.isPagingEnabled = true
-        collectionView?.bounces = false
-//        collectionView.translatesAutoresizingMaskIntoConstraints = false
-//        collectionView.contentLayoutGuide.topAnchor.constraint(equalTo: genderSelector.bottomAnchor).isActive = true
-//
-//        collectionView.contentLayoutGuide.rightAnchor.constraint(equalTo: view.rightAnchor).isActive=true
-//        collectionView.contentLayoutGuide.leftAnchor.constraint(equalTo: view.leftAnchor).isActive=true
-//        collectionView.contentLayoutGuide.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        collectionView.isPagingEnabled = true
+        collectionView.bounces = false
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.contentLayoutGuide.topAnchor.constraint(equalTo: genderSelector.bottomAnchor).isActive = true
+        
+        collectionView.contentLayoutGuide.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive=true
+        collectionView.contentLayoutGuide.heightAnchor.constraint(equalTo: view.heightAnchor).isActive=true
+        collectionView.contentLayoutGuide.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
     }
     
     let profileView: UIView = {
