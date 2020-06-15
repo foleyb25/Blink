@@ -10,7 +10,6 @@ import UIKit
 
 protocol ScrollDelegate: AnyObject {
     func scrollUp(delta: CGFloat)
-    
     func scrollDown(delta: CGFloat)
 }
 
@@ -23,12 +22,12 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
     let imageCollection: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.bounces = false
         return cv
     }()
     
     override func setupViews() {
         super.setupViews()
-        backgroundColor = .green
         imageCollection.dataSource = self
         imageCollection.delegate = self
         imageCollection.register(ChickCell.self, forCellWithReuseIdentifier: chickCellId)
@@ -36,8 +35,8 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
         
         addConstraintsWithFormat("H:|[v0]|", views: imageCollection)
         addConstraintsWithFormat("V:|[v0]|", views: imageCollection)
-        imageCollection.contentInset = UIEdgeInsets(top: 440, left: 1, bottom: 50, right: 1)
-        imageCollection.scrollIndicatorInsets = UIEdgeInsets(top: 440, left: 0, bottom: 0, right: 0)
+        imageCollection.contentInset = UIEdgeInsets(top: 360, left: 1, bottom: 0, right: 1)
+        imageCollection.scrollIndicatorInsets = UIEdgeInsets(top: 360, left: 0, bottom: 0, right: 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -49,16 +48,43 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
     }
     
      func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-           return CGSize(width: 100, height: 100)
+        return CGSize(width: imageCollection.frame.width/2 - 2, height: 200)
        }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        1
+    }
+    
+    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+        print("Scrolled to top")
+    }
     
     var lastContentOffset: CGFloat?
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
     
-        if let lastOffset = lastContentOffset {
+        let scrollViewHeight = scrollView.frame.height
+        let scrollContentSizeHeight = scrollView.contentSize.height
+        let scrollOffset = scrollView.contentOffset.y
+        
     
-            let delta = scrollView.contentOffset.y - lastOffset
+        
+        if (scrollOffset <= -448.0) {
+            //reached top
+            return
+        } else if (scrollOffset+scrollViewHeight >= scrollContentSizeHeight) {
+            //reached bottom
+            return
+        } else {
+        
+        
+        if let lastOffset = lastContentOffset {
+            
+            let delta = scrollOffset - lastOffset
             if delta < 0 {
                scrollDelegate?.scrollUp(delta: delta)
             } else {
@@ -66,17 +92,27 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
             }
         }
         lastContentOffset = scrollView.contentOffset.y
-        
+        }
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         lastContentOffset = scrollView.contentOffset.y
     }
+    
+    
 }
 
 
 
 class ChickCell: BaseCell {
+    
+    override func setupViews() {
+        super.setupViews()
+        backgroundColor = .red
+    }
+}
+
+class DudeCell: BaseCell {
     
     override func setupViews() {
         super.setupViews()

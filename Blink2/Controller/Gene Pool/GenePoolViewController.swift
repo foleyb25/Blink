@@ -16,10 +16,13 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
     
     let cellId = "CellId"
     
+    let profileViewHeight: CGFloat = 400
+    
     override func viewDidLoad() {
         setupProfileView()
         setupSelector()
         setupCollectionView()
+        
     }
     
     func setupCollectionView(){
@@ -27,11 +30,15 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
         collectionView?.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
         collectionView?.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
         collectionView.showsHorizontalScrollIndicator = false
-        //collectionView.contentInset = UIEdgeInsets(top: 0, left: -100, bottom: 0, right: 0)
+        collectionView.contentInsetAdjustmentBehavior = .never
         collectionView?.isPagingEnabled = true
         collectionView?.bounces = false
-        print(profileView.frame.height)
-        print(genderSelector.frame.height)
+//        collectionView.translatesAutoresizingMaskIntoConstraints = false
+//        collectionView.contentLayoutGuide.topAnchor.constraint(equalTo: genderSelector.bottomAnchor).isActive = true
+//
+//        collectionView.contentLayoutGuide.rightAnchor.constraint(equalTo: view.rightAnchor).isActive=true
+//        collectionView.contentLayoutGuide.leftAnchor.constraint(equalTo: view.leftAnchor).isActive=true
+//        collectionView.contentLayoutGuide.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
     
     let profileView: UIView = {
@@ -84,7 +91,7 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
         profileView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         profileViewTopAnchor = profileView.topAnchor.constraint(equalTo: view.topAnchor)
         profileViewTopAnchor?.isActive = true
-        profileView.heightAnchor.constraint(equalToConstant: 400).isActive = true
+        profileView.heightAnchor.constraint(equalToConstant: profileViewHeight).isActive = true
         profileView.addSubview(profileImageView)
         profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         profileImageView.centerYAnchor.constraint(equalTo: profileView.centerYAnchor).isActive = true
@@ -107,15 +114,18 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
            return cell
        }
     
-//    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-//        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath)
-//        return headerView
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-//            return CGSize(width: 100, height: 100)
-//    }
-    
+    override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let index = Int(targetContentOffset.pointee.x / view.frame.width)
+        let indexPath = IndexPath(item: index, section: 0)
+        genderSelector.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+        profileViewTopAnchor?.isActive = false
+        profileViewTopAnchor = profileView.topAnchor.constraint(equalTo: view.topAnchor)
+        profileViewTopAnchor?.isActive = true
+        UIView.animate(withDuration: 0.5) {
+            self.view.layoutIfNeeded()
+        }
+    }
+
      func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: view.frame.height)
     }
@@ -136,12 +146,10 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
 
 extension GenePoolViewController: ScrollDelegate {
     func scrollUp(delta: CGFloat) {
-        print("scroll up")
         profileViewTopAnchor?.constant = min(profileViewTopAnchor!.constant - delta, 0)
     }
     
     func scrollDown(delta: CGFloat) {
-        print("scroll down")
         let minimumConstantValue = CGFloat(-300)
         profileViewTopAnchor?.constant = max(minimumConstantValue, profileViewTopAnchor!.constant - delta)
     }

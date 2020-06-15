@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol MenuDelegate: AnyObject {
+    func switchCollectionView()
+}
+
 class GenderSelector: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     let genders = ["chicks","dudes"]
