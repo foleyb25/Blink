@@ -16,7 +16,6 @@ class FooterView: UICollectionViewCell {
         button.setTitle("Show More", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(handleShowMore), for: .touchUpInside)
-        button.backgroundColor = .red
         return button
     }()
     
@@ -27,7 +26,7 @@ class FooterView: UICollectionViewCell {
         addSubview(showMoreButton)
         showMoreButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         showMoreButton.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
-        showMoreButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        showMoreButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         showMoreButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
     }
     
