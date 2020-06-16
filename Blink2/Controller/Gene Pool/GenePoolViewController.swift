@@ -10,11 +10,12 @@ import UIKit
 
 
 
-class GenePoolViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
    
     
     let cellId = "CellId"
+    
     
     let profileViewHeight: CGFloat = 400
     
@@ -25,20 +26,31 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
         
     }
     
+    let collection: UICollectionView = {
+       let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.bounces = false
+        return cv
+    }()
+    
+    
     func setupCollectionView(){
-        collectionView.backgroundColor = UIColor.white
-        collectionView.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
-        collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.isPagingEnabled = true
-        collectionView.bounces = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.contentLayoutGuide.topAnchor.constraint(equalTo: genderSelector.bottomAnchor).isActive = true
-        
-        collectionView.contentLayoutGuide.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive=true
-        collectionView.contentLayoutGuide.heightAnchor.constraint(equalTo: view.heightAnchor).isActive=true
-        collectionView.contentLayoutGuide.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        view.addSubview(collection)
+        collection.dataSource = self
+        collection.delegate = self
+        collection.backgroundColor = UIColor.white
+        collection.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
+        collection.showsHorizontalScrollIndicator = false
+        collection.contentInsetAdjustmentBehavior = .never
+        collection.isPagingEnabled = true
+        collection.bounces = false
+        collection.translatesAutoresizingMaskIntoConstraints = false
+        collection.topAnchor.constraint(equalTo: genderSelector.bottomAnchor).isActive = true
+        collection.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        collection.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        //collection.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        collection.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
     }
     
     let profileView: UIView = {
@@ -104,26 +116,32 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
         nameLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
            return 2
        }
        
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ImageCells
            cell.scrollDelegate = self
            return cell
        }
     
-    override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    var lastIndex: Int = 0
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let index = Int(targetContentOffset.pointee.x / view.frame.width)
         let indexPath = IndexPath(item: index, section: 0)
-        genderSelector.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
-        profileViewTopAnchor?.isActive = false
-        profileViewTopAnchor = profileView.topAnchor.constraint(equalTo: view.topAnchor)
-        profileViewTopAnchor?.isActive = true
-        UIView.animate(withDuration: 0.5) {
-            self.view.layoutIfNeeded()
+        genderSelector.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+        if lastIndex != index {
+            profileViewTopAnchor?.constant = 0.0
+             UIView.animate(withDuration: 0.5) {
+                 self.view.layoutIfNeeded()
+                
         }
+            imageScrollView?.contentOffset.y = 0.0
+            lastIndex = index
+        }
+        
     }
 
      func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -141,17 +159,22 @@ class GenePoolViewController: UICollectionViewController, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    
+    var imageScrollView: UIScrollView?
 }
 
+    
+
 extension GenePoolViewController: ScrollDelegate {
-    func scrollUp(delta: CGFloat) {
-        profileViewTopAnchor?.constant = min(profileViewTopAnchor!.constant - delta, 0)
+    func scrollUp(delta: CGFloat, scrollView: UIScrollView) {
+        imageScrollView = scrollView
+        profileViewTopAnchor?.constant = min( (profileViewTopAnchor!.constant - delta) , 0)
+        print(min( (profileViewTopAnchor!.constant - delta) , 0))
     }
     
-    func scrollDown(delta: CGFloat) {
+    func scrollDown(delta: CGFloat, scrollView: UIScrollView) {
         let minimumConstantValue = CGFloat(-300)
-        profileViewTopAnchor?.constant = max(minimumConstantValue, profileViewTopAnchor!.constant - delta)
+        imageScrollView = scrollView
+        profileViewTopAnchor?.constant = max(minimumConstantValue, (profileViewTopAnchor!.constant - delta))
     }
     
 

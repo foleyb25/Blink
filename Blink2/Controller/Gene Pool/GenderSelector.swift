@@ -19,7 +19,6 @@ class GenderSelector: UIView, UICollectionViewDataSource, UICollectionViewDelega
     lazy var collectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        //collectionView.register(SelectionCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.backgroundColor = UIColor.red
         collectionView.dataSource = self
         collectionView.delegate = self

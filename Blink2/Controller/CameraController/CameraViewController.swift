@@ -258,7 +258,7 @@ class CameraViewController: UIViewController {
         
         layout.scrollDirection = .horizontal
         layout.sectionHeadersPinToVisibleBounds = true
-        let collectionView = GenePoolViewController(collectionViewLayout: layout)
+        let collectionView = GenePoolViewController()
         return collectionView
     }()
     

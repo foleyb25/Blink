@@ -9,8 +9,8 @@
 import UIKit
 
 protocol ScrollDelegate: AnyObject {
-    func scrollUp(delta: CGFloat)
-    func scrollDown(delta: CGFloat)
+    func scrollUp(delta: CGFloat, scrollView: UIScrollView)
+    func scrollDown(delta: CGFloat, scrollView :UIScrollView)
 }
 
 class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -18,6 +18,7 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
      weak var scrollDelegate: ScrollDelegate?
     
     let chickCellId = "chickCellId"
+    let footerId = "FooterId"
     
     let imageCollection: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
@@ -32,15 +33,25 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
         imageCollection.delegate = self
         imageCollection.register(ChickCell.self, forCellWithReuseIdentifier: chickCellId)
         addSubview(imageCollection)
-        
+        imageCollection.register(FooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerId)
         addConstraintsWithFormat("H:|[v0]|", views: imageCollection)
         addConstraintsWithFormat("V:|[v0]|", views: imageCollection)
-        imageCollection.contentInset = UIEdgeInsets(top: 360, left: 1, bottom: 0, right: 1)
-        imageCollection.scrollIndicatorInsets = UIEdgeInsets(top: 360, left: 0, bottom: 0, right: 0)
+        //imageCollection.contentInset = UIEdgeInsets(top: 1, left: 1, bottom: 400, right: 1)
+        imageCollection.scrollIndicatorInsets = UIEdgeInsets(top: 1, left: 1, bottom: 0, right: 1)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerId, for: indexPath) as! FooterView
+
+        return footer
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        return CGSize(width: frame.width, height: 175)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 100
+        return 50
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -59,6 +70,10 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
         1
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 1, left: 1, bottom: 0, right: 1)
+    }
+    
     func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
         print("Scrolled to top")
     }
@@ -73,27 +88,33 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
         
     
         
-        if (scrollOffset <= -448.0) {
-            //reached top
-            return
-        } else if (scrollOffset+scrollViewHeight >= scrollContentSizeHeight) {
-            //reached bottom
-            return
-        } else {
+//        if (scrollOffset <= 0) {
+//            print("reached top")
+//            //reached top
+//            return
+//        }
+////        else if (scrollOffset+scrollViewHeight >= scrollContentSizeHeight) {
+////          //reached bottom
+////          print("reachedBottom")
+////          return
+////       }
+//        else {
         
-        
+        //print("Scroll check")
         if let lastOffset = lastContentOffset {
             
             let delta = scrollOffset - lastOffset
             if delta < 0 {
-               scrollDelegate?.scrollUp(delta: delta)
+               
+                scrollDelegate?.scrollUp(delta: delta, scrollView: scrollView)
             } else {
-                scrollDelegate?.scrollDown(delta: delta)
+              
+                scrollDelegate?.scrollDown(delta: delta, scrollView: scrollView)
             }
         }
         lastContentOffset = scrollView.contentOffset.y
         }
-    }
+   // }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         lastContentOffset = scrollView.contentOffset.y
