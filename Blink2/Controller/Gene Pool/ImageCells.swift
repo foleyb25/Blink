@@ -82,25 +82,8 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
     
-        let scrollViewHeight = scrollView.frame.height
-        let scrollContentSizeHeight = scrollView.contentSize.height
         let scrollOffset = scrollView.contentOffset.y
         
-    
-        
-//        if (scrollOffset <= 0) {
-//            print("reached top")
-//            //reached top
-//            return
-//        }
-////        else if (scrollOffset+scrollViewHeight >= scrollContentSizeHeight) {
-////          //reached bottom
-////          print("reachedBottom")
-////          return
-////       }
-//        else {
-        
-        //print("Scroll check")
         if let lastOffset = lastContentOffset {
             
             let delta = scrollOffset - lastOffset
@@ -108,13 +91,12 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
                
                 scrollDelegate?.scrollUp(delta: delta, scrollView: scrollView)
             } else {
-              
                 scrollDelegate?.scrollDown(delta: delta, scrollView: scrollView)
             }
         }
         lastContentOffset = scrollView.contentOffset.y
-        }
-   // }
+    }
+   
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         lastContentOffset = scrollView.contentOffset.y

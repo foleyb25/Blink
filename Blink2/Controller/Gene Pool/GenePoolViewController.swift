@@ -17,13 +17,14 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
     let cellId = "CellId"
     
     
-    let profileViewHeight: CGFloat = 400
+    let profileViewHeight: CGFloat = 250
     
     override func viewDidLoad() {
         setupProfileView()
         setupSelector()
         setupCollectionView()
-        
+
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Camera Button", style: .plain, target: self, action: #selector(handleCameraNavButton))
     }
     
     let collection: UICollectionView = {
@@ -34,9 +35,11 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         return cv
     }()
     
-    
+    @objc func handleCameraNavButton() {
+        dismiss(animated: true, completion: nil)
+    }
     func setupCollectionView(){
-        view.addSubview(collection)
+        view.insertSubview(collection, at: 0)
         collection.dataSource = self
         collection.delegate = self
         collection.backgroundColor = UIColor.white
@@ -101,12 +104,12 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         view.addSubview(profileView)
         profileView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         profileView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        profileViewTopAnchor = profileView.topAnchor.constraint(equalTo: view.topAnchor)
+        profileViewTopAnchor = profileView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
         profileViewTopAnchor?.isActive = true
         profileView.heightAnchor.constraint(equalToConstant: profileViewHeight).isActive = true
         profileView.addSubview(profileImageView)
         profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        profileImageView.centerYAnchor.constraint(equalTo: profileView.centerYAnchor).isActive = true
+        profileImageView.topAnchor.constraint(equalTo: profileView.topAnchor, constant: 25).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 130).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 130).isActive = true
         profileView.addSubview(nameLabel)
@@ -168,11 +171,10 @@ extension GenePoolViewController: ScrollDelegate {
     func scrollUp(delta: CGFloat, scrollView: UIScrollView) {
         imageScrollView = scrollView
         profileViewTopAnchor?.constant = min( (profileViewTopAnchor!.constant - delta) , 0)
-        print(min( (profileViewTopAnchor!.constant - delta) , 0))
     }
     
     func scrollDown(delta: CGFloat, scrollView: UIScrollView) {
-        let minimumConstantValue = CGFloat(-300)
+        let minimumConstantValue = CGFloat(-self.profileViewHeight)
         imageScrollView = scrollView
         profileViewTopAnchor?.constant = max(minimumConstantValue, (profileViewTopAnchor!.constant - delta))
     }
