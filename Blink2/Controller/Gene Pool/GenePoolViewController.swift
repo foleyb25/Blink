@@ -23,7 +23,6 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         setupProfileView()
         setupSelector()
         setupCollectionView()
-
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Camera Button", style: .plain, target: self, action: #selector(handleCameraNavButton))
     }
     
@@ -39,10 +38,9 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         dismiss(animated: true, completion: nil)
     }
     func setupCollectionView(){
-        view.insertSubview(collection, at: 0)
+        view.addSubview(collection)
         collection.dataSource = self
         collection.delegate = self
-        collection.backgroundColor = UIColor.white
         collection.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
         collection.showsHorizontalScrollIndicator = false
         collection.contentInsetAdjustmentBehavior = .never
@@ -84,8 +82,9 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         return label
     }()
     
-    let genderSelector: GenderSelector = {
+    lazy var genderSelector: GenderSelector = {
         let gs = GenderSelector()
+        gs.genePoolController = self
         gs.translatesAutoresizingMaskIntoConstraints = false
         return gs
     }()
@@ -119,6 +118,30 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         nameLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
     }
     
+    
+    //Brings the imageprofile view menu down to orignal state
+    func pullDownProfileView() {
+        //this kills the scroll, this is needed if user is currently scrolling down while button selecting the gender selector
+        imageScrollView?.setContentOffset(imageScrollView!.contentOffset, animated: true)
+        profileViewTopAnchor?.constant = 0.0
+         UIView.animate(withDuration: 0.5) {
+             self.view.layoutIfNeeded()
+            
+        }
+        imageScrollView?.contentOffset.y = 0.0
+        //imageScrollView?.isScrollEnabled = true
+    }
+    
+    func scrollToMenuIndex(menuIndex: Int) {
+        let indexPath = IndexPath(item: menuIndex, section: 0)
+        collection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        pullDownProfileView()
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        genderSelector.horizontalSlideBarLeftConstraint?.constant = scrollView.contentOffset.x/2
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
            return 2
        }
@@ -136,12 +159,7 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         let indexPath = IndexPath(item: index, section: 0)
         genderSelector.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
         if lastIndex != index {
-            profileViewTopAnchor?.constant = 0.0
-             UIView.animate(withDuration: 0.5) {
-                 self.view.layoutIfNeeded()
-                
-        }
-            imageScrollView?.contentOffset.y = 0.0
+            pullDownProfileView()
             lastIndex = index
         }
         
@@ -170,6 +188,8 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
 extension GenePoolViewController: ScrollDelegate {
     func scrollUp(delta: CGFloat, scrollView: UIScrollView) {
         imageScrollView = scrollView
+        let contentOffset = scrollView.contentOffset.y
+        if contentOffset >= profileViewHeight {return}
         profileViewTopAnchor?.constant = min( (profileViewTopAnchor!.constant - delta) , 0)
     }
     
