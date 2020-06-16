@@ -1,0 +1,22 @@
+PODS:
+  - HorizontalFloatingHeaderLayout (2.0.0)
+
+DEPENDENCIES:
+  - HorizontalFloatingHeaderLayout (from `https://github.com/cruzdiego/HorizontalFloatingHeaderLayout.git`, branch `master`)
+
+EXTERNAL SOURCES:
+  HorizontalFloatingHeaderLayout:
+    :branch: master
+    :git: https://github.com/cruzdiego/HorizontalFloatingHeaderLayout.git
+
+CHECKOUT OPTIONS:
+  HorizontalFloatingHeaderLayout:
+    :commit: 9b6b4c19bbecc1b6fb3533308e7b1d46062c65ef
+    :git: https://github.com/cruzdiego/HorizontalFloatingHeaderLayout.git
+
+SPEC CHECKSUMS:
+  HorizontalFloatingHeaderLayout: 527cc09df9469181f23afff7dab2bcc48c49dd8c
+
+PODFILE CHECKSUM: d0c88e5ce60ebf7420113c61a108ba641587ed95
+
+COCOAPODS: 1.7.5
