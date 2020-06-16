@@ -24,6 +24,14 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         setupSelector()
         setupCollectionView()
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Camera Button", style: .plain, target: self, action: #selector(handleCameraNavButton))
+        let swipeDownGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleDownSwipe))
+        swipeDownGestureRecognizer.direction = .down
+        view.addGestureRecognizer(swipeDownGestureRecognizer)
+    }
+    
+    //Fetch new media content from DB here
+    @objc func handleDownSwipe() {
+        print("swipe down")
     }
     
     let collection: UICollectionView = {

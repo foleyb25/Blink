@@ -87,7 +87,6 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
     
         let scrollOffset = scrollView.contentOffset.y
-        print(scrollOffset)
         if let lastOffset = lastContentOffset {
             
             let delta = scrollOffset - lastOffset
