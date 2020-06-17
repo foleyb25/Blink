@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import Firebase
 
-class LoginVIewController: UIViewController {
+class LoginViewController: UIViewController {
     
     lazy var imageView: UIImageView = {
         let viewItem = UIImageView()
@@ -18,17 +19,22 @@ class LoginVIewController: UIViewController {
         return viewItem
     }()
     
-    lazy var fieldContainerView: UIView = {
-        let viewItem = UIView()
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        viewItem.backgroundColor = UIColor.white
-        return viewItem
+    let stackView: UIStackView = {
+        let stackView = UIStackView()
+         stackView.distribution = .fillEqually
+         stackView.axis = .vertical
+         stackView.spacing = 10
+         stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     lazy var emailField: UITextField = {
         let viewItem = UITextField()
         viewItem.translatesAutoresizingMaskIntoConstraints = false
         viewItem.placeholder = "Email"
+        viewItem.backgroundColor = UIColor(white: 0, alpha: 0.03)
+        viewItem.borderStyle = .roundedRect
+         viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return viewItem
     }()
     
@@ -36,6 +42,9 @@ class LoginVIewController: UIViewController {
         let viewItem = UITextField()
         viewItem.translatesAutoresizingMaskIntoConstraints = false
         viewItem.placeholder = "Password"
+        viewItem.backgroundColor = UIColor(white: 0, alpha: 0.03)
+        viewItem.borderStyle = .roundedRect
+         viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return viewItem
     }()
     
@@ -44,46 +53,85 @@ class LoginVIewController: UIViewController {
         viewItem.translatesAutoresizingMaskIntoConstraints = false
         viewItem.backgroundColor = UIColor.lightGray
         viewItem.setTitle("Login", for: .normal)
-        viewItem.addTarget(self, action: #selector(presentRegistrationForm), for: .touchUpInside)
+        viewItem.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
+        viewItem.setTitleColor(UIColor(white: 0, alpha: 0.3), for: .normal)
+        viewItem.isEnabled = false
+        viewItem.backgroundColor = UIColor(white: 1, alpha: 0.90)
         return viewItem
     }()
     
     lazy var newUserButton: UIButton = {
-        let viewItem = UIButton()
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        viewItem.backgroundColor = UIColor.lightGray
-        viewItem.setTitle("New User?", for: .normal)
+       let viewItem = UIButton(type: .system)
+        let attributedText = NSMutableAttributedString(string: "Need an Account? ", attributes: [NSAttributedString.Key.font:UIFont(name: "Georgia", size: 14)!, NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+        attributedText.append(NSAttributedString(string: "Register Here", attributes: [NSAttributedString.Key.foregroundColor: UIColor.blue, NSAttributedString.Key.font: UIFont(name: "Georgia", size: 14)!]))
+        viewItem.setAttributedTitle(attributedText, for: .normal)
         viewItem.addTarget(self, action: #selector(presentRegistrationForm), for: .touchUpInside)
-        return viewItem
-    }()
-    
-    lazy var passwordEmailSeperatorLine: UIView = {
-        let viewItem = UIView()
-        viewItem.backgroundColor = UIColor.lightGray
         viewItem.translatesAutoresizingMaskIntoConstraints = false
         return viewItem
     }()
-    
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = UIColor.blue
+        navigationController?.navigationBar.isHidden = true
+        view.backgroundColor = UIColor(white: 0.95, alpha: 1)
         view.addSubview(imageView)
-        view.addSubview(fieldContainerView)
+        view.addSubview(stackView)
         view.addSubview(loginButton)
         view.addSubview(newUserButton)
-        fieldContainerView.addSubview(emailField)
-        fieldContainerView.addSubview(passwordEmailSeperatorLine)
-        fieldContainerView.addSubview(passwordField)
+        stackView.addArrangedSubview(emailField)
+        stackView.addArrangedSubview(passwordField)
         setupConstraints()
         addGestureRecognizers()
         
     }
     
+    @objc func handleTextChange() {
+           let isFormValid = !passwordField.text!.isEmpty && !emailField.text!.isEmpty
+           if isFormValid {
+               loginButton.setTitleColor(.white, for: .normal)
+               loginButton.isEnabled = true
+               loginButton.backgroundColor = UIColor(white: 0.5, alpha: 0.90)
+           } else {
+               loginButton.setTitleColor(UIColor(white: 0, alpha: 0.3), for: .normal)
+               loginButton.isEnabled = false
+               loginButton.backgroundColor = UIColor(white: 1, alpha: 0.90)
+               
+           }
+       }
+    
+    lazy var registerController: RegisterForm = {
+        let rc = RegisterForm()
+        rc.modalPresentationStyle = .overCurrentContext
+        return rc
+    }()
+    
+    @objc func handleLogin() {
+        guard let email = emailField.text, let password = passwordField.text, !email.isEmpty && !password.isEmpty else { return }
+        
+        Auth.auth().signIn(withEmail: email, password: password, completion: { (user, err) in
+            
+            if let err = err {
+                print("Failed to sign in with email:", err)
+                return
+            }
+            
+            guard let uid = user?.user.uid else { return }
+            
+            print("Successfully logged back in with user:", uid)
+            
+            self.dismissController()
+            
+        })
+    }
+    
+    func dismissController() {
+        dismiss(animated: true, completion: nil)
+    }
+    
     @objc func presentRegistrationForm() {
-        present(RegisterForm(), animated: true, completion: nil)
+        registerController.loginController = self
+        present(registerController, animated: true, completion: nil)
     }
     
     func addGestureRecognizers() {
@@ -91,54 +139,32 @@ class LoginVIewController: UIViewController {
     }
     
     @objc func dismissKeyboard() {
-        emailField.resignFirstResponder()
-        passwordField.resignFirstResponder()
+        for textField in stackView.arrangedSubviews {
+            textField.resignFirstResponder()
+        }
     }
     
     private func setupConstraints() {
        
-        //firstnamefield
-        //lastnamefield
-        //usernamefield
-        //emailfield
-        //passwordfield
-        //passwordverificationfield
-        
-        fieldContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        fieldContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -70).isActive = true
-        fieldContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
-        fieldContainerView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        //fieldContainerSubviews
-        emailField.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-        emailField.topAnchor.constraint(equalTo: fieldContainerView.topAnchor).isActive = true
-        emailField.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor, constant: -8).isActive = true
-        emailField.heightAnchor.constraint(equalTo: fieldContainerView.heightAnchor, multiplier: 1/2).isActive = true
-        
-        passwordEmailSeperatorLine.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-        passwordEmailSeperatorLine.topAnchor.constraint(equalTo: emailField.bottomAnchor).isActive = true
-        passwordEmailSeperatorLine.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
-        passwordEmailSeperatorLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        
-        passwordField.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-        passwordField.topAnchor.constraint(equalTo: passwordEmailSeperatorLine.bottomAnchor).isActive = true
-        passwordField.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor, constant: -8).isActive = true
-        passwordField.heightAnchor.constraint(equalTo: fieldContainerView.heightAnchor, multiplier: 1/2).isActive = true
+        stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -70).isActive = true
+        stackView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
         imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        imageView.bottomAnchor.constraint(equalTo: fieldContainerView.topAnchor, constant: -20).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: stackView.topAnchor, constant: -20).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 170).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 170).isActive = true
         
         loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loginButton.topAnchor.constraint(equalTo: fieldContainerView.bottomAnchor, constant: 8).isActive = true
-        loginButton.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
+        loginButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8).isActive = true
+        loginButton.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
         loginButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         newUserButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        newUserButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 8).isActive = true
-        newUserButton.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
-        newUserButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        newUserButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -18).isActive = true
+        newUserButton.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
+        newUserButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         
         UIView.animate(withDuration: 0.85) {
             self.view.layoutIfNeeded()

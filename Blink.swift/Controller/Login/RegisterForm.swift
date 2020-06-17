@@ -7,144 +7,147 @@
 //
 
 import UIKit
+import Firebase
 
 class RegisterForm: UIViewController {
     
-    lazy var fieldContainerView: UIView = {
-        let viewItem = UIView()
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        viewItem.backgroundColor = UIColor.clear
-        return viewItem
+    let stackView: UIStackView = {
+            let viewItem = UIStackView()
+            viewItem.distribution = .fillEqually
+            viewItem.axis = .vertical
+            viewItem.spacing = 10
+            viewItem.translatesAutoresizingMaskIntoConstraints = false
+            viewItem.backgroundColor = .white
+            return viewItem
     }()
     
     lazy var firstNameField: UITextField = {
-           let viewItem = UITextField()
-           viewItem.translatesAutoresizingMaskIntoConstraints = false
-           viewItem.attributedPlaceholder = NSAttributedString(string: "First Name",
-           attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
-           return viewItem
+            let viewItem = UITextField()
+            viewItem.translatesAutoresizingMaskIntoConstraints = false
+            viewItem.attributedPlaceholder = NSAttributedString(string: "First Name",
+                attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
+            viewItem.textColor = UIColor(white: 1, alpha: 1)
+            viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
+            viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
+            viewItem.borderStyle = .roundedRect
+            return viewItem
        }()
        
        lazy var lastNameField: UITextField = {
-           let viewItem = UITextField()
-           viewItem.translatesAutoresizingMaskIntoConstraints = false
-           viewItem.attributedPlaceholder = NSAttributedString(string: "Last Name",
-                                                            attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
-           return viewItem
+            let viewItem = UITextField()
+            viewItem.translatesAutoresizingMaskIntoConstraints = false
+            viewItem.attributedPlaceholder = NSAttributedString(string: "Last Name",
+                attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
+            viewItem.textColor = UIColor(white: 1, alpha: 1)
+            viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
+            viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
+            viewItem.borderStyle = .roundedRect
+            return viewItem
        }()
        
        lazy var userNameField: UITextField = {
            let viewItem = UITextField()
-           viewItem.translatesAutoresizingMaskIntoConstraints = false
-           viewItem.attributedPlaceholder = NSAttributedString(string: "Username",
-           attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
-           return viewItem
+        
+            viewItem.translatesAutoresizingMaskIntoConstraints = false
+            viewItem.attributedPlaceholder = NSAttributedString(string: "Username",
+                attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
+            viewItem.textColor = UIColor(white: 1, alpha: 1)
+            viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
+            viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
+            viewItem.borderStyle = .roundedRect
+            return viewItem
        }()
        
        lazy var emailField: UITextField = {
-           let viewItem = UITextField()
-           viewItem.translatesAutoresizingMaskIntoConstraints = false
-           viewItem.attributedPlaceholder = NSAttributedString(string: "Email",
-           attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
+            let viewItem = UITextField()
+            viewItem.translatesAutoresizingMaskIntoConstraints = false
+            viewItem.attributedPlaceholder = NSAttributedString(string: "Email",
+                attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
+            viewItem.textColor = UIColor(white: 1, alpha: 1)
+            viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
+            viewItem.textContentType = .emailAddress
+            viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
+            viewItem.borderStyle = .roundedRect
            return viewItem
        }()
        
        lazy var passwordField: UITextField = {
-           let viewItem = UITextField()
-           viewItem.translatesAutoresizingMaskIntoConstraints = false
-           viewItem.attributedPlaceholder = NSAttributedString(string: "Password",
+            let viewItem = UITextField()
+            viewItem.textContentType = .password
+            viewItem.translatesAutoresizingMaskIntoConstraints = false
+            viewItem.attributedPlaceholder = NSAttributedString(string: "Password",
            attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
+            viewItem.textColor = UIColor(white: 1, alpha: 1)
+            viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
+           // viewItem.isSecureTextEntry = true
+            viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
+            viewItem.borderStyle = .roundedRect
            return viewItem
        }()
        
        lazy var passwordVerificationField: UITextField = {
-           let viewItem = UITextField()
-           viewItem.translatesAutoresizingMaskIntoConstraints = false
-           viewItem.attributedPlaceholder = NSAttributedString(string: "Verify Password",
-           attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
+            let viewItem = UITextField()
+            viewItem.textContentType = .password
+            viewItem.translatesAutoresizingMaskIntoConstraints = false
+            viewItem.attributedPlaceholder = NSAttributedString(string: "Verify Password",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
+        viewItem.textColor = UIColor(white: 1, alpha: 1)
+            //viewItem.isSecureTextEntry = true
+            viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
+        viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
+            viewItem.borderStyle = .roundedRect
            return viewItem
        }()
     
-    lazy var nameSeperatorLine: UIView = {
-        let viewItem = UIView()
-        viewItem.backgroundColor = UIColor.lightGray
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        return viewItem
-    }()
-    
-    lazy var nameUsernameSeperatorLine: UIView = {
-        let viewItem = UIView()
-        viewItem.backgroundColor = UIColor.lightGray
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        return viewItem
-    }()
-    
-    lazy var usernameEmailSeperatorLine: UIView = {
-        let viewItem = UIView()
-        viewItem.backgroundColor = UIColor.lightGray
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        return viewItem
-    }()
-    
-    lazy var passwordEmailSeperatorLine: UIView = {
-        let viewItem = UIView()
-        viewItem.backgroundColor = UIColor.lightGray
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        return viewItem
-    }()
-    
-    lazy var passwordVerificationSeperatorLine: UIView = {
-        let viewItem = UIView()
-        viewItem.backgroundColor = UIColor.lightGray
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        return viewItem
-    }()
-    
-    lazy var registerButton: UIButton = {
-        let viewItem = UIButton()
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        viewItem.backgroundColor = UIColor.lightGray
-        viewItem.setTitle("Register", for: .normal)
-        viewItem.addTarget(self, action: #selector(handleRegister), for: .touchUpInside)
-        viewItem.layer.cornerRadius = 20
-        viewItem.layer.masksToBounds = true
-        return viewItem
+    let registerButton: UIButton = {
+            let viewItem = UIButton(type: .system)
+            viewItem.translatesAutoresizingMaskIntoConstraints = false
+            viewItem.isEnabled = false
+            viewItem.backgroundColor = UIColor(white: 1, alpha: 0.90)
+            viewItem.setTitle("Register", for: .normal)
+            viewItem.setTitleColor(UIColor(white: 0, alpha: 0.3), for: .normal)
+            viewItem.addTarget(self, action: #selector(handleRegister), for: .touchUpInside)
+            viewItem.layer.cornerRadius = 20
+            viewItem.layer.masksToBounds = true
+        
+            return viewItem
     }()
     
     lazy var cancelButton: UIButton = {
-        let viewItem = UIButton()
-        viewItem.translatesAutoresizingMaskIntoConstraints = false
-        viewItem.backgroundColor = UIColor.clear
-        viewItem.setTitle("Cancel", for: .normal)
-        viewItem.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
-        return viewItem
+            let viewItem = UIButton()
+            viewItem.translatesAutoresizingMaskIntoConstraints = false
+            viewItem.backgroundColor = UIColor.clear
+            viewItem.setTitle("Cancel", for: .normal)
+            viewItem.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
+            return viewItem
     }()
     
-    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        addBlurEffect()
+        view.addSubview(stackView)
+        stackView.addArrangedSubview(firstNameField)
+        stackView.addArrangedSubview(lastNameField)
+        stackView.addArrangedSubview(userNameField)
+        stackView.addArrangedSubview(emailField)
+        stackView.addArrangedSubview(passwordField)
+        stackView.addArrangedSubview(passwordVerificationField)
+        view.addSubview(registerButton)
+        view.addSubview(cancelButton)
+        setupConstraints()
+        addGestureRecognizers()
+    }
+    
+    func addBlurEffect() {
         view.backgroundColor = UIColor.clear
         let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         blurEffectView.frame = self.view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(blurEffectView)
-        view.addSubview(fieldContainerView)
-        fieldContainerView.addSubview(firstNameField)
-        fieldContainerView.addSubview(nameSeperatorLine)
-        fieldContainerView.addSubview(lastNameField)
-        fieldContainerView.addSubview(nameUsernameSeperatorLine)
-        fieldContainerView.addSubview(userNameField)
-        fieldContainerView.addSubview(usernameEmailSeperatorLine)
-        fieldContainerView.addSubview(emailField)
-        fieldContainerView.addSubview(passwordEmailSeperatorLine)
-        fieldContainerView.addSubview(passwordField)
-        fieldContainerView.addSubview(passwordVerificationSeperatorLine)
-        fieldContainerView.addSubview(passwordVerificationField)
-        view.addSubview(registerButton)
-        view.addSubview(cancelButton)
-        setupConstraints()
-        addGestureRecognizers()
     }
     
     func addGestureRecognizers() {
@@ -160,8 +163,69 @@ class RegisterForm: UIViewController {
         passwordVerificationField.resignFirstResponder()
     }
     
+    @objc func handleTextChange() {
+        let isFormValid = !passwordField.text!.isEmpty && !emailField.text!.isEmpty && !lastNameField.text!.isEmpty && !firstNameField.text!.isEmpty && !passwordVerificationField.text!.isEmpty && !userNameField.text!.isEmpty
+        if isFormValid {
+            registerButton.setTitleColor(.white, for: .normal)
+            registerButton.isEnabled = true
+            registerButton.backgroundColor = UIColor(white: 0.5, alpha: 0.90)
+        } else {
+            registerButton.setTitleColor(UIColor(white: 0, alpha: 0.3), for: .normal)
+            registerButton.isEnabled = false
+            registerButton.backgroundColor = UIColor(white: 1, alpha: 0.90)
+            
+        }
+    }
+    
+    var loginController: LoginViewController?
+    
     @objc func handleRegister() {
+        guard let email = emailField.text, let password = passwordField.text, let firstName = firstNameField.text, let lastName = lastNameField.text, let passwordVerification = passwordVerificationField.text, let username = userNameField.text, !email.isEmpty, !password.isEmpty, !firstName.isEmpty, !lastName.isEmpty, !passwordVerification.isEmpty, !username.isEmpty else {
+            return
+        }
         
+        if !(passwordVerification.elementsEqual(password)) {
+            print("Passwords do not match")
+            return
+        }
+        
+        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
+            if let err = error {
+                print(err)
+                return
+            }
+            
+            guard let uid = user?.user.uid else { return }
+            
+            print("Successfully created user: ", uid)
+            
+            
+            
+            let dictionaryValues = ["firstname": firstName, "lastname": lastName, "username": username]
+            let values = [uid: dictionaryValues]
+            
+            Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
+                
+                if let err = err {
+                    print("Failed to save user info into db:", err)
+                    return
+                }
+                
+                print("Successfully saved user info to db")
+                
+//                guard let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else { return }
+//
+//                mainTabBarController.setupViewControllers()
+//
+//                self.dismiss(animated: true, completion: nil)
+                self.dismiss(animated: false) {
+                    self.loginController?.dismissController()
+                }
+                
+            })
+            
+            
+        }
     }
     
     @objc func handleCancel() {
@@ -169,83 +233,20 @@ class RegisterForm: UIViewController {
     }
     
     private func setupConstraints() {
-         
-          //firstnamefield
-          //lastnamefield
-          //usernamefield
-          //emailfield
-          //passwordfield
-          //passwordverificationfield
-          
-          fieldContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-          fieldContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50).isActive = true
-          fieldContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
-          fieldContainerView.heightAnchor.constraint(equalToConstant: 300).isActive = true
-          
-          //fieldContainerSubviews
-          firstNameField.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          firstNameField.topAnchor.constraint(equalTo: fieldContainerView.topAnchor).isActive = true
-          firstNameField.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor, constant: -8).isActive = true
-          firstNameField.heightAnchor.constraint(equalTo: fieldContainerView.heightAnchor, multiplier: 1/6).isActive = true
-          
-          nameSeperatorLine.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          nameSeperatorLine.topAnchor.constraint(equalTo: firstNameField.bottomAnchor).isActive = true
-          nameSeperatorLine.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
-          nameSeperatorLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-          
-          lastNameField.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          lastNameField.topAnchor.constraint(equalTo: nameSeperatorLine.bottomAnchor).isActive = true
-          lastNameField.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor, constant: -8).isActive = true
-          lastNameField.heightAnchor.constraint(equalTo: fieldContainerView.heightAnchor, multiplier: 1/6).isActive = true
-          
-          nameUsernameSeperatorLine.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          nameUsernameSeperatorLine.topAnchor.constraint(equalTo: lastNameField.bottomAnchor).isActive = true
-          nameUsernameSeperatorLine.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
-          nameUsernameSeperatorLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-          
-          userNameField.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          userNameField.topAnchor.constraint(equalTo: nameUsernameSeperatorLine.bottomAnchor).isActive = true
-          userNameField.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor, constant: -8).isActive = true
-          userNameField.heightAnchor.constraint(equalTo: fieldContainerView.heightAnchor, multiplier: 1/6).isActive = true
-          
-          usernameEmailSeperatorLine.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          usernameEmailSeperatorLine.topAnchor.constraint(equalTo: userNameField.bottomAnchor).isActive = true
-          usernameEmailSeperatorLine.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
-          usernameEmailSeperatorLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-          
-          emailField.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          emailField.topAnchor.constraint(equalTo: usernameEmailSeperatorLine.bottomAnchor).isActive = true
-          emailField.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor, constant: -8).isActive = true
-          emailField.heightAnchor.constraint(equalTo: fieldContainerView.heightAnchor, multiplier: 1/6).isActive = true
-          
-          passwordEmailSeperatorLine.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          passwordEmailSeperatorLine.topAnchor.constraint(equalTo: emailField.bottomAnchor).isActive = true
-          passwordEmailSeperatorLine.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
-          passwordEmailSeperatorLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-          
-          passwordField.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          passwordField.topAnchor.constraint(equalTo: passwordEmailSeperatorLine.bottomAnchor).isActive = true
-          passwordField.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor, constant: -8).isActive = true
-          passwordField.heightAnchor.constraint(equalTo: fieldContainerView.heightAnchor, multiplier: 1/6).isActive = true
-          
-          passwordVerificationSeperatorLine.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          passwordVerificationSeperatorLine.topAnchor.constraint(equalTo: passwordField.bottomAnchor).isActive = true
-          passwordVerificationSeperatorLine.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
-          passwordVerificationSeperatorLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-          
-          passwordVerificationField.centerXAnchor.constraint(equalTo: fieldContainerView.centerXAnchor).isActive = true
-          passwordVerificationField.topAnchor.constraint(equalTo: passwordVerificationSeperatorLine.bottomAnchor).isActive = true
-          passwordVerificationField.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor, constant: -8).isActive = true
-          passwordVerificationField.heightAnchor.constraint(equalTo: fieldContainerView.heightAnchor, multiplier: 1/6).isActive = true
-          
+
+          stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+          stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50).isActive = true
+          stackView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
+          stackView.heightAnchor.constraint(equalToConstant: 300).isActive = true
+
           registerButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-          registerButton.topAnchor.constraint(equalTo: fieldContainerView.bottomAnchor, constant: 8).isActive = true
-          registerButton.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
+          registerButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8).isActive = true
+          registerButton.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
           registerButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
           cancelButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
           cancelButton.topAnchor.constraint(equalTo: registerButton.bottomAnchor, constant: 8).isActive = true
-          cancelButton.widthAnchor.constraint(equalTo: fieldContainerView.widthAnchor).isActive = true
+          cancelButton.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
           cancelButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         UIView.animate(withDuration: 0.33, delay: 0, options: .transitionFlipFromBottom, animations: {

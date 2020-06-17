@@ -13,6 +13,7 @@
 import UIKit
 import AVFoundation
 import Photos
+import Firebase
 
 /*
 class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureFileOutputRecordingDelegate, UIGestureRecognizerDelegate
@@ -265,6 +266,17 @@ class CameraViewController: UIViewController {
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //check to see if user is logged in
+        if Auth.auth().currentUser == nil {
+            DispatchQueue.main.async {
+                let loginController = LoginViewController()
+                let navController = UINavigationController(rootViewController: loginController)
+                navController.modalPresentationStyle = .fullScreen
+                self.present(navController, animated: true, completion: nil)
+            }
+        }
+        
         setupView()
         
         /*
