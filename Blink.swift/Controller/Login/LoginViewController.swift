@@ -119,7 +119,7 @@ class LoginViewController: UIViewController {
             guard let uid = user?.user.uid else { return }
             
             print("Successfully logged back in with user:", uid)
-            
+            Switcher.updateRootVC()
             self.dismissController()
             
         })

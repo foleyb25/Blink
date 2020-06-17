@@ -22,8 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         } else {
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = UINavigationController(rootViewController: CameraViewController())
         window?.makeKeyAndVisible()
+        Switcher.updateRootVC()
         return true
         }
     }

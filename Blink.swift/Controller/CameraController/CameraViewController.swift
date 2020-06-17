@@ -270,13 +270,11 @@ class CameraViewController: UIViewController {
         //check to see if user is logged in
         if Auth.auth().currentUser == nil {
             DispatchQueue.main.async {
-                let loginController = LoginViewController()
-                let navController = UINavigationController(rootViewController: loginController)
-                navController.modalPresentationStyle = .fullScreen
-                self.present(navController, animated: true, completion: nil)
+                Switcher.updateRootVC()
             }
+            dismiss(animated: false, completion: nil)
         }
-        
+        print("CONTINUE")
         setupView()
         
         /*

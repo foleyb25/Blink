@@ -38,11 +38,8 @@ class Settings: UIViewController {
         do {
             try Auth.auth().signOut()
             
-            let loginController = LoginViewController()
-            loginController.modalPresentationStyle = .fullScreen
-            self.dismiss(animated: false, completion: nil)
-            self.present(loginController, animated: true, completion: nil)
-            
+            Switcher.updateRootVC()
+            dismiss(animated: true, completion: nil)
             
         } catch let signOutErr {
             print("Failed to sign out:", signOutErr)
