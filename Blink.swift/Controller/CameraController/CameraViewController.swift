@@ -83,6 +83,7 @@ class CameraViewController: UIViewController {
         let viewItem = UIImageView()
         viewItem.frame = UIScreen.main.bounds
         viewItem.contentMode = .scaleAspectFill
+        viewItem.clipsToBounds = true
         return viewItem
     }()
     
@@ -721,9 +722,6 @@ class CameraViewController: UIViewController {
                 playerLayer.player = videoTaken
                 playerLayer.frame = view.bounds
                 playerLayer.videoGravity = .resizeAspectFill
-            }
-            if self.currentCamera == .front {
-                self.playerLayer.setAffineTransform(CGAffineTransform(scaleX: -1.0, y: 1.0))
             }
             self.player!.play()
         }

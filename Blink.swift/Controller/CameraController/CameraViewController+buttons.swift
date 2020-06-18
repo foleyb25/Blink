@@ -41,7 +41,7 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
     @objc func handleImagePickerButton() {
          let imagePickerController = UIImagePickerController()
                imagePickerController.delegate = self
-               imagePickerController.allowsEditing = true
+               imagePickerController.allowsEditing = false
                present(imagePickerController, animated: true, completion: nil)
     }
     

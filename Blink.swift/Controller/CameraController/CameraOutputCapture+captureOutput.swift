@@ -21,7 +21,12 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
                 videoWriter = try! AVAssetWriter(outputURL: videoPath, fileType: .mov)
                 let settings = videoDataOutput.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
                 videoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: settings) // [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: 1920, AVVideoHeightKey: 1080])
-                videoWriterInput.transform = CGAffineTransform(rotationAngle: .pi/2)
+                var transform = CGAffineTransform(rotationAngle: .pi/2)
+                
+                if currentCamera == .front {
+                    transform = transform.scaledBy(x: 1.0, y: -1.0)
+                }
+                videoWriterInput.transform = transform
                 adapter = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: videoWriterInput, sourcePixelBufferAttributes: nil)
                 videoWriterInput.mediaTimeScale = CMTimeScale(bitPattern: 600)
                 
