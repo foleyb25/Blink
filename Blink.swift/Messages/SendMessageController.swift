@@ -12,27 +12,36 @@ import Firebase
 class SendMessageController: UITableViewController {
     
     let userCellId = "usercellId"
+    var users = [User]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = false
         
         tableView.register(UserCell.self, forCellReuseIdentifier: userCellId)
-        
-        
+        APIService.shared.fetchUsers { (users: [User]) in
+            self.users = users
+            self.tableView.reloadData()
+        }
     }
+    
+
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath.item)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return users.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCell(withIdentifier: userCellId, for: indexPath) as! UserCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: userCellId, for: indexPath) as! UserCell
         
-        
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
     }
 }

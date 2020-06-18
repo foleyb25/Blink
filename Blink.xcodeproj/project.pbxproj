@@ -11,6 +11,8 @@
 		055DF160249B1DA8003364F7 /* CameraView+constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF15F249B1DA8003364F7 /* CameraView+constraints.swift */; };
 		055DF162249C011F003364F7 /* SendMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF161249C011F003364F7 /* SendMessageController.swift */; };
 		055DF165249C0314003364F7 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF164249C0314003364F7 /* UserCell.swift */; };
+		055DF167249C13B7003364F7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF166249C13B7003364F7 /* User.swift */; };
+		055DF169249C15BB003364F7 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF168249C15BB003364F7 /* APIService.swift */; };
 		05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B4124763E3500068ADE /* SideBarMenu.swift */; };
 		05601B64247765B000068ADE /* SideBarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B63247765B000068ADE /* SideBarCell.swift */; };
 		05601B6624778A2300068ADE /* Extensions+sidBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6524778A2300068ADE /* Extensions+sidBar.swift */; };
@@ -41,6 +43,8 @@
 		055DF15F249B1DA8003364F7 /* CameraView+constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView+constraints.swift"; sourceTree = "<group>"; };
 		055DF161249C011F003364F7 /* SendMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageController.swift; sourceTree = "<group>"; };
 		055DF164249C0314003364F7 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		055DF166249C13B7003364F7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		055DF168249C15BB003364F7 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = APIService.swift; path = Messages/APIService.swift; sourceTree = "<group>"; };
 		05601B4124763E3500068ADE /* SideBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarMenu.swift; sourceTree = "<group>"; };
 		05601B63247765B000068ADE /* SideBarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarCell.swift; sourceTree = "<group>"; };
 		05601B6524778A2300068ADE /* Extensions+sidBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+sidBar.swift"; sourceTree = "<group>"; };
@@ -153,6 +157,7 @@
 		058A13DD247C43BE0014FD48 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				055DF166249C13B7003364F7 /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -209,6 +214,7 @@
 		05F917BE2474A31C000228F9 /* Blink */ = {
 			isa = PBXGroup;
 			children = (
+				055DF168249C15BB003364F7 /* APIService.swift */,
 				055DF163249C0133003364F7 /* Messages */,
 				058A13DD247C43BE0014FD48 /* Model */,
 				058A13DE247C43C50014FD48 /* View */,
@@ -356,6 +362,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */,
+				055DF169249C15BB003364F7 /* APIService.swift in Sources */,
 				0563CD402499647B0082315F /* GenePoolViewController.swift in Sources */,
 				05F917C42474A31C000228F9 /* CameraViewController.swift in Sources */,
 				05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */,
@@ -375,6 +382,7 @@
 				05601B6A24779EE500068ADE /* Settings.swift in Sources */,
 				05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */,
 				05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */,
+				055DF167249C13B7003364F7 /* User.swift in Sources */,
 				05601B6824779ED700068ADE /* Profile.swift in Sources */,
 				05601B64247765B000068ADE /* SideBarCell.swift in Sources */,
 				058A13EA247DBCF50014FD48 /* ImageCells.swift in Sources */,

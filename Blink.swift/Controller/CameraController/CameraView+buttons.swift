@@ -88,7 +88,7 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
     }
     
     @objc func sendPressed() {
-        lockImagePreview = true
+        lockPreviewMode = true
         self.navigationController?.pushViewController(SendMessageController(), animated: true)
     }
     
