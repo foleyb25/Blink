@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
-        Switcher.updateRootVC()
+        Switcher.shared.updateRootVC()
         return true
         }
     }

@@ -40,6 +40,8 @@ class LoginViewController: UIViewController {
     
     lazy var passwordField: UITextField = {
         let viewItem = UITextField()
+        viewItem.textContentType = .password
+        viewItem.isSecureTextEntry = true
         viewItem.translatesAutoresizingMaskIntoConstraints = false
         viewItem.placeholder = "Password"
         viewItem.backgroundColor = UIColor(white: 0, alpha: 0.03)
@@ -119,7 +121,7 @@ class LoginViewController: UIViewController {
             guard let uid = user?.user.uid else { return }
             
             print("Successfully logged back in with user:", uid)
-            Switcher.updateRootVC()
+            Switcher.shared.updateRootVC()
             self.dismissController()
             
         })

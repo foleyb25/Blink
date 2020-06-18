@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
-        Switcher.updateRootVC()
+        Switcher.shared.updateRootVC()
     }
 
     @available(iOS 13.0, *)

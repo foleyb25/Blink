@@ -38,7 +38,7 @@ class Settings: UIViewController {
         do {
             try Auth.auth().signOut()
             
-            Switcher.updateRootVC()
+            Switcher.shared.updateRootVC()
             dismiss(animated: true, completion: nil)
             
         } catch let signOutErr {

@@ -11,31 +11,38 @@ import Firebase
 
 class Switcher {
     
-     static func updateRootVC() {
-           //let status = UserDefaults.standard.bool(forKey: "status")
-           var rootVC : UIViewController?
+    static let shared = Switcher()
+    var rootVC: UIViewController?
+    
+    lazy var cameraNavController: UINavigationController = {
+        let camVc = CameraViewController()
+        let navController = UINavigationController(rootViewController: camVc)
+        return navController
+    }()
+    
+    lazy var loginNavController: UINavigationController = {
+        let loginVc = LoginViewController()
+        let navController = UINavigationController(rootViewController: loginVc)
+        return navController
+    }()
+    
+    func updateRootVC() {
           
            if(Auth.auth().currentUser != nil) {
                
-               rootVC = CameraViewController()
-               
-               //rootVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Container") as! Container
-               
+                rootVC = self.cameraNavController
+
            } else {
-               rootVC = LoginViewController()
+                rootVC = self.loginNavController
            }
            
-        UIApplication.shared.keyWindow?.rootViewController = UINavigationController(rootViewController: rootVC!)
-           //if #available(iOS 13.0, *) {
-//            let sceneDelegate = UIApplication.shared.delegate as! SceneDelegate
-//                sceneDelegate.window?.rootViewController = UINavigationController(rootViewController: rootVC!)
-//                sceneDelegate.window?.makeKeyAndVisible()
-//           } else {
-//
-//        UIApplication.shared
-//               let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//               appDelegate.window?.rootViewController = UINavigationController(rootViewController: rootVC!)
-//               appDelegate.window?.makeKeyAndVisible()
-//           }
+           if #available(iOS 13.0, *) {
+                UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
+            UIApplication.shared.windows.first?.rootViewController = rootVC
+           } else {
+               let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.window?.rootViewController?.dismiss(animated: true, completion: nil)
+            appDelegate.window?.rootViewController = rootVC
+           }
        }
 }

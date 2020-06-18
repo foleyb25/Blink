@@ -55,7 +55,7 @@ class CameraViewController: UIViewController {
     
     private let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera], mediaType: .video, position: .unspecified)
     @objc dynamic var videoDeviceInput: AVCaptureDeviceInput!
-    private let session = AVCaptureSession()
+    private var session: AVCaptureSession?
     private var isSessionRunning = false
     internal var isRecording = false
     // Communicate with the session and other session objects on this queue.
@@ -266,15 +266,15 @@ class CameraViewController: UIViewController {
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         //check to see if user is logged in
         if Auth.auth().currentUser == nil {
             DispatchQueue.main.async {
-                Switcher.updateRootVC()
+                Switcher.shared.updateRootVC()
             }
             dismiss(animated: false, completion: nil)
         }
         print("CONTINUE")
+        session = AVCaptureSession()
         setupView()
         
         /*
@@ -361,8 +361,9 @@ class CameraViewController: UIViewController {
                     }
                 }
                 self.addObservers()
-                self.session.startRunning()
-                self.isSessionRunning = self.session.isRunning
+                guard let session = self.session else { return }
+                session.startRunning()
+                self.isSessionRunning = session.isRunning
                     
             case .camNotAuthorized:
                 DispatchQueue.main.async {
@@ -518,7 +519,7 @@ class CameraViewController: UIViewController {
         if setupResult != .success {
             return
         }
-
+        guard let session = self.session else { return }
         session.beginConfiguration()
         session.sessionPreset = .photo
         // Add video input.
@@ -648,6 +649,7 @@ class CameraViewController: UIViewController {
 
     // MARK: Flip Camera
     func flipCamera() {
+        guard let session = self.session else { return }
         sessionQueue.async {
             let currentVideoDevice = self.videoDeviceInput.device
             let currentPosition = currentVideoDevice.position
@@ -676,20 +678,20 @@ class CameraViewController: UIViewController {
             if let videoDevice = newVideoDevice {
                 do {
                     let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
-                    self.session.beginConfiguration()
+                    session.beginConfiguration()
                     // Remove the existing device input first, because AVCaptureSession doesn't support
                     // simultaneous use of the rear and front cameras.
-                    self.session.removeInput(self.videoDeviceInput)
-                    if self.session.canAddInput(videoDeviceInput) {
+                    session.removeInput(self.videoDeviceInput)
+                    if session.canAddInput(videoDeviceInput) {
                         NotificationCenter.default.removeObserver(self, name: .AVCaptureDeviceSubjectAreaDidChange, object: currentVideoDevice)
                         NotificationCenter.default.addObserver(self, selector: #selector(self.subjectAreaDidChange), name: .AVCaptureDeviceSubjectAreaDidChange, object: videoDeviceInput.device)
-                        self.session.addInput(videoDeviceInput)
+                        session.addInput(videoDeviceInput)
                         self.videoDeviceInput = videoDeviceInput
                     } else {
-                        self.session.addInput(self.videoDeviceInput)
+                        session.addInput(self.videoDeviceInput)
                     }
                     self.photoOutput.isDepthDataDeliveryEnabled = self.photoOutput.isDepthDataDeliverySupported
-                    self.session.commitConfiguration()
+                    session.commitConfiguration()
                     self.beginZoomScale = CGFloat(1.0)
                 } catch {
                     print("Error occurred while creating video device input: \(error)")
@@ -836,7 +838,7 @@ class CameraViewController: UIViewController {
     private var keyValueObservations = [NSKeyValueObservation]()
     /// - Tag: ObserveInterruption
     private func addObservers() {
-        
+        guard let session = self.session else { return }
         let keyValueObservation = session.observe(\.isRunning, options: .new) { _, change in
             guard let isSessionRunning = change.newValue else { return }
             
@@ -891,14 +893,14 @@ class CameraViewController: UIViewController {
     @objc func sessionRuntimeError(notification: NSNotification) {
         print("Session Runtime Error")
         guard let error = notification.userInfo?[AVCaptureSessionErrorKey] as? AVError else { return }
-        
+        guard let session = self.session else { return }
         print("Capture session runtime error: \(error)")
         // If media services were reset, and the last start succeeded, restart the session.
         if error.code == .mediaServicesWereReset {
             sessionQueue.async {
                 if self.isSessionRunning {
-                    self.session.startRunning()
-                    self.isSessionRunning = self.session.isRunning
+                    session.startRunning()
+                    self.isSessionRunning = session.isRunning
                 }
             }
         }
