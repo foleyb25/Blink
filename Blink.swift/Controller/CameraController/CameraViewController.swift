@@ -274,7 +274,6 @@ class CameraViewController: UIViewController {
             }
             dismiss(animated: false, completion: nil)
         }
-        print("CONTINUE")
         session = AVCaptureSession()
         setupView()
         
@@ -341,11 +340,19 @@ class CameraViewController: UIViewController {
         }
     }
     
-    
+    var lockPreviewMode: Bool = false
     //MARK: View Will Appear
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
        
+        
+        //transition back from the sendMessageController calls View Will Appear. Keep The camera in preview mode and return
+        if lockPreviewMode {
+            togglePreviewMode(isInPreviewMode: true)
+            lockPreviewMode = false
+            return
+        }
+            
         sessionQueue.async {
             switch self.setupResult {
             case .success:
@@ -425,55 +432,6 @@ class CameraViewController: UIViewController {
         previewView.layer.addSublayer(previewLayer)
         previewView.layer.addSublayer(imagePreview.layer)
         previewView.layer.addSublayer(playerLayer)
-    }
-    
-    //MARK: Set up constraints
-    func setButtonConstraints() {
-        
-        captureButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        captureButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -75).isActive = true
-        captureButton.heightAnchor.constraint(equalToConstant: 75).isActive = true
-        captureButton.widthAnchor.constraint(equalToConstant: 75).isActive = true
-    
-        videoButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor).isActive = true
-        videoButton.rightAnchor.constraint(equalTo: captureButton.leftAnchor, constant: -35).isActive = true
-        videoButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        videoButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        pickerButton.centerXAnchor.constraint(equalTo: captureButton.centerXAnchor).isActive = true
-        pickerButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15).isActive = true
-        pickerButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        pickerButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-
-        cancelButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 60).isActive = true
-        cancelButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-        cancelButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        cancelButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        flipButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor).isActive = true
-        flipButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -35).isActive = true
-        flipButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        flipButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        flashButton.centerXAnchor.constraint(equalTo: flipButton.centerXAnchor).isActive = true
-        flashButton.bottomAnchor.constraint(equalTo: flipButton.topAnchor, constant: -35).isActive = true
-        flashButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        flashButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        sendButton.centerXAnchor.constraint(equalTo: flipButton.centerXAnchor).isActive = true
-        sendButton.topAnchor.constraint(equalTo: flipButton.bottomAnchor, constant: 35).isActive = true
-        sendButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        sendButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        friendsButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        friendsButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-        
-        genePoolButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        genePoolButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
-            
-        UIView.animate(withDuration: 0.25) {
-            self.view.layoutIfNeeded()
-        }
     }
     
     // MARK: Toggle Preview Mode

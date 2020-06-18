@@ -88,7 +88,8 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
     }
     
     @objc func sendPressed() {
-        
+        lockImagePreview = true
+        self.navigationController?.pushViewController(SendMessageController(), animated: true)
     }
     
     @objc func friendsButtonPressed() {
@@ -100,26 +101,4 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
         navController.modalPresentationStyle = .fullScreen
         present(navController, animated: true, completion: nil)
     }
-    
-    
-    func previewAnimation() {
-        UIView.animate(withDuration: 0.5, animations: {
-            self.captureButton.frame.origin.y += 200
-            self.videoButton.frame.origin.x -= 200
-            self.flipButton.frame.origin.x += 200
-            self.flashButton.frame.origin.x += 200
-            self.view.layoutIfNeeded()
-        })
-    }
-    
-    func undoPreviewAnimation() {
-        UIView.animate(withDuration: 0.5, animations: {
-            self.captureButton.frame.origin.y -= 200
-            self.videoButton.frame.origin.x += 200
-            self.flipButton.frame.origin.x -= 200
-            self.flashButton.frame.origin.x -= 200
-            self.view.layoutIfNeeded()
-        })
-    }
-    
 }

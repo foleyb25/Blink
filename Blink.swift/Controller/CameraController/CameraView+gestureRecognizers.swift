@@ -38,8 +38,6 @@ extension CameraViewController: UIGestureRecognizerDelegate {
         self.recordPanGesture = panGesture
     }
     
-    
-    
     @objc internal func zoomGesture(pinch: UIPinchGestureRecognizer) {
         let captureDevice = self.videoDeviceInput.device
         if pinch.state == .changed {
@@ -82,8 +80,6 @@ extension CameraViewController: UIGestureRecognizerDelegate {
             beginZoomScale = zoomScale
         }
     }
-    
-    
     
     @objc internal func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
         let devicePoint = previewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))

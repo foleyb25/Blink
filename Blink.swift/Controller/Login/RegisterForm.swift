@@ -79,7 +79,7 @@ class RegisterForm: UIViewController {
            attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
             viewItem.textColor = UIColor(white: 1, alpha: 1)
             viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
-           // viewItem.isSecureTextEntry = true
+            viewItem.isSecureTextEntry = true
             viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
             viewItem.borderStyle = .roundedRect
            return viewItem
@@ -92,7 +92,7 @@ class RegisterForm: UIViewController {
             viewItem.attributedPlaceholder = NSAttributedString(string: "Verify Password",
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
         viewItem.textColor = UIColor(white: 1, alpha: 1)
-            //viewItem.isSecureTextEntry = true
+            viewItem.isSecureTextEntry = true
             viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
             viewItem.borderStyle = .roundedRect
@@ -126,8 +126,11 @@ class RegisterForm: UIViewController {
         return .lightContent
     }
     
+    var loginController: LoginViewController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.barStyle = .blackTranslucent
         addBlurEffect()
         view.addSubview(stackView)
         stackView.addArrangedSubview(firstNameField)
@@ -173,11 +176,8 @@ class RegisterForm: UIViewController {
             registerButton.setTitleColor(UIColor(white: 0, alpha: 0.3), for: .normal)
             registerButton.isEnabled = false
             registerButton.backgroundColor = UIColor(white: 1, alpha: 0.90)
-            
         }
     }
-    
-    var loginController: LoginViewController?
     
     @objc func handleRegister() {
         guard let email = emailField.text, let password = passwordField.text, let firstName = firstNameField.text, let lastName = lastNameField.text, let passwordVerification = passwordVerificationField.text, let username = userNameField.text, !email.isEmpty, !password.isEmpty, !firstName.isEmpty, !lastName.isEmpty, !passwordVerification.isEmpty, !username.isEmpty else {
@@ -213,18 +213,10 @@ class RegisterForm: UIViewController {
                 
                 print("Successfully saved user info to db")
                 
-//                guard let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else { return }
-//
-//                mainTabBarController.setupViewControllers()
-//
-//                self.dismiss(animated: true, completion: nil)
                 self.dismiss(animated: false) {
                     self.loginController?.dismissController()
                 }
-                
             })
-            
-            
         }
     }
     
@@ -253,4 +245,10 @@ class RegisterForm: UIViewController {
             self.view.layoutIfNeeded()
         }, completion: nil)
       }
+}
+
+extension UINavigationController {
+   open override var childForStatusBarStyle: UIViewController? {
+        return visibleViewController
+    }
 }

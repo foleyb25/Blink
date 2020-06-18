@@ -59,6 +59,8 @@ class LoginViewController: UIViewController {
         viewItem.setTitleColor(UIColor(white: 0, alpha: 0.3), for: .normal)
         viewItem.isEnabled = false
         viewItem.backgroundColor = UIColor(white: 1, alpha: 0.90)
+        viewItem.layer.cornerRadius = 20
+        viewItem.layer.masksToBounds = true
         return viewItem
     }()
     
@@ -72,7 +74,6 @@ class LoginViewController: UIViewController {
         return viewItem
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = true
@@ -85,7 +86,6 @@ class LoginViewController: UIViewController {
         stackView.addArrangedSubview(passwordField)
         setupConstraints()
         addGestureRecognizers()
-        
     }
     
     @objc func handleTextChange() {
@@ -146,17 +146,20 @@ class LoginViewController: UIViewController {
         }
     }
     
+    var imageViewTopAnchor: NSLayoutConstraint?
+    
     private func setupConstraints() {
        
-        stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -70).isActive = true
-        stackView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
-        stackView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
+        imageViewTopAnchor = imageView.topAnchor.constraint(equalTo: view.bottomAnchor)
+        imageViewTopAnchor?.isActive = true
         imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        imageView.bottomAnchor.constraint(equalTo: stackView.topAnchor, constant: -20).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 170).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 170).isActive = true
+        
+        stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        stackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 15).isActive = true
+        stackView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -50).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
         loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         loginButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8).isActive = true
@@ -167,9 +170,14 @@ class LoginViewController: UIViewController {
         newUserButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -18).isActive = true
         newUserButton.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
         newUserButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        self.view.layoutIfNeeded()
         
-        UIView.animate(withDuration: 0.85) {
+        imageViewTopAnchor?.isActive = false
+        imageViewTopAnchor = imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100)
+        imageViewTopAnchor?.isActive = true
+        
+        UIView.animate(withDuration: 1.35, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .beginFromCurrentState, animations: {
             self.view.layoutIfNeeded()
-        }
+        }, completion: nil)
     }
 }
