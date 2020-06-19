@@ -9,7 +9,18 @@
 import UIKit
 import Firebase
 
-class RegisterForm: UIViewController {
+class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    let imageSelector: UIButton = {
+        let viewItem = UIButton(type: .system)
+        viewItem.setImage(UIImage(named: "missing_profile_image")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        viewItem.layer.cornerRadius = 60
+        viewItem.layer.masksToBounds = true
+        viewItem.imageView?.clipsToBounds = true
+        viewItem.translatesAutoresizingMaskIntoConstraints = false
+        viewItem.addTarget(self, action: #selector(handleImageSelector), for: .touchUpInside)
+        return viewItem
+    }()
     
     let stackView: UIStackView = {
             let viewItem = UIStackView()
@@ -20,31 +31,7 @@ class RegisterForm: UIViewController {
             viewItem.backgroundColor = .white
             return viewItem
     }()
-    
-    lazy var firstNameField: UITextField = {
-            let viewItem = UITextField()
-            viewItem.translatesAutoresizingMaskIntoConstraints = false
-            viewItem.attributedPlaceholder = NSAttributedString(string: "First Name",
-                attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
-            viewItem.textColor = UIColor(white: 1, alpha: 1)
-            viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
-            viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
-            viewItem.borderStyle = .roundedRect
-            return viewItem
-       }()
-       
-       lazy var lastNameField: UITextField = {
-            let viewItem = UITextField()
-            viewItem.translatesAutoresizingMaskIntoConstraints = false
-            viewItem.attributedPlaceholder = NSAttributedString(string: "Last Name",
-                attributes: [NSAttributedString.Key.foregroundColor: UIColor.init(red: 150/255, green: 150/255, blue: 150/255, alpha: 0.80)])
-            viewItem.textColor = UIColor(white: 1, alpha: 1)
-            viewItem.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
-            viewItem.backgroundColor = UIColor(white: 0.2, alpha: 1)
-            viewItem.borderStyle = .roundedRect
-            return viewItem
-       }()
-       
+
        lazy var userNameField: UITextField = {
            let viewItem = UITextField()
         
@@ -132,9 +119,10 @@ class RegisterForm: UIViewController {
         super.viewDidLoad()
         navigationController?.navigationBar.barStyle = .blackTranslucent
         addBlurEffect()
+        view.addSubview(imageSelector)
         view.addSubview(stackView)
-        stackView.addArrangedSubview(firstNameField)
-        stackView.addArrangedSubview(lastNameField)
+        //stackView.addArrangedSubview(firstNameField)
+        //stackView.addArrangedSubview(lastNameField)
         stackView.addArrangedSubview(userNameField)
         stackView.addArrangedSubview(emailField)
         stackView.addArrangedSubview(passwordField)
@@ -157,9 +145,27 @@ class RegisterForm: UIViewController {
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
     }
     
+    @objc func handleImageSelector() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.allowsEditing = true
+        
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    // Local variable inserted by Swift 4.2 migrator.
+        if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            imageSelector.setImage(editedImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        } else if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            imageSelector.setImage(originalImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
     @objc func dismissKeyboard() {
-        firstNameField.resignFirstResponder()
-        lastNameField.resignFirstResponder()
+        //firstNameField.resignFirstResponder()
+        //lastNameField.resignFirstResponder()
         userNameField.resignFirstResponder()
         emailField.resignFirstResponder()
         passwordField.resignFirstResponder()
@@ -167,7 +173,7 @@ class RegisterForm: UIViewController {
     }
     
     @objc func handleTextChange() {
-        let isFormValid = !passwordField.text!.isEmpty && !emailField.text!.isEmpty && !lastNameField.text!.isEmpty && !firstNameField.text!.isEmpty && !passwordVerificationField.text!.isEmpty && !userNameField.text!.isEmpty
+        let isFormValid = !passwordField.text!.isEmpty && !emailField.text!.isEmpty && !passwordVerificationField.text!.isEmpty && !userNameField.text!.isEmpty
         if isFormValid {
             registerButton.setTitleColor(.white, for: .normal)
             registerButton.isEnabled = true
@@ -180,7 +186,7 @@ class RegisterForm: UIViewController {
     }
     
     @objc func handleRegister() {
-        guard let email = emailField.text, let password = passwordField.text, let firstName = firstNameField.text, let lastName = lastNameField.text, let passwordVerification = passwordVerificationField.text, let username = userNameField.text, !email.isEmpty, !password.isEmpty, !firstName.isEmpty, !lastName.isEmpty, !passwordVerification.isEmpty, !username.isEmpty else {
+        guard let email = emailField.text, let password = passwordField.text, let passwordVerification = passwordVerificationField.text, let username = userNameField.text, !email.isEmpty, !password.isEmpty, !passwordVerification.isEmpty, !username.isEmpty else {
             return
         }
         
@@ -189,6 +195,13 @@ class RegisterForm: UIViewController {
             return
         }
         
+        guard let profileImage = imageSelector.imageView?.image else { return }
+        
+        registerNewUser(email: email, password: password, username: username, profileImage: profileImage)
+                
+    }
+    
+    func registerNewUser(email: String, password: String, username: String, profileImage: UIImage) {
         Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
             if let err = error {
                 print(err)
@@ -198,26 +211,39 @@ class RegisterForm: UIViewController {
             guard let uid = user?.user.uid else { return }
             
             print("Successfully created user: ", uid)
-            
-            //set to missing image
-            let profileURL = "https://firebasestorage.googleapis.com/v0/b/blink-52ded.appspot.com/o/missing_profile_image%2Fmissing_profile_image.jpg?alt=media&token=3333b978-4a3c-4932-a4f5-abbcf2f75081"
-            
-            let dictionaryValues = ["firstname": firstName, "lastname": lastName, "username": username, "profileURL": profileURL]
-            let values = [uid: dictionaryValues]
-            
-            Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
                 
+            guard let uploadData = profileImage.jpegData(compressionQuality: 0.5) else { return }
+            
+            let filename = NSUUID().uuidString
+            
+             let storageRef = Storage.storage().reference().child("profile_images").child(filename)
+            storageRef.putData(uploadData, metadata: nil) { (metadata, err) in
                 if let err = err {
-                    print("Failed to save user info into db:", err)
+                    print("Failed to upload profile image:", err)
                     return
                 }
-                
-                print("Successfully saved user info to db")
-                
-                self.dismiss(animated: false) {
-                    Switcher.shared.updateRootVC()
+                storageRef.downloadURL { (downloadURL, error) in
+                    guard let profileImageUrl = downloadURL?.absoluteString else { return }
+                    
+                     print("Successfully uploaded profile image:", profileImageUrl)
+                    
+                     let dictionaryValues = ["username": username, "profileimageurl": profileImageUrl]
+                     let values = [uid: dictionaryValues]
+                    
+                    Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
+                        
+                        if let err = err {
+                            print("Failed to save user info into db:", err)
+                            return
+                        }
+                        
+                        print("Successfully saved user info to db")
+                        self.dismiss(animated: false) {
+                            Switcher.shared.updateRootVC()
+                        }
+                    })
                 }
-            })
+            }
         }
     }
     
@@ -227,10 +253,15 @@ class RegisterForm: UIViewController {
     
     private func setupConstraints() {
 
+        imageSelector.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        imageSelector.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
+        imageSelector.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        imageSelector.widthAnchor.constraint(equalToConstant: 120).isActive = true
+        
           stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-          stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50).isActive = true
+          stackView.topAnchor.constraint(equalTo: imageSelector.bottomAnchor, constant: 25).isActive = true
           stackView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
-          stackView.heightAnchor.constraint(equalToConstant: 300).isActive = true
+          stackView.heightAnchor.constraint(equalToConstant: 200).isActive = true
 
           registerButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
           registerButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8).isActive = true

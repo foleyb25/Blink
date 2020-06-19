@@ -8,13 +8,11 @@
 
 import UIKit
 
-
-
 class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     var user: User? {
         didSet {
-            guard let url = user?.profileURL else { return }
+            guard let url = user?.profileImageURL else { return }
             APIService.shared.fetchProfilePictureWithUrl(urlString: url) { (image: UIImage) in
                 self.profileImageView.image = image
             }

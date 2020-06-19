@@ -87,7 +87,6 @@ class CameraViewController: UIViewController {
         return viewItem
     }()
     
-    
     //capturing movies
     internal var playerLayer : AVPlayerLayer = {
         let layer = AVPlayerLayer()

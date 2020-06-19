@@ -9,8 +9,7 @@
 import Foundation
 import Firebase
 
-class APIService: NSObject {
-    
+class APIService: UIViewController {
     static let shared = APIService()
     let imageCache = NSCache<NSString, UIImage>()
     
@@ -57,32 +56,4 @@ class APIService: NSObject {
                 
                 }.resume()
         }
-        
-//        func fetchFeedForUrlString(urlString: String, completion: @escaping ([User]) -> ()) {
-//            let url = URL(string: urlString)
-//            URLSession.shared.dataTask(with: url!) { (data, response, error) in
-//                
-//                if error != nil {
-//                    print(error ?? "")
-//                    return
-//                }
-//                
-//                do {
-//                    guard let data = data else { return }
-//                    let decoder = JSONDecoder()
-//                    decoder.keyDecodingStrategy = .convertFromSnakeCase
-//                    let videos = try decoder.decode([Video].self, from: data)
-//                    
-//                    DispatchQueue.main.async {
-//                        completion(videos)
-//                    }
-//                    
-//                } catch let jsonError {
-//                    print(jsonError)
-//                }
-//                
-//                
-//                
-//                }.resume()
-//        }
 }
