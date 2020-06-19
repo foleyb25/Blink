@@ -14,15 +14,12 @@ class SendMessageController: UITableViewController {
     let userCellId = "usercellId"
     var users = [User]()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = false
-        
         tableView.register(UserCell.self, forCellReuseIdentifier: userCellId)
-        APIService.shared.fetchUsers { (users: [User]) in
-            self.users = users
-            self.tableView.reloadData()
-        }
+        
     }
     
 

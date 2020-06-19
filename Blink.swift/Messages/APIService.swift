@@ -12,25 +12,44 @@ import Firebase
 class APIService: NSObject {
     
     static let shared = APIService()
-    
-    
-       func fetchUsers(completion: @escaping ([User]) -> ()) {
-            Database.database().reference().child("users").observe( .childAdded, with: { (snapshot) in
+       func fetchUser(completion: @escaping (User) -> ()) {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            
+            Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                print(snapshot.value ?? "")
                 
-                print(snapshot)
+                guard let dictionary = snapshot.value as? [String: Any] else { return }
                 
-                if let dictionary = snapshot.value as? [String: AnyObject] {
-                    var users = [User]()
-                    let user = User(dictionary: dictionary)
-                    users.append(user)
-                    //user.setValuesForKeys(dictionary)
-                    
-                    
-                    DispatchQueue.main.async {
-                        completion(users)
-                    }
+                let user = User(dictionary: dictionary)
+            
+                DispatchQueue.main.async {
+                    completion(user)
                 }
-            }, withCancel: nil)
+            }) { (err) in
+                print("Failed to fetch user:", err)
+            }
+        }
+    
+    func fetchProfilePictureWithUrl(url: String, completion: @escaping (UIImage) -> ()) {
+            print("Loading image...")
+            
+            guard let url = URL(string: url) else { return }
+            
+            URLSession.shared.dataTask(with: url) { (data, response, err) in
+                if let err = err {
+                    print("Failed to fetch post image:", err)
+                    return
+                }
+                
+                guard let imageData = data else { return }
+                
+                guard let photoImage = UIImage(data: imageData) else { return }
+                
+                DispatchQueue.main.async {
+                    completion(photoImage)
+                }
+                
+                }.resume()
         }
         
 //        func fetchFeedForUrlString(urlString: String, completion: @escaping ([User]) -> ()) {

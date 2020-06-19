@@ -11,7 +11,6 @@ import UIKit
 class User: NSObject {
     var firstName: String?
     var lastName: String?
-    var userId: String?
     var username: String?
     var profileURL: String?
     var genderId: String?
@@ -20,10 +19,9 @@ class User: NSObject {
     init(dictionary: [String: Any]) {
         self.firstName = dictionary["firstname"] as? String
         self.lastName = dictionary["lastname"] as? String
-        self.userId = dictionary["userId"] as? String
         self.username = dictionary["username"] as? String
-        self.profileURL = dictionary["profileImage"] as? String
+        self.profileURL = dictionary["profileURL"] as? String
         self.genderId = dictionary["userid"] as? String
-        self.friends = dictionary["friends"] as? String
+        self.friends = dictionary["friends"] as? [String]
     }
 }

@@ -12,7 +12,17 @@ import UIKit
 
 class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-   
+    var user: User? {
+        didSet {
+            guard let url = user?.profileURL else { return }
+            APIService.shared.fetchProfilePictureWithUrl(url: url) { (image: UIImage) in
+                self.profileImageView.image = image
+            }
+            nameLabel.text = user?.username
+        }
+    }
+    
+    var cameraController: CameraViewController?
     
     let cellId = "CellId"
     
@@ -23,10 +33,17 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         setupProfileView()
         setupSelector()
         setupCollectionView()
+        getUser()
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Camera Button", style: .plain, target: self, action: #selector(handleCameraNavButton))
         let swipeDownGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleDownSwipe))
         swipeDownGestureRecognizer.direction = .down
         view.addGestureRecognizer(swipeDownGestureRecognizer)
+    }
+    
+    func getUser() {
+        guard let camController = cameraController else { return }
+        self.user = camController.user
+        print("set user")
     }
     
     //Fetch new media content from DB here
@@ -71,10 +88,7 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
     
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        let image = UIImage(named: "barney")
-        imageView.image = image
-        imageView.backgroundColor = UIColor.red
-        imageView.layer.cornerRadius = 60
+        imageView.layer.cornerRadius = 130/2
         imageView.layer.masksToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
@@ -83,7 +97,6 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
     
     let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Barney"
         label.textAlignment = .center
         label.font = label.font.withSize(16)
         label.translatesAutoresizingMaskIntoConstraints = false

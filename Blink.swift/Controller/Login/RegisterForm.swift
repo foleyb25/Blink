@@ -199,9 +199,10 @@ class RegisterForm: UIViewController {
             
             print("Successfully created user: ", uid)
             
+            //set to missing image
+            let profileURL = "https://firebasestorage.googleapis.com/v0/b/blink-52ded.appspot.com/o/missing_profile_image%2Fmissing_profile_image.jpg?alt=media&token=3333b978-4a3c-4932-a4f5-abbcf2f75081"
             
-            
-            let dictionaryValues = ["firstname": firstName, "lastname": lastName, "username": username]
+            let dictionaryValues = ["firstname": firstName, "lastname": lastName, "username": username, "profileURL": profileURL]
             let values = [uid: dictionaryValues]
             
             Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
@@ -214,7 +215,7 @@ class RegisterForm: UIViewController {
                 print("Successfully saved user info to db")
                 
                 self.dismiss(animated: false) {
-                    self.loginController?.dismissController()
+                    Switcher.shared.updateRootVC()
                 }
             })
         }

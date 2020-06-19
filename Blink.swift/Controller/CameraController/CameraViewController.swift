@@ -264,6 +264,8 @@ class CameraViewController: UIViewController {
         return collectionView
     }()
     
+    var user: User?
+    
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -275,6 +277,10 @@ class CameraViewController: UIViewController {
             dismiss(animated: false, completion: nil)
         }
         session = AVCaptureSession()
+        APIService.shared.fetchUser { (user: User) in
+            self.user = user
+            print(self.user?.firstName as Any)
+        }
         setupView()
         
         /*
