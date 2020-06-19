@@ -14,6 +14,13 @@ class Switcher {
     static let shared = Switcher()
     var rootVC: UIViewController?
     
+    var currentUser: User? {
+        didSet {
+            guard let camController = cameraNavController.viewControllers[0] as? CameraViewController else { return }
+            camController.user = self.currentUser
+        }
+    }
+    
     lazy var cameraNavController: UINavigationController = {
         let camVc = CameraViewController()
         let navController = UINavigationController(rootViewController: camVc)
@@ -29,10 +36,12 @@ class Switcher {
     func updateRootVC() {
           
            if(Auth.auth().currentUser != nil) {
-               
+                APIService.shared.fetchUser { (user: User) in
+                    self.currentUser = user
+                }
                 rootVC = self.cameraNavController
-
            } else {
+                self.currentUser = nil
                 rootVC = self.loginNavController
            }
            

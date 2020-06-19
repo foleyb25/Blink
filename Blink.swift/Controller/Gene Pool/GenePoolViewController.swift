@@ -15,7 +15,7 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
     var user: User? {
         didSet {
             guard let url = user?.profileURL else { return }
-            APIService.shared.fetchProfilePictureWithUrl(url: url) { (image: UIImage) in
+            APIService.shared.fetchProfilePictureWithUrl(urlString: url) { (image: UIImage) in
                 self.profileImageView.image = image
             }
             nameLabel.text = user?.username
@@ -26,24 +26,27 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
     
     let cellId = "CellId"
     
-    
     let profileViewHeight: CGFloat = 250
     
     override func viewDidLoad() {
         setupProfileView()
         setupSelector()
         setupCollectionView()
-        getUser()
+        print("Gene Pool VDL")
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Camera Button", style: .plain, target: self, action: #selector(handleCameraNavButton))
         let swipeDownGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleDownSwipe))
         swipeDownGestureRecognizer.direction = .down
         view.addGestureRecognizer(swipeDownGestureRecognizer)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getUser()
+    }
+    
     func getUser() {
         guard let camController = cameraController else { return }
         self.user = camController.user
-        print("set user")
     }
     
     //Fetch new media content from DB here

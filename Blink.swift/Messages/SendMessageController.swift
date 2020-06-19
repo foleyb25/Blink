@@ -19,10 +19,7 @@ class SendMessageController: UITableViewController {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = false
         tableView.register(UserCell.self, forCellReuseIdentifier: userCellId)
-        
     }
-    
-
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath.item)
@@ -34,7 +31,6 @@ class SendMessageController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: userCellId, for: indexPath) as! UserCell
-        
         return cell
     }
     

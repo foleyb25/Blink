@@ -77,9 +77,9 @@ class CameraViewController: UIViewController {
    // internal var panGesture: UIGestureRecognizer?
     
     //stores captured image
-    internal var image: UIImage?
+    var image: UIImage?
     
-    lazy var imagePreview: UIImageView = {
+    let imagePreview: UIImageView = {
         let viewItem = UIImageView()
         viewItem.frame = UIScreen.main.bounds
         viewItem.contentMode = .scaleAspectFill
@@ -277,10 +277,6 @@ class CameraViewController: UIViewController {
             dismiss(animated: false, completion: nil)
         }
         session = AVCaptureSession()
-        APIService.shared.fetchUser { (user: User) in
-            self.user = user
-            print(self.user?.firstName as Any)
-        }
         setupView()
         
         /*
