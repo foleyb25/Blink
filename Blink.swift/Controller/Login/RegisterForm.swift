@@ -14,7 +14,7 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
     let activityIndicatorView: UIActivityIndicatorView = {
         let aiv = UIActivityIndicatorView(style: .whiteLarge)
         aiv.translatesAutoresizingMaskIntoConstraints = false
-        //aiv.startAnimating()
+        aiv.backgroundColor = UIColor(white: 0, alpha: 0.25)
         return aiv
     }()
     
@@ -230,8 +230,8 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
 
         activityIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         activityIndicatorView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        activityIndicatorView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        activityIndicatorView.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        activityIndicatorView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        activityIndicatorView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         
         imageSelector.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         imageSelector.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true

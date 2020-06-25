@@ -17,7 +17,6 @@ class APIService: NSObject {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             
             Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-                //print(snapshot.value ?? "")
                 
                 guard let dictionary = snapshot.value as? [String: Any] else { return }
                 
@@ -107,4 +106,23 @@ class APIService: NSObject {
             }
         }
     }
+    
+    func signInUser(email: String, password: String, completion: @escaping (Bool) -> ()) {
+        Auth.auth().signIn(withEmail: email, password: password, completion: { (user, err) in
+            
+            if let err = err {
+                print("Failed to sign in with email:", err)
+                completion(false)
+                return
+            }
+            
+            guard let uid = user?.user.uid else {
+                completion(false)
+                return }
+            
+            print("Successfully logged back in with user:", uid)
+            completion(true)
+        })
+    }
+    
 }

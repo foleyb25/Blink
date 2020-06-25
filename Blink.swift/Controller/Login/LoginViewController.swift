@@ -11,6 +11,13 @@ import Firebase
 
 class LoginViewController: UIViewController {
     
+    let activityIndicatorView: UIActivityIndicatorView = {
+        let aiv = UIActivityIndicatorView(style: .whiteLarge)
+        aiv.translatesAutoresizingMaskIntoConstraints = false
+        aiv.backgroundColor = UIColor(white: 0, alpha: 0.25)
+        return aiv
+    }()
+    
     lazy var imageView: UIImageView = {
         let viewItem = UIImageView()
         viewItem.translatesAutoresizingMaskIntoConstraints = false
@@ -82,6 +89,7 @@ class LoginViewController: UIViewController {
         view.addSubview(stackView)
         view.addSubview(loginButton)
         view.addSubview(newUserButton)
+        view.addSubview(activityIndicatorView)
         stackView.addArrangedSubview(emailField)
         stackView.addArrangedSubview(passwordField)
         setupConstraints()
@@ -111,21 +119,21 @@ class LoginViewController: UIViewController {
     @objc func handleLogin() {
         guard let email = emailField.text, let password = passwordField.text, !email.isEmpty && !password.isEmpty else { return }
         
-        Auth.auth().signIn(withEmail: email, password: password, completion: { (user, err) in
-            
-            if let err = err {
-                print("Failed to sign in with email:", err)
-                return
+        APIService.shared.signInUser(email: email, password: password) { (bool) in
+            self.activityIndicatorView.stopAnimating()
+            if bool {
+                Switcher.shared.updateRootVC()
+                print("Handle dismiss")
+                self.dismissController()
+            } else {
+                
             }
             
-            guard let uid = user?.user.uid else { return }
-            
-            print("Successfully logged back in with user:", uid)
-            Switcher.shared.updateRootVC()
-            self.dismissController()
-            
-        })
+        }
+        print("start animating")
+        activityIndicatorView.startAnimating()
     }
+    
     
     func dismissController() {
         dismiss(animated: true, completion: nil)
@@ -150,6 +158,11 @@ class LoginViewController: UIViewController {
     
     private func setupConstraints() {
        
+        activityIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        activityIndicatorView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        activityIndicatorView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        activityIndicatorView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        
         imageViewTopAnchor = imageView.topAnchor.constraint(equalTo: view.bottomAnchor)
         imageViewTopAnchor?.isActive = true
         imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
