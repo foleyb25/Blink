@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-class APIService: UIViewController {
+class APIService: NSObject {
     static let shared = APIService()
     let imageCache = NSCache<NSString, UIImage>()
     
@@ -56,4 +56,55 @@ class APIService: UIViewController {
                 
                 }.resume()
         }
+    
+    func registerNewUser(email: String, password: String, username: String, profileImage: UIImage, completion: @escaping (Bool) -> ()) {
+        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
+            if let err = error {
+                print(err)
+                completion(false)
+                return
+            }
+            
+            guard let uid = user?.user.uid else { return }
+            
+            print("Successfully created user: ", uid)
+                
+            guard let uploadData = profileImage.jpegData(compressionQuality: 0.5) else {
+                completion(false)
+                return }
+            
+            let filename = NSUUID().uuidString
+            
+             let storageRef = Storage.storage().reference().child("profile_images").child(filename)
+            storageRef.putData(uploadData, metadata: nil) { (metadata, err) in
+                if let err = err {
+                    print("Failed to upload profile image:", err)
+                    completion(false)
+                    return
+                }
+                storageRef.downloadURL { (downloadURL, error) in
+                    guard let profileImageUrl = downloadURL?.absoluteString else { completion(false)
+                        return
+                    }
+                    
+                     print("Successfully uploaded profile image:", profileImageUrl)
+                    
+                     let dictionaryValues = ["username": username, "profileimageurl": profileImageUrl]
+                     let values = [uid: dictionaryValues]
+                    
+                    Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
+                        
+                        if let err = err {
+                            print("Failed to save user info into db:", err)
+                            completion(false)
+                            return
+                        }
+                        
+                        print("Successfully saved user info to db")
+                        completion(true)
+                    })
+                }
+            }
+        }
+    }
 }

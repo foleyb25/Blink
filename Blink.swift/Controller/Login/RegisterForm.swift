@@ -11,6 +11,13 @@ import Firebase
 
 class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    let activityIndicatorView: UIActivityIndicatorView = {
+        let aiv = UIActivityIndicatorView(style: .whiteLarge)
+        aiv.translatesAutoresizingMaskIntoConstraints = false
+        //aiv.startAnimating()
+        return aiv
+    }()
+    
     let imageSelector: UIButton = {
         let viewItem = UIButton(type: .system)
         viewItem.setImage(UIImage(named: "missing_profile_image")?.withRenderingMode(.alwaysOriginal), for: .normal)
@@ -121,8 +128,7 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
         addBlurEffect()
         view.addSubview(imageSelector)
         view.addSubview(stackView)
-        //stackView.addArrangedSubview(firstNameField)
-        //stackView.addArrangedSubview(lastNameField)
+        view.addSubview(activityIndicatorView)
         stackView.addArrangedSubview(userNameField)
         stackView.addArrangedSubview(emailField)
         stackView.addArrangedSubview(passwordField)
@@ -197,54 +203,23 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
         
         guard let profileImage = imageSelector.imageView?.image else { return }
         
-        registerNewUser(email: email, password: password, username: username, profileImage: profileImage)
+        APIService.shared.registerNewUser(email: email, password: password, username: username, profileImage: profileImage) { (bool) in
+            self.activityIndicatorView.stopAnimating()
+            if bool {
+                print("Dismissing")
+                self.dismiss(animated: false) {
+                    Switcher.shared.updateRootVC()
+                }
                 
-    }
-    
-    func registerNewUser(email: String, password: String, username: String, profileImage: UIImage) {
-        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
-            if let err = error {
-                print(err)
-                return
+            } else {
+                print("Error Occured")
             }
             
-            guard let uid = user?.user.uid else { return }
-            
-            print("Successfully created user: ", uid)
-                
-            guard let uploadData = profileImage.jpegData(compressionQuality: 0.5) else { return }
-            
-            let filename = NSUUID().uuidString
-            
-             let storageRef = Storage.storage().reference().child("profile_images").child(filename)
-            storageRef.putData(uploadData, metadata: nil) { (metadata, err) in
-                if let err = err {
-                    print("Failed to upload profile image:", err)
-                    return
-                }
-                storageRef.downloadURL { (downloadURL, error) in
-                    guard let profileImageUrl = downloadURL?.absoluteString else { return }
-                    
-                     print("Successfully uploaded profile image:", profileImageUrl)
-                    
-                     let dictionaryValues = ["username": username, "profileimageurl": profileImageUrl]
-                     let values = [uid: dictionaryValues]
-                    
-                    Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
-                        
-                        if let err = err {
-                            print("Failed to save user info into db:", err)
-                            return
-                        }
-                        
-                        print("Successfully saved user info to db")
-                        self.dismiss(animated: false) {
-                            Switcher.shared.updateRootVC()
-                        }
-                    })
-                }
-            }
         }
+
+        print("API Called")
+        activityIndicatorView.startAnimating()
+                
     }
     
     @objc func handleCancel() {
@@ -253,6 +228,11 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
     
     private func setupConstraints() {
 
+        activityIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        activityIndicatorView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        activityIndicatorView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        activityIndicatorView.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        
         imageSelector.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         imageSelector.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50).isActive = true
         imageSelector.heightAnchor.constraint(equalToConstant: 120).isActive = true
