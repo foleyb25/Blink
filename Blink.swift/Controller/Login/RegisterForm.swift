@@ -14,9 +14,11 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
     let activityIndicatorView: UIActivityIndicatorView = {
         let aiv = UIActivityIndicatorView(style: .whiteLarge)
         aiv.translatesAutoresizingMaskIntoConstraints = false
-        aiv.backgroundColor = UIColor(white: 0, alpha: 0.25)
+        aiv.backgroundColor = UIColor(white: 0, alpha: 0.5)
+        aiv.isOpaque = true
         return aiv
     }()
+    
     
     let imageSelector: UIButton = {
         let viewItem = UIButton(type: .system)
@@ -128,13 +130,13 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
         addBlurEffect()
         view.addSubview(imageSelector)
         view.addSubview(stackView)
-        view.addSubview(activityIndicatorView)
         stackView.addArrangedSubview(userNameField)
         stackView.addArrangedSubview(emailField)
         stackView.addArrangedSubview(passwordField)
         stackView.addArrangedSubview(passwordVerificationField)
         view.addSubview(registerButton)
         view.addSubview(cancelButton)
+        view.addSubview(activityIndicatorView)
         setupConstraints()
         addGestureRecognizers()
     }
@@ -170,8 +172,6 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
     }
     
     @objc func dismissKeyboard() {
-        //firstNameField.resignFirstResponder()
-        //lastNameField.resignFirstResponder()
         userNameField.resignFirstResponder()
         emailField.resignFirstResponder()
         passwordField.resignFirstResponder()
@@ -207,8 +207,8 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
             self.activityIndicatorView.stopAnimating()
             if bool {
                 print("Dismissing")
-                self.dismiss(animated: false) {
-                    Switcher.shared.updateRootVC()
+                self.dismiss(animated: true) {
+                    self.loginController?.dismissController()
                 }
                 
             } else {

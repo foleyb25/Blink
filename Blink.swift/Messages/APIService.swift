@@ -13,7 +13,7 @@ class APIService: NSObject {
     static let shared = APIService()
     let imageCache = NSCache<NSString, UIImage>()
     
-       func fetchUser(completion: @escaping (User) -> ()) {
+    func fetchUser(completion: @escaping (User) -> ()) {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             
             Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -28,7 +28,25 @@ class APIService: NSObject {
             }) { (err) in
                 print("Failed to fetch user:", err)
             }
-        }
+    }
+    
+//    func fetchUsers(completion: @escaping ([User]) -> ()) {
+//            guard let uid = Auth.auth().currentUser?.uid else { return }
+//            
+//            Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+//                
+//                guard let dictionary = snapshot.value as? [String: Any] else { return }
+//                
+//                let user = User(dictionary: dictionary)
+//            
+//                DispatchQueue.main.async {
+//                    completion(user)
+//                }
+//
+//            }) { (err) in
+//                print("Failed to fetch user:", err)
+//            }
+//    }
     
     func fetchProfilePictureWithUrl(urlString: String, completion: @escaping (UIImage) -> ()) {
             
@@ -60,7 +78,9 @@ class APIService: NSObject {
         Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
             if let err = error {
                 print(err)
-                completion(false)
+                DispatchQueue.main.async {
+                    completion(false)
+                }
                 return
             }
             
@@ -69,7 +89,9 @@ class APIService: NSObject {
             print("Successfully created user: ", uid)
                 
             guard let uploadData = profileImage.jpegData(compressionQuality: 0.5) else {
-                completion(false)
+                DispatchQueue.main.async {
+                    completion(false)
+                }
                 return }
             
             let filename = NSUUID().uuidString
@@ -78,11 +100,16 @@ class APIService: NSObject {
             storageRef.putData(uploadData, metadata: nil) { (metadata, err) in
                 if let err = err {
                     print("Failed to upload profile image:", err)
-                    completion(false)
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
                     return
                 }
                 storageRef.downloadURL { (downloadURL, error) in
-                    guard let profileImageUrl = downloadURL?.absoluteString else { completion(false)
+                    guard let profileImageUrl = downloadURL?.absoluteString else {
+                        DispatchQueue.main.async {
+                            completion(false)
+                        }
                         return
                     }
                     
@@ -95,12 +122,17 @@ class APIService: NSObject {
                         
                         if let err = err {
                             print("Failed to save user info into db:", err)
-                            completion(false)
+                            DispatchQueue.main.async {
+                                completion(false)
+                            }
                             return
                         }
                         
                         print("Successfully saved user info to db")
-                        completion(true)
+                        DispatchQueue.main.async {
+                            completion(true)
+                        }
+                        
                     })
                 }
             }
@@ -117,11 +149,15 @@ class APIService: NSObject {
             }
             
             guard let uid = user?.user.uid else {
-                completion(false)
+                DispatchQueue.main.async {
+                    completion(false)
+                }
                 return }
             
             print("Successfully logged back in with user:", uid)
-            completion(true)
+            DispatchQueue.main.async {
+                completion(true)
+            }
         })
     }
     

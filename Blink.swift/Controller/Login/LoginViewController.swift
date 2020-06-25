@@ -14,7 +14,8 @@ class LoginViewController: UIViewController {
     let activityIndicatorView: UIActivityIndicatorView = {
         let aiv = UIActivityIndicatorView(style: .whiteLarge)
         aiv.translatesAutoresizingMaskIntoConstraints = false
-        aiv.backgroundColor = UIColor(white: 0, alpha: 0.25)
+        aiv.backgroundColor = UIColor(white: 0, alpha: 0.5)
+        aiv.isOpaque = true
         return aiv
     }()
     
@@ -122,8 +123,6 @@ class LoginViewController: UIViewController {
         APIService.shared.signInUser(email: email, password: password) { (bool) in
             self.activityIndicatorView.stopAnimating()
             if bool {
-                Switcher.shared.updateRootVC()
-                print("Handle dismiss")
                 self.dismissController()
             } else {
                 
@@ -136,7 +135,9 @@ class LoginViewController: UIViewController {
     
     
     func dismissController() {
-        dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true) {
+            Switcher.shared.updateRootVC()
+        }
     }
     
     @objc func presentRegistrationForm() {
