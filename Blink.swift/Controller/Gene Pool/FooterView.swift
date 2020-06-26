@@ -10,6 +10,7 @@ import UIKit
 
 class FooterView: UICollectionViewCell {
     
+    let safeAreaBottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
     
     lazy var showMoreButton: UIButton = {
         let button = UIButton(type: .system)

@@ -57,7 +57,6 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         setupProfileView()
         setupSelector()
         setupCollectionView()
-        print("Gene Pool VDL")
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Camera Button", style: .plain, target: self, action: #selector(handleCameraNavButton))
         let swipeDownGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleDownSwipe))
         swipeDownGestureRecognizer.direction = .down

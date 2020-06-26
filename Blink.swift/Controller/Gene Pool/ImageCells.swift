@@ -24,15 +24,18 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
        let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.bounces = false
+        cv.contentInsetAdjustmentBehavior = .always
         return cv
     }()
+    
+    let safeAreaBottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
     
     override func setupViews() {
         super.setupViews()
                let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         blurEffectView.frame = self.bounds
                blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        imageCollection.backgroundColor = UIColor(displayP3Red: 0, green: 35/255, blue: 1, alpha: 0.23)
+        imageCollection.backgroundColor = .white
         //imageCollection.insertSubview(blurEffectView, at: 0)
         imageCollection.dataSource = self
         imageCollection.delegate = self
@@ -41,6 +44,7 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
         imageCollection.register(FooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerId)
         addConstraintsWithFormat("H:|[v0]|", views: imageCollection)
         addConstraintsWithFormat("V:|[v0]|", views: imageCollection)
+        imageCollection.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: safeAreaBottom, right: 0)
         imageCollection.showsVerticalScrollIndicator = false
     }
     
@@ -50,8 +54,9 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
         return footer
     }
 
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSize(width: frame.width, height: 175)
+        return CGSize(width: frame.width, height: 50)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -63,7 +68,7 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
     }
     
      func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: frame.width - 100, height: frame.width)
+        return CGSize(width: frame.width/2 - 2, height: 200)
        }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -75,7 +80,7 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 1, left: 50, bottom: 0, right: 50)
+        return UIEdgeInsets(top: 1, left: 1, bottom: 0, right: 1)
     }
     
     func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
