@@ -16,8 +16,14 @@ class Switcher {
     
     var currentUser: User? {
         didSet {
-            guard let camController = cameraNavController.viewControllers[0] as? CameraViewController else { return }
-            camController.user = self.currentUser
+            if #available(iOS 13.0, *) {
+                 UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
+             UIApplication.shared.windows.first?.rootViewController = rootVC
+            } else {
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+             appDelegate.window?.rootViewController?.dismiss(animated: true, completion: nil)
+             appDelegate.window?.rootViewController = rootVC
+            }
         }
     }
     
@@ -39,19 +45,22 @@ class Switcher {
                 APIService.shared.fetchUser { (user: User) in
                     self.currentUser = user
                 }
+                rootVC = nil
                 rootVC = self.cameraNavController
            } else {
-                self.currentUser = nil
+                currentUser = nil
+                rootVC = nil
                 rootVC = self.loginNavController
            }
-           
-           if #available(iOS 13.0, *) {
-                UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
-            UIApplication.shared.windows.first?.rootViewController = rootVC
-           } else {
-               let appDelegate = UIApplication.shared.delegate as! AppDelegate
-            appDelegate.window?.rootViewController?.dismiss(animated: true, completion: nil)
-            appDelegate.window?.rootViewController = rootVC
-           }
-       }
+    }
+    
+    func updateUserInfowith(genderId: String?, didRegisterGP: Bool?) {
+        if let gid = genderId {
+            currentUser?.genderId = gid
+        }
+        
+        if let didRegister = didRegisterGP {
+            currentUser?.didRegisterGP = didRegister
+        }
+    }
 }

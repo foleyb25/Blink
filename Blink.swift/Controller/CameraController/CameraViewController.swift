@@ -256,14 +256,11 @@ class CameraViewController: UIViewController {
     
     internal lazy var genePoolController: GenePoolViewController = {
         let layout = UICollectionViewFlowLayout()
-        
         layout.scrollDirection = .horizontal
         layout.sectionHeadersPinToVisibleBounds = true
-        let collectionView = GenePoolViewController()
-        return collectionView
+        let genePoolController = GenePoolViewController()
+        return genePoolController
     }()
-    
-    var user: User?
     
     // MARK: View Controller Life Cycle
     override func viewDidLoad() {
@@ -345,7 +342,7 @@ class CameraViewController: UIViewController {
     //MARK: View Will Appear
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-       
+       setupNavBar()
         
         //transition back from the sendMessageController calls View Will Appear. Keep The camera in preview mode and return
         if lockPreviewMode {
@@ -414,12 +411,6 @@ class CameraViewController: UIViewController {
         setButtonConstraints()
         addGestureRecognizers()
         
-        //makes nav bar background invisible
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.navigationBar.backgroundColor = UIColor.clear
-        
         sendButton.isEnabled = false
         cancelButton.isEnabled = false
         videoButton.isEnabled = false
@@ -433,6 +424,15 @@ class CameraViewController: UIViewController {
         previewView.layer.addSublayer(previewLayer)
         previewView.layer.addSublayer(imagePreview.layer)
         previewView.layer.addSublayer(playerLayer)
+    }
+    
+    
+    internal func setupNavBar() {
+        //makes nav bar background invisible
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clear
     }
     
     // MARK: Toggle Preview Mode

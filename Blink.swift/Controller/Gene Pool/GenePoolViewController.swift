@@ -10,47 +10,9 @@ import UIKit
 
 class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    var user: User? {
-        didSet {
-            guard let url = user?.profileImageURL else { return }
-            APIService.shared.fetchProfilePictureWithUrl(urlString: url) { (image: UIImage) in
-                self.profileImageView.image = image
-            }
-            nameLabel.text = user?.username
-        }
-    }
-    
-    var cameraController: CameraViewController?
-    
     let cellId = "CellId"
     
     let profileViewHeight: CGFloat = 250
-    
-    override func viewDidLoad() {
-        setupProfileView()
-        setupSelector()
-        setupCollectionView()
-        print("Gene Pool VDL")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Camera Button", style: .plain, target: self, action: #selector(handleCameraNavButton))
-        let swipeDownGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleDownSwipe))
-        swipeDownGestureRecognizer.direction = .down
-        view.addGestureRecognizer(swipeDownGestureRecognizer)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        getUser()
-    }
-    
-    func getUser() {
-        guard let camController = cameraController else { return }
-        self.user = camController.user
-    }
-    
-    //Fetch new media content from DB here
-    @objc func handleDownSwipe() {
-        print("swipe down")
-    }
     
     let collection: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
@@ -59,26 +21,6 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         cv.bounces = false
         return cv
     }()
-    
-    @objc func handleCameraNavButton() {
-        dismiss(animated: true, completion: nil)
-    }
-    func setupCollectionView(){
-        view.addSubview(collection)
-        collection.dataSource = self
-        collection.delegate = self
-        collection.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
-        collection.showsHorizontalScrollIndicator = false
-        collection.contentInsetAdjustmentBehavior = .never
-        collection.isPagingEnabled = true
-        collection.bounces = false
-        collection.translatesAutoresizingMaskIntoConstraints = false
-        collection.topAnchor.constraint(equalTo: genderSelector.bottomAnchor).isActive = true
-        collection.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        collection.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-        //collection.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        collection.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-    }
     
     let profileView: UIView = {
         let pv = UIView()
@@ -111,6 +53,66 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         return gs
     }()
     
+    override func viewDidLoad() {
+        setupProfileView()
+        setupSelector()
+        setupCollectionView()
+        print("Gene Pool VDL")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Camera Button", style: .plain, target: self, action: #selector(handleCameraNavButton))
+        let swipeDownGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleDownSwipe))
+        swipeDownGestureRecognizer.direction = .down
+        view.addGestureRecognizer(swipeDownGestureRecognizer)
+        setProfileImage()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavBar()
+    }
+    
+    internal func setupNavBar() {
+        //makes nav bar background invisible
+        self.navigationController?.navigationBar.setBackgroundImage(.none, for: .default)
+        self.navigationController?.navigationBar.shadowImage = .none
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.backgroundColor = .none
+    }
+    
+    func setProfileImage() {
+        let user = Switcher.shared.currentUser
+        guard let url = user?.profileImageURL else { return }
+        APIService.shared.fetchImage(urlString: url) { (image: UIImage) in
+            self.profileImageView.image = image
+        }
+        nameLabel.text = Switcher.shared.currentUser?.username
+    }
+    
+    //Fetch new media content from DB here
+    @objc func handleDownSwipe() {
+        print("swipe down")
+    }
+    
+    @objc func handleCameraNavButton() {
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func setupCollectionView(){
+        view.addSubview(collection)
+        collection.dataSource = self
+        collection.delegate = self
+        collection.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
+        collection.showsHorizontalScrollIndicator = false
+        collection.contentInsetAdjustmentBehavior = .never
+        collection.isPagingEnabled = true
+        collection.bounces = false
+        collection.translatesAutoresizingMaskIntoConstraints = false
+        collection.topAnchor.constraint(equalTo: genderSelector.bottomAnchor).isActive = true
+        collection.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        collection.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        //collection.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        collection.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+    }
+    
     func setupSelector() {
         view.addSubview(genderSelector)
         view.addConstraintsWithFormat("H:|[v0]|", views: genderSelector)
@@ -139,7 +141,6 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         nameLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         nameLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
     }
-    
     
     //Brings the imageprofile view menu down to orignal state
     func pullDownProfileView() {

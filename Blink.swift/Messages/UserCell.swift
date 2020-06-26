@@ -12,31 +12,23 @@ class UserCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        textLabel?.text = "Barney"
-        detailTextLabel?.text = "Barney and friends Incorporated"
-        
         setupConstraints()
-//        textLabel?.frame = CGRect(x: 70, y: textLabel!.frame.origin.y - 2, width: textLabel!.frame.width, height: textLabel!.frame.height )
-//
-//        detailTextLabel?.frame = CGRect(x: 70, y: detailTextLabel!.frame.origin.y + 2, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height )
     }
     
-    let userTextLabel: UILabel = {
-       let textLabel = UILabel()
-        
-        return textLabel
-    }()
-    
-    let userDetailTextLabel: UILabel = {
-        let textLabel = UILabel()
-        
-        return textLabel
-    }()
+    var user: User? {
+        didSet {
+            textLabel?.text = user?.username
+            detailTextLabel?.text = user?.firstName ?? " "
+            guard let profileImageUrl = user?.profileImageURL else { return }
+            APIService.shared.fetchImage(urlString: profileImageUrl) { (thumbnailImage) in
+                self.profileImageThumbnail.image = thumbnailImage
+            }
+            
+        }
+    }
     
     let profileImageThumbnail: UIImageView = {
         let iv = UIImageView()
-        iv.backgroundColor = .black
         iv.layer.cornerRadius = 25
         iv.layer.masksToBounds = true
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -45,9 +37,7 @@ class UserCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .blue
         addSubview(profileImageThumbnail)
-        
     }
     
     func setupConstraints() {

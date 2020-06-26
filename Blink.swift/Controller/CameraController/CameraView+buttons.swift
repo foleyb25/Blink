@@ -97,9 +97,17 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
     }
     
     @objc func genePoolButtonPressed() {
-        genePoolController.cameraController = self
-        let navController = UINavigationController(rootViewController: genePoolController)
-        navController.modalPresentationStyle = .fullScreen
-        present(navController, animated: true, completion: nil)
+        let didRegister = Switcher.shared.currentUser?.didRegisterGP ?? false
+        if didRegister {
+            navigationController?.pushViewController(genePoolController, animated: true)
+        } else {
+            let genePoolRegisterController = GenePoolRegisterController()
+            genePoolRegisterController.cameraViewController = self
+            navigationController?.pushViewController(genePoolRegisterController, animated: true)
+        }
+    
+       
+        
+
     }
 }

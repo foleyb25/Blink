@@ -30,31 +30,46 @@ class APIService: NSObject {
             }
     }
     
-//    func fetchUsers(completion: @escaping ([User]) -> ()) {
-//            guard let uid = Auth.auth().currentUser?.uid else { return }
-//            
-//            Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-//                
-//                guard let dictionary = snapshot.value as? [String: Any] else { return }
-//                
-//                let user = User(dictionary: dictionary)
-//            
-//                DispatchQueue.main.async {
-//                    completion(user)
-//                }
-//
-//            }) { (err) in
-//                print("Failed to fetch user:", err)
-//            }
-//    }
+    func fetchUsers(completion: @escaping ([User]) -> ()) {
+        var users = [User]()
+        Database.database().reference().child("users").observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            guard let dictionaries = snapshot.value as? [String: Any] else { return }
+            
+            dictionaries.forEach({ (key, value) in
+                
+                if key == Auth.auth().currentUser?.uid {
+                    print("Found myself, omit from list")
+                    return
+                }
+                
+                guard let userDictionary = value as? [String: Any] else { return }
+                
+                let user = User(dictionary: userDictionary)
+                users.append(user)
+            })
+            
+            users.sort(by: { (u1, u2) -> Bool in
+                
+                return u1.username!.compare(u2.username!) == .orderedAscending
+                
+            })
+            
+            DispatchQueue.main.async {
+                completion(users)
+            }
+            
+        }) { (err) in
+            print("Failed to fetch user:", err)
+        }
+    }
     
-    func fetchProfilePictureWithUrl(urlString: String, completion: @escaping (UIImage) -> ()) {
+    func fetchImage(urlString: String, completion: @escaping (UIImage) -> ()) {
             
             if let imageFromCache = imageCache.object(forKey: urlString as NSString) {
                 return completion(imageFromCache)
             }
             
-            print("Loading image...")
             guard let url = URL(string: urlString) else { return }
             
             URLSession.shared.dataTask(with: url) { (data, response, err) in
@@ -159,6 +174,29 @@ class APIService: NSObject {
                 completion(true)
             }
         })
+    }
+    
+    func updateDBwith(genderId: String, completion: @escaping (Bool) -> ()) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+    
+        let value = ["genderid": genderId, "didregister": true] as [String : Any]
+
+        Database.database().reference().child("users").child(uid).updateChildValues(value) { (err, ref) in
+            if let error = err {
+                print("Failed to save user info into db:", error)
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+                return
+            }
+            
+            print("Successfully saved gender data info to db")
+            Switcher.shared.updateUserInfowith(genderId: genderId, didRegisterGP: true)
+            DispatchQueue.main.async {
+                completion(true)
+            }
+        }
+            
     }
     
 }
