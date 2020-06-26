@@ -14,16 +14,10 @@ class Switcher {
     static let shared = Switcher()
     var rootVC: UIViewController?
     
+    // only set root vc when user has been set. creates navigation bugs if not set
     var currentUser: User? {
         didSet {
-            if #available(iOS 13.0, *) {
-                 UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
-             UIApplication.shared.windows.first?.rootViewController = rootVC
-            } else {
-                let appDelegate = UIApplication.shared.delegate as! AppDelegate
-             appDelegate.window?.rootViewController?.dismiss(animated: true, completion: nil)
-             appDelegate.window?.rootViewController = rootVC
-            }
+           setRootVC()
         }
     }
     
@@ -51,7 +45,19 @@ class Switcher {
                 currentUser = nil
                 rootVC = nil
                 rootVC = self.loginNavController
+                setRootVC()
            }
+    }
+    
+    func setRootVC() {
+        if #available(iOS 13.0, *) {
+             UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
+         UIApplication.shared.windows.first?.rootViewController = rootVC
+        } else {
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+         appDelegate.window?.rootViewController?.dismiss(animated: true, completion: nil)
+         appDelegate.window?.rootViewController = rootVC
+        }
     }
     
     func updateUserInfowith(genderId: String?, didRegisterGP: Bool?) {
