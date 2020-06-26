@@ -20,7 +20,7 @@ class GenderSelector: UIView, UICollectionViewDataSource, UICollectionViewDelega
     lazy var collectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = UIColor(white: 0.75, alpha: 0.75)
+        collectionView.backgroundColor = UIColor(white: 0.75, alpha: 1)
         collectionView.dataSource = self
         collectionView.delegate = self
         return collectionView
@@ -115,16 +115,10 @@ class SelectionCell: BaseCell {
         return label
     }()
     
-//    override var isHighlighted: Bool {
-//        didSet {
-//            backgroundColor = UIColor.lightGray
-//        }
-//    }
-    
     override var isSelected: Bool {
            didSet {
-            backgroundColor = isSelected ? UIColor(white: 1, alpha: 0.9) : UIColor.clear
-            label.textColor = isSelected ? UIColor(white: 0, alpha: 1) : UIColor(white: 0, alpha: 0.5)
+            backgroundColor = isSelected ? UIColor(white: 1, alpha: 1) : UIColor.clear
+            label.textColor = isSelected ? UIColor(white: 0, alpha: 1) : UIColor(white: 0.5, alpha: 1)
            }
        }
     
