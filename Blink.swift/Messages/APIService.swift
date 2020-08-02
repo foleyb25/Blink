@@ -234,14 +234,14 @@ class APIService: NSObject {
                 Database.database().reference().child("genepool").child(uid).updateChildValues(value, withCompletionBlock: { (err, ref) in
                     
                     if let err = err {
-                        print("Failed to save user info into db:", err)
+                        print("Failed to save genepool info into db:", err)
                         DispatchQueue.main.async {
                             completion(false)
                         }
                         return
                     }
                     
-                    print("Successfully saved user info to db")
+                    print("Successfully saved genepool info to db")
                     DispatchQueue.main.async {
                         completion(true)
                     }
