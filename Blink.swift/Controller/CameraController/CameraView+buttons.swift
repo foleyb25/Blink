@@ -89,7 +89,10 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
     
     @objc func sendPressed() {
         lockPreviewMode = true
-        self.navigationController?.pushViewController(SendMessageController(), animated: true)
+        let sendMessageController = SendMessageController()
+        sendMessageController.image = self.image
+        sendMessageController.camController = self
+        self.navigationController?.pushViewController(sendMessageController, animated: true)
     }
     
     @objc func friendsButtonPressed() {

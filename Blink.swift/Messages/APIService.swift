@@ -199,4 +199,56 @@ class APIService: NSObject {
             
     }
     
+    func sendMediaToGenePool(image: UIImage, completion: @escaping (Bool) -> ()) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        guard let uploadData = image.jpegData(compressionQuality: 0.5) else {
+            DispatchQueue.main.async {
+                completion(false)
+            }
+            return }
+        
+        let filename = NSUUID().uuidString
+        
+         let storageRef = Storage.storage().reference().child("genepoolimages").child(filename)
+        storageRef.putData(uploadData, metadata: nil) { (metadata, err) in
+            if let err = err {
+                print("Failed to upload profile image:", err)
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+                return
+            }
+            storageRef.downloadURL { (downloadURL, error) in
+                guard let profileImageUrl = downloadURL?.absoluteString else {
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                    return
+                }
+                
+                 print("Successfully uploaded media into genepool:", profileImageUrl)
+                
+                let value = ["imageid": filename] as [String : Any]
+                
+                Database.database().reference().child("genepool").child(uid).updateChildValues(value, withCompletionBlock: { (err, ref) in
+                    
+                    if let err = err {
+                        print("Failed to save user info into db:", err)
+                        DispatchQueue.main.async {
+                            completion(false)
+                        }
+                        return
+                    }
+                    
+                    print("Successfully saved user info to db")
+                    DispatchQueue.main.async {
+                        completion(true)
+                    }
+                    
+                })
+            }
+        }
+    }
+    
 }

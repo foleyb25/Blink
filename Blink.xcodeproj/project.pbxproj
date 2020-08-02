@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050F91CA2475E96F003C29F9 /* RegisterForm.swift */; };
+		05519CA424D4D9E4002D8C72 /* GPMediaContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05519CA324D4D9E4002D8C72 /* GPMediaContent.swift */; };
 		055DF160249B1DA8003364F7 /* CameraView+constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF15F249B1DA8003364F7 /* CameraView+constraints.swift */; };
 		055DF162249C011F003364F7 /* SendMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF161249C011F003364F7 /* SendMessageController.swift */; };
 		055DF165249C0314003364F7 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF164249C0314003364F7 /* UserCell.swift */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		050F91CA2475E96F003C29F9 /* RegisterForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterForm.swift; sourceTree = "<group>"; };
+		05519CA324D4D9E4002D8C72 /* GPMediaContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPMediaContent.swift; sourceTree = "<group>"; };
 		055DF15F249B1DA8003364F7 /* CameraView+constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView+constraints.swift"; sourceTree = "<group>"; };
 		055DF161249C011F003364F7 /* SendMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageController.swift; sourceTree = "<group>"; };
 		055DF164249C0314003364F7 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				0563CD3F2499647B0082315F /* GenePoolViewController.swift */,
+				05519CA324D4D9E4002D8C72 /* GPMediaContent.swift */,
 				0563CD3D2490B7A40082315F /* FooterView.swift */,
 				058A13E9247DBCF50014FD48 /* ImageCells.swift */,
 				058A13E7247DB5570014FD48 /* GenderSelector.swift */,
@@ -372,6 +375,7 @@
 				05601B702478638F00068ADE /* CameraView+gestureRecognizers.swift in Sources */,
 				058A13E3247C8B240014FD48 /* CameraView+captureOutput.swift in Sources */,
 				0563CD3E2490B7A40082315F /* FooterView.swift in Sources */,
+				05519CA424D4D9E4002D8C72 /* GPMediaContent.swift in Sources */,
 				0563CD4624997AAF0082315F /* Extensions.swift in Sources */,
 				058A13E8247DB5570014FD48 /* GenderSelector.swift in Sources */,
 				050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */,
@@ -529,7 +533,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J6UP4S3UAZ;
 				INFOPLIST_FILE = "$(SRCROOT)/Blink.swift/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -549,7 +553,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J6UP4S3UAZ;
 				INFOPLIST_FILE = "$(SRCROOT)/Blink.swift/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

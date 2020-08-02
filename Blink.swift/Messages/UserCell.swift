@@ -27,6 +27,8 @@ class UserCell: UITableViewCell {
         }
     }
     
+    
+    
     let profileImageThumbnail: UIImageView = {
         let iv = UIImageView()
         iv.layer.cornerRadius = 25
@@ -46,19 +48,9 @@ class UserCell: UITableViewCell {
         profileImageThumbnail.heightAnchor.constraint(equalToConstant: 50).isActive = true
         profileImageThumbnail.widthAnchor.constraint(equalToConstant: 50).isActive = true
         
-        textLabel?.translatesAutoresizingMaskIntoConstraints = false
+        textLabel?.frame = CGRect(x: 70, y: textLabel!.frame.origin.y - 2, width: textLabel!.frame.width, height: textLabel!.frame.height )
         
-        textLabel?.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
-        textLabel?.leftAnchor.constraint(equalTo: profileImageThumbnail.rightAnchor, constant: 8).isActive = true
-        textLabel?.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        textLabel?.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        
-        
-        detailTextLabel?.translatesAutoresizingMaskIntoConstraints = false
-        detailTextLabel?.topAnchor.constraint(equalTo: textLabel!.bottomAnchor, constant: 10).isActive = true
-        detailTextLabel?.leftAnchor.constraint(equalTo: profileImageThumbnail.rightAnchor, constant: 8).isActive = true
-        detailTextLabel?.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        detailTextLabel?.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        detailTextLabel?.frame = CGRect(x: 70, y: detailTextLabel!.frame.origin.y + 2, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height )
         
     }
     
