@@ -4,13 +4,13 @@
 
 ## Features and Requirements Cecklist
 ### Feature - Media Capture
-[X] - Audio Video Capture
-[X] - Camera Flip Functionality
-  [] - Camera Flip While Recording
-[] - Ability to add text/drawing to media capture
-[X] - Focus/Zoom Feature
-[] - Add button icons
-[] - 
+[X] - Audio Video Capture \n
+[X] - Camera Flip Functionality \n
+  [] - Camera Flip While Recording \n
+[] - Ability to add text/drawing to media capture \n
+[X] - Focus/Zoom Feature \n
+[] - Add button icons \n
+
 ### Feature - Swipe Navigation
 [X] - Main Menu Right Swipe to show sidebar menu
 [] - Main Menu Pull in Gene Pool with Left Swipe
