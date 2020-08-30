@@ -4,12 +4,12 @@
 
 ## Features and Requirements Cecklist
 ### Feature - Media Capture
-[X] - Audio Video Capture \n
-[X] - Camera Flip Functionality \n
-  [] - Camera Flip While Recording \n
-[] - Ability to add text/drawing to media capture \n
-[X] - Focus/Zoom Feature \n
-[] - Add button icons \n
+[X] - Audio Video Capture <br/>
+[X] - Camera Flip Functionality <br/>
+  [] - Camera Flip While Recording <br/>
+[] - Ability to add text/drawing to media capture <br/>
+[X] - Focus/Zoom Feature <br/>
+[] - Add button icons <br/>
 
 ### Feature - Swipe Navigation
 [X] - Main Menu Right Swipe to show sidebar menu
