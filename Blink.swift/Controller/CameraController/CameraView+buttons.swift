@@ -77,13 +77,13 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
         switch self.flashMode {
         case .off:
             self.flashMode = .auto
-            flashButton.setTitle(" Auto", for: .normal)
+            flashButton.setBackgroundImage(UIImage(systemName: "bolt.circle"), for: .normal)
         case .auto:
             self.flashMode = .on
-            flashButton.setTitle(" On", for: .normal)
+            flashButton.setBackgroundImage(UIImage(systemName: "bolt.fill"), for: .normal)
         case .on:
             self.flashMode = .off
-            flashButton.setTitle(" Off", for: .normal)
+            flashButton.setBackgroundImage(UIImage(systemName: "bolt.slash"), for: .normal)
         }
     }
     

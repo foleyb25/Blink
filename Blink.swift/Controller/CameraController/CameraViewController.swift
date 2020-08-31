@@ -50,7 +50,7 @@ class CameraViewController: UIViewController {
     var audioAuthorized = true
     
     private(set) public var currentCamera = CameraSelection.rear
-    public var flashMode = Flashmode.off
+    public var flashMode = Flashmode.auto
     private var setupResult: SessionSetupResult = .success
     
     private let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera], mediaType: .video, position: .unspecified)
@@ -207,10 +207,9 @@ class CameraViewController: UIViewController {
         let button = UIButton()
         button.addTarget(self, action: #selector(toggleFlashPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Off", for: .normal)
         button.tintColor = .white
         if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "flashlight.on.fill"), for: .normal)
+            button.setBackgroundImage(UIImage(systemName: "bolt.circle"), for: .normal)
         } else {
             button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
         }
