@@ -128,6 +128,7 @@ class CameraViewController: UIViewController {
         button.addTarget(self, action: #selector(capturePhotoPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.titleLabel!.font = UIFont.systemFont(ofSize: 20)
+        button.tintColor = .white
         if #available(iOS 13.0, *) {
             button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
         } else {
@@ -152,8 +153,10 @@ class CameraViewController: UIViewController {
         button.layer.cornerRadius = 35/2
         button.layer.masksToBounds = true
         button.setTitle("", for: .normal)
+        button.tintColor = .white
         if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+            button.setBackgroundImage(UIImage(systemName: "video.circle"), for: .normal)
+
         } else {
             button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
         }
@@ -165,8 +168,9 @@ class CameraViewController: UIViewController {
        button.addTarget(self, action: #selector(handleImagePickerButton), for: .touchDown)
        button.translatesAutoresizingMaskIntoConstraints = false
        button.titleLabel!.font = UIFont.systemFont(ofSize: 20)
+       button.tintColor = .white
        if #available(iOS 13.0, *) {
-           button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+           button.setBackgroundImage(UIImage(systemName: "cube.box"), for: .normal)
        } else {
            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
        }
@@ -177,8 +181,9 @@ class CameraViewController: UIViewController {
         let button = UIButton()
         button.addTarget(self, action: #selector(cancelPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
         if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+            button.setBackgroundImage(UIImage(systemName: "trash"), for: .normal)
         } else {
             button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
         }
@@ -189,8 +194,9 @@ class CameraViewController: UIViewController {
         let button = UIButton()
         button.addTarget(self, action: #selector(flipCameraPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
         if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+            button.setBackgroundImage(UIImage(systemName: "arrow.2.circlepath"), for: .normal)
         } else {
             button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
         }
@@ -202,8 +208,9 @@ class CameraViewController: UIViewController {
         button.addTarget(self, action: #selector(toggleFlashPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Off", for: .normal)
+        button.tintColor = .white
         if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+            button.setBackgroundImage(UIImage(systemName: "flashlight.on.fill"), for: .normal)
         } else {
             button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
         }
@@ -214,8 +221,9 @@ class CameraViewController: UIViewController {
         let button = UIButton()
         button.addTarget(self, action: #selector(sendPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
         if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+            button.setBackgroundImage(UIImage(systemName: "paperplane"), for: .normal)
         } else {
             button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
         }
@@ -227,10 +235,11 @@ class CameraViewController: UIViewController {
         let button = UIButton()
         button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
         if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
+            button.setImage(UIImage(systemName: "person.3.fill"), for: .normal)
         } else {
-            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
+            button.setImage(UIImage(named: "logo_no_bg"), for: .normal)
         }
         return button
     }()
@@ -239,11 +248,8 @@ class CameraViewController: UIViewController {
         let button = UIButton()
         button.addTarget(self, action: #selector(genePoolButtonPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
-        if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
-        } else {
-            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
-        }
+        button.tintColor = .white
+        button.setBackgroundImage(UIImage(named: "gene_pool_button"), for: .normal)
         return button
     }()
     

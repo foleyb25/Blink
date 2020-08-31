@@ -41,6 +41,7 @@ class Switcher {
                 }
                 rootVC = nil
                 rootVC = self.cameraNavController
+                setRootVC()
            } else {
                 currentUser = nil
                 rootVC = nil

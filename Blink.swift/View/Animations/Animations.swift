@@ -23,7 +23,7 @@ class Animations {
     }
     
     private static func moveAndExpand(fromButton: UIButton, toButton: UIButton) {
-        
+        fromButton.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
         UIView.animate(withDuration: 0.25, animations: {
             var transform = CGAffineTransform.identity
             transform = transform.translatedBy(x: toButton.center.x - fromButton.center.x, y: 0)
@@ -33,6 +33,7 @@ class Animations {
     }
     
     static func animateMoveRecordButtonBack(button: UIButton) {
+        button.setBackgroundImage(UIImage(systemName: "video.circle"), for: .normal)
         button.isHidden = true
         button.transform = .identity
         timer.invalidate()
