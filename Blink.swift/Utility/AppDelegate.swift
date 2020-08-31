@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         FirebaseApp.configure()
-        // Override point for customization after application launch.
+        /// Check Version of IOS since IOS 13 or higher looks for 'sceneDelegate.swift' to find the key window.
         if #available(iOS 13.0, *) {
             return true
         } else {
