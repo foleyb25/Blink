@@ -6,6 +6,8 @@
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
 
+
+
 import UIKit
 
 class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -20,6 +22,12 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
         return view
     }()
     
+    let profileView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .red
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -56,14 +64,28 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
             blackView.frame = window.frame
             blackView.alpha = 0
             
+            //self.collectionView.addSubview(profileView)
+            //setupConstraints()
+            
             UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                 
                 self.blackView.alpha = 1
                 
                 self.collectionView.frame = CGRect(x: 0, y: 0, width: self.collectionView.frame.width, height: self.collectionView.frame.height)
                 
+               
             }, completion: nil)
         }
+    }
+    
+    func setupConstraints() {
+//        let profileViewHeight: CGFloat = 100.0
+//        collectionView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+//        profileView.topAnchor.constraint(equalTo: collectionView.topAnchor).isActive = true
+//        profileView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+//        profileView.widthAnchor.constraint(equalTo: collectionView.widthAnchor).isActive = true
+//        profileView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor).isActive = true
+//
     }
     
     @objc func handleDismiss() {
@@ -79,7 +101,7 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
     let cellId = "cellid"
     
     private lazy var cellItems: [CellItem] = {
-        return [CellItem(name: "Profile", imageName: "logo_no_bg", controller: Profile()), CellItem(name: "Settings", imageName: "logo_no_bg", controller: Settings())]
+        return [CellItem(name: "Profile", imageName: "person.fill", controller: ProfileController()), CellItem(name: "Showcase", imageName: "star.fill", controller: ShowcaseController()), CellItem(name: "Friends", imageName: "person.3.fill", controller: FriendsController()), CellItem(name: "Connections", imageName: "shuffle", controller: ConnectionsController()),  CellItem(name: "Settings", imageName: "gear", controller: SettingsController())]
     }()
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -111,32 +133,6 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
         let controller = cellItems[indexPath.item].controller
         camViewController.present(controller, animated: true, completion: nil)
     }
-    
 }
 
-class CellItem: NSObject {
-    let name: String
-    let imageName: String
-    let controller: UIViewController
-    
-    init(name: String, imageName: String, controller: UIViewController) {
-        self.name = name
-        self.imageName = imageName
-        self.controller = controller
-    }
-}
 
-class BaseCell: UICollectionViewCell {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-    
-    func setupViews() {
-        
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init has not been implemented")
-    }
-}

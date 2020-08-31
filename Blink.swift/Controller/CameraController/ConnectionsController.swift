@@ -1,19 +1,18 @@
 //
-//  Profile.swift
-//  Blink2
+//  Connections.swift
+//  Blink
 //
-//  Created by Brian Foley on 5/21/20.
+//  Created by Brian Foley on 8/31/20.
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
 
 import UIKit
 
-class Profile: UIViewController {
+class ConnectionsController: UIViewController {
     
     lazy var backButton: UIButton = {
        let button = UIButton()
-        button.setTitle("Cancel", for: .normal)
-        button.setBackgroundImage(UIImage(named: "logo_no_big"), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "camera.fill"), for: .normal)
         button.addTarget(self, action: #selector(dismiss(animated:completion:)), for: .touchDown)
         return button
     }()

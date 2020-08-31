@@ -14,6 +14,13 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
     
     let profileViewHeight: CGFloat = 250
     
+    lazy var backButton: UIButton = {
+        let button = UIButton()
+        button.setBackgroundImage(UIImage(systemName: "camera.fill"), for: .normal)
+        button.addTarget(self, action: #selector(handleCameraNavButton), for: .touchUpInside)
+        return button
+    }()
+    
     let collection: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -53,11 +60,13 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         return gs
     }()
     
+    
+    
     override func viewDidLoad() {
         setupProfileView()
         setupSelector()
         setupCollectionView()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Camera Button", style: .plain, target: self, action: #selector(handleCameraNavButton))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         let swipeDownGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleDownSwipe))
         swipeDownGestureRecognizer.direction = .down
         view.addGestureRecognizer(swipeDownGestureRecognizer)
@@ -108,7 +117,6 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         collection.topAnchor.constraint(equalTo: genderSelector.bottomAnchor).isActive = true
         collection.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         collection.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-        //collection.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         collection.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
     }
     

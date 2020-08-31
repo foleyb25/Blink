@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class Settings: UIViewController {
+class SettingsController: UIViewController {
     
     let signoutButton: UIButton = {
         let button = UIButton()
@@ -37,7 +37,6 @@ class Settings: UIViewController {
     @objc func handleLogout() {
         do {
             try Auth.auth().signOut()
-            
             Switcher.shared.updateRootVC()
             dismiss(animated: true, completion: nil)
             

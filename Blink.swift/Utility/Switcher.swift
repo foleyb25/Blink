@@ -17,6 +17,7 @@ class Switcher {
     // only set root vc when user has been set. creates navigation bugs if not set
     var currentUser: User? {
         didSet {
+           rootVC = self.cameraNavController
            setRootVC()
         }
     }
@@ -33,15 +34,23 @@ class Switcher {
         return navController
     }()
     
+    
+    /// This function updates the Root View Controller with the current User.
+    ///
+    /// ```
+    /// Need to optimize the duration of presenting the rootVC. Start with database retrieval as the first point of optimization
+    /// ```
+    ///
+    /// - Warning: The updated root controller may take awhile since the rootVC doesnt get set until DB retrieval has been made
+    /// - Parameter None
+    /// - Returns: None
     func updateRootVC() {
           
            if(Auth.auth().currentUser != nil) {
+                rootVC = nil
                 APIService.shared.fetchUser { (user: User) in
                     self.currentUser = user
                 }
-                rootVC = nil
-                rootVC = self.cameraNavController
-                setRootVC()
            } else {
                 currentUser = nil
                 rootVC = nil
@@ -50,7 +59,7 @@ class Switcher {
            }
     }
     
-    func setRootVC() {
+    private func setRootVC() {
         if #available(iOS 13.0, *) {
              UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
          UIApplication.shared.windows.first?.rootViewController = rootVC

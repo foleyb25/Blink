@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050F91CA2475E96F003C29F9 /* RegisterForm.swift */; };
+		051A849124FD6DC800B387D6 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A849024FD6DC800B387D6 /* ConnectionsController.swift */; };
+		051A849324FD6DE000B387D6 /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A849224FD6DE000B387D6 /* FriendsController.swift */; };
+		051A849524FD742000B387D6 /* BaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A849424FD742000B387D6 /* BaseCell.swift */; };
+		051A849724FD752900B387D6 /* ShowcaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A849624FD752900B387D6 /* ShowcaseController.swift */; };
 		05519CA424D4D9E4002D8C72 /* GPMediaContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05519CA324D4D9E4002D8C72 /* GPMediaContent.swift */; };
 		055DF160249B1DA8003364F7 /* CameraView+constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF15F249B1DA8003364F7 /* CameraView+constraints.swift */; };
 		055DF162249C011F003364F7 /* SendMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF161249C011F003364F7 /* SendMessageController.swift */; };
@@ -17,8 +21,8 @@
 		05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B4124763E3500068ADE /* SideBarMenu.swift */; };
 		05601B64247765B000068ADE /* SideBarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B63247765B000068ADE /* SideBarCell.swift */; };
 		05601B6624778A2300068ADE /* Extensions+sidBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6524778A2300068ADE /* Extensions+sidBar.swift */; };
-		05601B6824779ED700068ADE /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6724779ED700068ADE /* Profile.swift */; };
-		05601B6A24779EE500068ADE /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6924779EE500068ADE /* Settings.swift */; };
+		05601B6824779ED700068ADE /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6724779ED700068ADE /* ProfileController.swift */; };
+		05601B6A24779EE500068ADE /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6924779EE500068ADE /* SettingsController.swift */; };
 		05601B702478638F00068ADE /* CameraView+gestureRecognizers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6F2478638F00068ADE /* CameraView+gestureRecognizers.swift */; };
 		0563CD3E2490B7A40082315F /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563CD3D2490B7A40082315F /* FooterView.swift */; };
 		0563CD402499647B0082315F /* GenePoolViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563CD3F2499647B0082315F /* GenePoolViewController.swift */; };
@@ -42,6 +46,10 @@
 
 /* Begin PBXFileReference section */
 		050F91CA2475E96F003C29F9 /* RegisterForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterForm.swift; sourceTree = "<group>"; };
+		051A849024FD6DC800B387D6 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConnectionsController.swift; path = Blink.swift/Controller/CameraController/ConnectionsController.swift; sourceTree = SOURCE_ROOT; };
+		051A849224FD6DE000B387D6 /* FriendsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
+		051A849424FD742000B387D6 /* BaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCell.swift; sourceTree = "<group>"; };
+		051A849624FD752900B387D6 /* ShowcaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ShowcaseController.swift; path = Blink.swift/Controller/SidePullOutMenu/ShowcaseController.swift; sourceTree = SOURCE_ROOT; };
 		05519CA324D4D9E4002D8C72 /* GPMediaContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPMediaContent.swift; sourceTree = "<group>"; };
 		055DF15F249B1DA8003364F7 /* CameraView+constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView+constraints.swift"; sourceTree = "<group>"; };
 		055DF161249C011F003364F7 /* SendMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageController.swift; sourceTree = "<group>"; };
@@ -51,8 +59,8 @@
 		05601B4124763E3500068ADE /* SideBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarMenu.swift; sourceTree = "<group>"; };
 		05601B63247765B000068ADE /* SideBarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarCell.swift; sourceTree = "<group>"; };
 		05601B6524778A2300068ADE /* Extensions+sidBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+sidBar.swift"; sourceTree = "<group>"; };
-		05601B6724779ED700068ADE /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
-		05601B6924779EE500068ADE /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		05601B6724779ED700068ADE /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
+		05601B6924779EE500068ADE /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		05601B6F2478638F00068ADE /* CameraView+gestureRecognizers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView+gestureRecognizers.swift"; sourceTree = "<group>"; };
 		0563CD3D2490B7A40082315F /* FooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		0563CD3F2499647B0082315F /* GenePoolViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenePoolViewController.swift; sourceTree = "<group>"; };
@@ -144,8 +152,11 @@
 		05601B6E24785C6F00068ADE /* PullOutMenuControllers */ = {
 			isa = PBXGroup;
 			children = (
-				05601B6724779ED700068ADE /* Profile.swift */,
-				05601B6924779EE500068ADE /* Settings.swift */,
+				051A849624FD752900B387D6 /* ShowcaseController.swift */,
+				051A849024FD6DC800B387D6 /* ConnectionsController.swift */,
+				051A849224FD6DE000B387D6 /* FriendsController.swift */,
+				05601B6724779ED700068ADE /* ProfileController.swift */,
+				05601B6924779EE500068ADE /* SettingsController.swift */,
 			);
 			path = PullOutMenuControllers;
 			sourceTree = "<group>";
@@ -177,6 +188,7 @@
 		058A13DF247C43D70014FD48 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				051A849424FD742000B387D6 /* BaseCell.swift */,
 				058A13E6247DB1E20014FD48 /* Gene Pool */,
 				05601B6B24785C1300068ADE /* Login */,
 				05601B6E24785C6F00068ADE /* PullOutMenuControllers */,
@@ -374,9 +386,11 @@
 				05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */,
 				05601B702478638F00068ADE /* CameraView+gestureRecognizers.swift in Sources */,
 				058A13E3247C8B240014FD48 /* CameraView+captureOutput.swift in Sources */,
+				051A849324FD6DE000B387D6 /* FriendsController.swift in Sources */,
 				0563CD3E2490B7A40082315F /* FooterView.swift in Sources */,
 				05519CA424D4D9E4002D8C72 /* GPMediaContent.swift in Sources */,
 				0563CD4624997AAF0082315F /* Extensions.swift in Sources */,
+				051A849724FD752900B387D6 /* ShowcaseController.swift in Sources */,
 				058A13E8247DB5570014FD48 /* GenderSelector.swift in Sources */,
 				050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */,
 				0563CD4824999CCF0082315F /* Switcher.swift in Sources */,
@@ -386,13 +400,15 @@
 				055DF162249C011F003364F7 /* SendMessageController.swift in Sources */,
 				05601B6624778A2300068ADE /* Extensions+sidBar.swift in Sources */,
 				055DF160249B1DA8003364F7 /* CameraView+constraints.swift in Sources */,
-				05601B6A24779EE500068ADE /* Settings.swift in Sources */,
+				05601B6A24779EE500068ADE /* SettingsController.swift in Sources */,
 				05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */,
 				05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */,
 				055DF167249C13B7003364F7 /* User.swift in Sources */,
+				051A849124FD6DC800B387D6 /* ConnectionsController.swift in Sources */,
 				05AEB81224A54D0100A2DEC7 /* GenePoolRegisterController.swift in Sources */,
-				05601B6824779ED700068ADE /* Profile.swift in Sources */,
+				05601B6824779ED700068ADE /* ProfileController.swift in Sources */,
 				05601B64247765B000068ADE /* SideBarCell.swift in Sources */,
+				051A849524FD742000B387D6 /* BaseCell.swift in Sources */,
 				058A13EA247DBCF50014FD48 /* ImageCells.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
