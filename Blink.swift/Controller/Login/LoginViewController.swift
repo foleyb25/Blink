@@ -12,7 +12,7 @@ import Firebase
 class LoginViewController: UIViewController {
     
     let activityIndicatorView: UIActivityIndicatorView = {
-        let aiv = UIActivityIndicatorView(style: .whiteLarge)
+        let aiv = UIActivityIndicatorView(style: .large)
         aiv.translatesAutoresizingMaskIntoConstraints = false
         aiv.backgroundColor = UIColor(white: 0, alpha: 0.5)
         aiv.isOpaque = true

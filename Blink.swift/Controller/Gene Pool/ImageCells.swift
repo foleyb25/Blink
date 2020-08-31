@@ -27,7 +27,7 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
         cv.contentInsetAdjustmentBehavior = .always
         return cv
     }()
-    
+
     let safeAreaBottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
     
     override func setupViews() {

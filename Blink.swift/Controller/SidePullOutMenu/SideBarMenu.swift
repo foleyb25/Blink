@@ -41,7 +41,7 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
     func showSideMenu() {
         //show menu
 
-        if let window = UIApplication.shared.keyWindow {
+        if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
             
             window.addSubview(blackView)
             window.addSubview(collectionView)
@@ -70,7 +70,7 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
         blackView.layer.removeAllAnimations()
         UIView.animate(withDuration: 0.50) {
             self.blackView.alpha = 0
-            if let window = UIApplication.shared.keyWindow {
+            if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
                 self.collectionView.frame = CGRect(x: -window.frame.width, y: 0, width: self.collectionView.frame.width, height: self.collectionView.frame.height)
             }
         }

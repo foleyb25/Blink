@@ -12,7 +12,7 @@ import Firebase
 class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let activityIndicatorView: UIActivityIndicatorView = {
-        let aiv = UIActivityIndicatorView(style: .whiteLarge)
+        let aiv = UIActivityIndicatorView(style: .large)
         aiv.translatesAutoresizingMaskIntoConstraints = false
         aiv.backgroundColor = UIColor(white: 0, alpha: 0.5)
         aiv.isOpaque = true
@@ -37,7 +37,6 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
             viewItem.axis = .vertical
             viewItem.spacing = 10
             viewItem.translatesAutoresizingMaskIntoConstraints = false
-            viewItem.backgroundColor = .white
             return viewItem
     }()
 
@@ -126,7 +125,7 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.barStyle = .blackTranslucent
+        navigationController?.navigationBar.barStyle = .black
         addBlurEffect()
         view.addSubview(imageSelector)
         view.addSubview(stackView)

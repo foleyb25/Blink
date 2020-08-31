@@ -37,7 +37,7 @@
 		05F917CC2474A31D000228F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05F917CA2474A31D000228F9 /* LaunchScreen.storyboard */; };
 		05F917D824750287000228F9 /* CameraView+buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917D724750287000228F9 /* CameraView+buttons.swift */; };
 		05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917D92475A5CF000228F9 /* LoginViewController.swift */; };
-		D87C9E7283516F6EEA4B53ED /* Pods_Blink.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC95E7DF65B0DF0CD303B26 /* Pods_Blink.framework */; };
+		56793090DDDFA92FAA4F1A0C /* Pods_Blink.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC95E7DF65B0DF0CD303B26 /* Pods_Blink.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,7 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D87C9E7283516F6EEA4B53ED /* Pods_Blink.framework in Frameworks */,
+				56793090DDDFA92FAA4F1A0C /* Pods_Blink.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,7 +281,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1140;
-				LastUpgradeCheck = 1140;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Brian Foley";
 				TargetAttributes = {
 					05F917BB2474A31C000228F9 = {
@@ -437,6 +437,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -497,6 +498,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
