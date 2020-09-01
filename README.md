@@ -16,8 +16,8 @@ College Students
 
 ### Front/Back Camera
 <p float="left">
-  <img src="MDImages/back_cam.png" height="40%" width="40%"/>
-  <img src="MDImages/front_cam.png" height="40%" width="40%"/>
+  <img src="MDImages/back_cam-min.png" height="40%" width="40%"/>
+  <img src="MDImages/front_cam-min.png" height="40%" width="40%"/>
 </p>
 
 ### Gene Pool
