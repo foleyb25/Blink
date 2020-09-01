@@ -9,8 +9,10 @@ College Students
 ## Screen Shots: 
 
 ### Login/Register
-<img src="MDImages/IMG_1060.png" height="40%" width="40%"/>
-<img src="MDImages/IMG_1063.png" height="40%" width="40%"/>
+<p float="left">
+  <img src="MDImages/IMG_1060.png" height="40%" width="40%"/>
+  <img src="MDImages/IMG_1063.png" height="40%" width="40%"/>
+</p>
 
 ### Gene Pool
 <img src="MDImages/GenePool.gif" height="80%" width="80%"/>
