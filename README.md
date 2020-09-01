@@ -20,6 +20,9 @@ College Students
   <img src="MDImages/front_cam-min.png" height="40%" width="40%"/>
 </p>
 
+### Recording a Video
+<img src="MDImages/Record.gif" height="80%" width="80%"/>
+
 ### Gene Pool
 <img src="MDImages/GenePool.gif" height="80%" width="80%"/>
 
