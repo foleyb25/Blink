@@ -8,6 +8,19 @@ College Students
 
 ## Screen Shots: 
 
+### Interface Builder
+<img src="MDImages/GenePool.gif" height="80%" width="80%"/>
+
+### Send Media
+<img src="MDImages/SendMedia.gif" height="40%" width="40%"/>
+
+### Login/Register
+<img src="MDImages/IMG_1060.png" height="40%" width="40%"/>
+<img src="MDImages/IMG_1063.png" height="40%" width="40%"/>
+
+### Side Bar Menu
+ <img src="MDImages/pulloutmenu.gif" height="40%" width="40%"/>
+
 ## Features and Requirements Cecklist
 ### Feature - Media Capture
 [X] - Audio Video Capture <br/>
