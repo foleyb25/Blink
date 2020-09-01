@@ -58,17 +58,17 @@ class Switcher {
     */
     func updateRootVC() {
     
-           if(Auth.auth().currentUser != nil) {
-                rootVC = nil
-                APIService.shared.fetchUser { (user: User) in
-                    self.currentUser = user
-                }
-           } else {
-                currentUser = nil
-                rootVC = nil
-                rootVC = self.loginNavController
-                setRootVC()
-           }
+        if(Auth.auth().currentUser != nil) {
+            rootVC = nil
+            APIService.shared.fetchUser { (user: User) in
+                self.currentUser = user
+            }
+       } else {
+            currentUser = nil
+            rootVC = nil
+            rootVC = self.loginNavController
+            setRootVC()
+       }
     }
     
     /**
@@ -91,7 +91,6 @@ class Switcher {
          appDelegate.window?.rootViewController = rootVC
         }
     }
-    
     
     /**
      Updates current user's info if the user updates his/her information when browsing the app

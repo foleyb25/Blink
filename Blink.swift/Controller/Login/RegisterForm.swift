@@ -258,8 +258,4 @@ class RegisterForm: UIViewController, UIImagePickerControllerDelegate, UINavigat
       }
 }
 
-extension UINavigationController {
-   open override var childForStatusBarStyle: UIViewController? {
-        return visibleViewController
-    }
-}
+
