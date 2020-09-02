@@ -110,6 +110,7 @@
 		05601B3E24763BB500068ADE /* SidePullOutMenu */ = {
 			isa = PBXGroup;
 			children = (
+				05601B6E24785C6F00068ADE /* PullOutMenuControllers */,
 				05601B63247765B000068ADE /* SideBarCell.swift */,
 				05601B6524778A2300068ADE /* Extensions+sidBar.swift */,
 				05601B4124763E3500068ADE /* SideBarMenu.swift */,
@@ -191,7 +192,6 @@
 				051A849424FD742000B387D6 /* BaseCell.swift */,
 				058A13E6247DB1E20014FD48 /* Gene Pool */,
 				05601B6B24785C1300068ADE /* Login */,
-				05601B6E24785C6F00068ADE /* PullOutMenuControllers */,
 				05601B3E24763BB500068ADE /* SidePullOutMenu */,
 				05601B6D24785C4A00068ADE /* CameraController */,
 			);
