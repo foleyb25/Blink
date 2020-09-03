@@ -5,6 +5,9 @@
 //  Created by Brian Foley on 5/20/20.
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
+//
+//
+//  TODO: 
 
 import UIKit
 import Firebase
@@ -111,8 +114,8 @@ class LoginViewController: UIViewController {
            }
        }
     
-    lazy var registerController: RegisterForm = {
-        let rc = RegisterForm()
+    lazy var registerController: RegisterViewController = {
+        let rc = RegisterViewController()
         rc.modalPresentationStyle = .overCurrentContext
         return rc
     }()

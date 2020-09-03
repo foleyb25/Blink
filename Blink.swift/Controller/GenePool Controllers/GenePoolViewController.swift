@@ -5,6 +5,12 @@
 //  Created by Brian Foley on 5/26/20.
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
+//
+//
+//  TODO: Optimize Database for storing GenePool Media Content
+            //Create UML and relational diagram to find the most optimal solution
+            //to store and retrieve Gene Pool Content
+//  TODO: Store images in DB with lat long coordinates
 
 import UIKit
 

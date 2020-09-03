@@ -111,21 +111,3 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
     
     
 }
-
-
-
-class ChickCell: BaseCell {
-    
-    override func setupViews() {
-        super.setupViews()
-        backgroundColor = .red
-    }
-}
-
-class DudeCell: BaseCell {
-    
-    override func setupViews() {
-        super.setupViews()
-        backgroundColor = .red
-    }
-}

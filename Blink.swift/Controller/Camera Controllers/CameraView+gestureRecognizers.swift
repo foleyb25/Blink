@@ -13,7 +13,7 @@ import AVFoundation
 extension CameraViewController: UIGestureRecognizerDelegate {
     
     /**
-     Adds gesture recognizers pertaining to the Camera View Controller View
+     Adds gesture recognizers pertaining to the Camera View Controller
     
      ## Notes
       Gestures are stored as global variables because they may need to be toggled on/off like the flip camera functionality needs to be toggled off when in preview mode.
@@ -26,25 +26,30 @@ extension CameraViewController: UIGestureRecognizerDelegate {
      - CameraViewController.swift
     */
     internal func addGestureRecognizers() {
-        //pinch to zoom
+        ///pinch to zoom
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoomGesture(pinch:)))
         self.view.addGestureRecognizer(pinchGesture)
         
-        //double tap to switch camera
+        ///double tap to switch camera
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(flipCameraPressed))
         tapGesture.numberOfTapsRequired = 2
         self.view.addGestureRecognizer(tapGesture)
         
+        /// tap to focus
         let focusTapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap(_:)))
         focusTapGesture.numberOfTapsRequired = 1
         self.view.addGestureRecognizer(focusTapGesture)
         
+        /// swipe right to present side menu bar
         let swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(friendsButtonPressed))
         swipeRightGesture.direction = .right
         self.view.addGestureRecognizer(swipeRightGesture)
         
+        /// swipe up and down while recording to zoom
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(recordZoomGesture(pan:)))
         
+        
+        /// assign gestures to global variables so they can be toggled on/off
         self.pinchGesture = pinchGesture
         self.tapGesture = tapGesture
         self.focusTapGesture = focusTapGesture
@@ -60,12 +65,11 @@ extension CameraViewController: UIGestureRecognizerDelegate {
      
      min ( max(beginZoomScale * pinch.scale , 1.0 ) , maximum zoom factor)
      
-     Whenever the max zoom scale is exceeded on the LHS of the min() function, the zoomScale will always be set to the maximum since the maximum zoom factor on the RHS would be the minimum in this case. As for the inner max() function. Either the pinch scale 
+     Whenever the LHS exceeds the max zoom scale on the RHS of the min() function, the zoomScale variable will always be set to the maximum since the maximum zoom factor on the RHS would be the minimum: the LHS > RHS so return RHS. As for the inner max() function, 1.0 will be returned or begin zoomScale * pinch.scale. pinch.scale returns a value greater than 1 if pinch to zoom and a value less than 1 but greater than 0 if pinch to zoom out. if zoomScale is less than 1.0,  1.0 will always be returned. This makes it so the zoomScale will not be less than 1.0.
     
      - Warning: None
-     - Parameter None
+     - Parameter UIPinchGestureRecognizer
      - Returns: None
-     
     */
     @objc internal func zoomGesture(pinch: UIPinchGestureRecognizer) {
         let captureDevice = self.videoDeviceInput.device
@@ -73,6 +77,7 @@ extension CameraViewController: UIGestureRecognizerDelegate {
             do {
                 try captureDevice.lockForConfiguration()
                   defer { captureDevice.unlockForConfiguration() }
+                
                 zoomScale = min(max(beginZoomScale * pinch.scale, 1.0),  captureDevice.activeFormat.videoMaxZoomFactor)
                 captureDevice.videoZoomFactor = zoomScale
             } catch {
@@ -85,17 +90,14 @@ extension CameraViewController: UIGestureRecognizerDelegate {
     }
     
     /**
-     Updates current user's info if the user updates his/her information when browsing the app
+     Enables the user to control zoom with an upswipe or downswipe while recording
     
      ## Notes
-     If a user updates their information, the current user's data in this class is updated. If not, this creates conflicts when attempting to display data or access parts of the app. This method updates the current users information specifically if the user has registered for the Gene Pool and fixes the problem.
+     This is toggled on when recording and toggled off when not recording. See zoomGesture above to see the handling of the min/max functions. This works the same way with a slight difference because a pan gesture uses translation difference, as opposed to pinch scale, and is only concerned with the y-axis
     
      - Warning: None
-     - Parameter None
+     - Parameter UIPanGestureRecognizer
      - Returns: None
-     
-     ## Called in
-     - APIService.swift
     */
     @objc internal func recordZoomGesture(pan: UIPanGestureRecognizer) {
 
@@ -108,7 +110,6 @@ extension CameraViewController: UIGestureRecognizerDelegate {
             try captureDevice.lockForConfiguration()
             defer { captureDevice.unlockForConfiguration() }
 
-            print(translationDifference / 10)
             zoomScale = min(max(beginZoomScale - (translationDifference * 0.0125), 1.0),  captureDevice.activeFormat.videoMaxZoomFactor)
 
             captureDevice.videoZoomFactor = zoomScale
@@ -124,17 +125,15 @@ extension CameraViewController: UIGestureRecognizerDelegate {
     }
     
     /**
-     Updates current user's info if the user updates his/her information when browsing the app
+     Focuses camera on specified point that is tapped
     
      ## Notes
-     If a user updates their information, the current user's data in this class is updated. If not, this creates conflicts when attempting to display data or access parts of the app. This method updates the current users information specifically if the user has registered for the Gene Pool and fixes the problem.
+     focuses on tapped point using autoExposure
     
      - Warning: None
      - Parameter None
      - Returns: None
      
-     ## Called in
-     - APIService.swift
     */
     @objc internal func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
         let devicePoint = previewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
@@ -142,19 +141,22 @@ extension CameraViewController: UIGestureRecognizerDelegate {
     }
     
     /**
-     Updates current user's info if the user updates his/her information when browsing the app
+     Helper function for focusAndExposeTap
     
      ## Notes
      If a user updates their information, the current user's data in this class is updated. If not, this creates conflicts when attempting to display data or access parts of the app. This method updates the current users information specifically if the user has registered for the Gene Pool and fixes the problem.
     
      - Warning: None
-     - Parameter None
+     - Parameters:
+        - focusMode: Enum Int
+        - exposureMode: Enum Int
+        - devicePoint: CGFloat of point tapped on screen
+        - monitorSubectAreaChange: Boolean to indicate whether subject area should be monitored
+
      - Returns: None
      
-     ## Called in
-     - APIService.swift
     */
-    internal func focus(with focusMode: AVCaptureDevice.FocusMode,
+    private func focus(with focusMode: AVCaptureDevice.FocusMode,
         exposureMode: AVCaptureDevice.ExposureMode,
         at devicePoint: CGPoint,
         monitorSubjectAreaChange: Bool) {
@@ -165,8 +167,7 @@ extension CameraViewController: UIGestureRecognizerDelegate {
                 try device.lockForConfiguration()
                 
                 /*
-                 Setting (focus/exposure)PointOfInterest alone does not initiate a (focus/exposure) operation.
-                 Call set(Focus/Exposure)Mode() to apply the new point of interest.
+                 Set Focus and Exposure Mode() to apply the new point of interest.
                  */
                 if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(focusMode) {
                     device.focusPointOfInterest = devicePoint
@@ -187,19 +188,19 @@ extension CameraViewController: UIGestureRecognizerDelegate {
     }
     
     /**
-     Updates current user's info if the user updates his/her information when browsing the app
+     Focus's camera whenever the capture device detects a change in video
     
      ## Notes
-     If a user updates their information, the current user's data in this class is updated. If not, this creates conflicts when attempting to display data or access parts of the app. This method updates the current users information specifically if the user has registered for the Gene Pool and fixes the problem.
+     An observer is set on the capture device for this. Set when initially setting up camera and whenever the flips.
     
      - Warning: None
-     - Parameter None
+     - Parameters:
+        - notification: NSNotification an observer assigned to the capture device
      - Returns: None
      
-     ## Called in
-     - APIService.swift
     */
     @objc func subjectAreaDidChange(notification: NSNotification) {
+        print("SUBJECT AREA CHANGE")
         let devicePoint = CGPoint(x: 0.5, y: 0.5)
         focus(with: .continuousAutoFocus, exposureMode: .continuousAutoExposure, at: devicePoint, monitorSubjectAreaChange: false)
     }

@@ -24,4 +24,32 @@ extension UIColor {
     static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> UIColor{
         return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: alpha)
     }
+
+}
+
+
+extension UIView {
+    
+    /**
+    Shorthand method for adding constraints to multiple views.
+
+    ## Notes
+     Follows the standard visual format. for example "V:|[item]| - [item2]..." This function allows to add constraints to multiple views at once. The view names and attributes are parsed from the format String parameter, added as a key to a dictionary, and prepped for the constraints(withvisualformat: ... function)
+     
+     See more on visual formatting here  https://www.hackingwithswift.com/read/6/3/auto-layout-in-code-addconstraints-with-visual-format-language
+
+     - Warning: None
+     - Parameter String, UIVIew
+     - Returns: UIColor
+    */
+    func addConstraintsWithFormat(_ format: String, views: UIView...) {
+        var viewsDictionary = [String: UIView]()
+        for (index, view) in views.enumerated() {
+            let key = "v\(index)"
+            view.translatesAutoresizingMaskIntoConstraints = false
+            viewsDictionary[key] = view
+        }
+        
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutConstraint.FormatOptions(), metrics: nil, views: viewsDictionary))
+    }
 }

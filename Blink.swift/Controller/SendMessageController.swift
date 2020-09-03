@@ -44,7 +44,7 @@ class SendMessageController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.delegate = self
         tableView.dataSource = self
         navigationController?.navigationBar.isHidden = false
-        tableView.register(UserCell.self, forCellReuseIdentifier: userCellId)
+        tableView.register(MessagesUserCell.self, forCellReuseIdentifier: userCellId)
         APIService.shared.fetchUsers { (users) in
             self.users = users
         }
@@ -113,12 +113,12 @@ class SendMessageController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UserCell?
+        let cell: MessagesUserCell?
         if indexPath.item == 0 {
-            cell = tableView.dequeueReusableCell(withIdentifier: userCellId, for: indexPath) as? UserCell
+            cell = tableView.dequeueReusableCell(withIdentifier: userCellId, for: indexPath) as? MessagesUserCell
             cell?.textLabel!.text = "Gene Pool"
         } else {
-        cell = tableView.dequeueReusableCell(withIdentifier: userCellId, for: indexPath) as? UserCell
+        cell = tableView.dequeueReusableCell(withIdentifier: userCellId, for: indexPath) as? MessagesUserCell
             cell!.user = users?[indexPath.item]
         }
         return cell!

@@ -10,7 +10,7 @@
 
 import UIKit
 
-class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class SideBarMenuController: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     lazy var blackView: UIView = {
        let view = UIView()
@@ -100,8 +100,8 @@ class SideBarMenu: NSObject, UICollectionViewDataSource, UICollectionViewDelegat
     
     let cellId = "cellid"
     
-    private lazy var cellItems: [CellItem] = {
-        return [CellItem(name: "Profile", imageName: "person.fill", controller: ProfileController()), CellItem(name: "Showcase", imageName: "star.fill", controller: ShowcaseController()), CellItem(name: "Friends", imageName: "person.3.fill", controller: FriendsController()), CellItem(name: "Connections", imageName: "shuffle", controller: ConnectionsController()),  CellItem(name: "Settings", imageName: "gear", controller: SettingsController())]
+    private lazy var cellItems: [SideBarCellItem] = {
+        return [SideBarCellItem(name: "Profile", imageName: "person.fill", controller: ProfileController()), SideBarCellItem(name: "Showcase", imageName: "star.fill", controller: ShowcaseController()), SideBarCellItem(name: "Friends", imageName: "person.3.fill", controller: FriendsController()), SideBarCellItem(name: "Connections", imageName: "shuffle", controller: ConnectionsController()),  SideBarCellItem(name: "Settings", imageName: "gear", controller: SettingsController())]
     }()
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

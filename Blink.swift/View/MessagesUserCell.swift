@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UserCell: UITableViewCell {
+class MessagesUserCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -26,8 +26,6 @@ class UserCell: UITableViewCell {
             
         }
     }
-    
-    
     
     let profileImageThumbnail: UIImageView = {
         let iv = UIImageView()

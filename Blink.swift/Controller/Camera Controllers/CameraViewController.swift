@@ -7,8 +7,12 @@
 //
 
 
-//TODO: Add zoom gesture recognizer when video is recording
-//      Remove other gesture recognizers from view on record
+//TODO: Fix simultaneous button press crash. start at +buttons extension
+//TODO: Continuous recording with AVAsset Writer while recording video and flipping camera
+//TODO: Make custom Icons for buttons
+//TODO: Enable users to add text/drawing/color pallet to captured media in preview mode
+//TODO: Add left swipe navigation to open GenePool Controller
+//TODO: Add up swipe to view camera Roll pictures :: Create custom collection view (see instagram firebase tutorial)
 
 import UIKit
 import AVFoundation
@@ -99,9 +103,6 @@ class CameraViewController: UIViewController {
     var videoWriter: AVAssetWriter!
     var videoWriterInput: AVAssetWriterInput!
     var audioWriterInput: AVAssetWriterInput!
-    var sessionAtSourceTime: CMTime!
-    var isWriting = false
-    var hasStartedWritingCurrentVideo = false
     var fileName = ""
     var adapter: AVAssetWriterInputPixelBufferAdaptor?
     var _time: Double = 0
@@ -253,8 +254,8 @@ class CameraViewController: UIViewController {
     }()
     
     //Views presented on swipe or nav bar button press
-    internal lazy var sideMenu: SideBarMenu = {
-        let menu = SideBarMenu()
+    internal lazy var sideMenu: SideBarMenuController = {
+        let menu = SideBarMenuController()
         menu.cameraViewController = self
         return menu
     }()
@@ -674,21 +675,23 @@ class CameraViewController: UIViewController {
     }
     
     //MARK: Set Media Preview
-    func setMediaPreview(isVideo: Bool) {
+    func setMediaPreview(url: URL?) {
         //setup image preview
-        if isVideo == false {
+        guard let video_url = url else {
             if let imageTaken = image {
                 imagePreview.image = imageTaken
+                togglePreviewMode(isInPreviewMode: true)
             }
-        //setup video preview
-        } else {
-            if let videoTaken = player {
-                playerLayer.player = videoTaken
-                playerLayer.frame = view.bounds
-                playerLayer.videoGravity = .resizeAspectFill
-            }
-            self.player!.play()
+            return
         }
+            
+        //setup video preview
+        player = AVPlayer(url: video_url)
+        player!.actionAtItemEnd = .none
+        playerLayer.player = player
+        playerLayer.frame = view.bounds
+        playerLayer.videoGravity = .resizeAspectFill
+        self.player!.play()
         togglePreviewMode(isInPreviewMode: true)
     }
     
@@ -846,6 +849,7 @@ class CameraViewController: UIViewController {
     
     //restarts video once the end is reached
     @objc func playerItemDidReachEnd(notification: Notification) {
+            print("Reached Player End")
            if let playerItem = notification.object as? AVPlayerItem {
                playerItem.seek(to: CMTime.zero, completionHandler: nil)
            }

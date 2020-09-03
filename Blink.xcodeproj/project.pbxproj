@@ -7,20 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050F91CA2475E96F003C29F9 /* RegisterForm.swift */; };
-		051A849124FD6DC800B387D6 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A849024FD6DC800B387D6 /* ConnectionsController.swift */; };
+		050F91CB2475E96F003C29F9 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050F91CA2475E96F003C29F9 /* RegisterViewController.swift */; };
 		051A849324FD6DE000B387D6 /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A849224FD6DE000B387D6 /* FriendsController.swift */; };
 		051A849524FD742000B387D6 /* BaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A849424FD742000B387D6 /* BaseCell.swift */; };
 		051A849724FD752900B387D6 /* ShowcaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A849624FD752900B387D6 /* ShowcaseController.swift */; };
-		05519CA424D4D9E4002D8C72 /* GPMediaContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05519CA324D4D9E4002D8C72 /* GPMediaContent.swift */; };
 		055DF160249B1DA8003364F7 /* CameraView+constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF15F249B1DA8003364F7 /* CameraView+constraints.swift */; };
 		055DF162249C011F003364F7 /* SendMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF161249C011F003364F7 /* SendMessageController.swift */; };
-		055DF165249C0314003364F7 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF164249C0314003364F7 /* UserCell.swift */; };
+		055DF165249C0314003364F7 /* MessagesUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF164249C0314003364F7 /* MessagesUserCell.swift */; };
 		055DF167249C13B7003364F7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF166249C13B7003364F7 /* User.swift */; };
 		055DF169249C15BB003364F7 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055DF168249C15BB003364F7 /* APIService.swift */; };
-		05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B4124763E3500068ADE /* SideBarMenu.swift */; };
+		05601B4224763E3500068ADE /* SideBarMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B4124763E3500068ADE /* SideBarMenuController.swift */; };
 		05601B64247765B000068ADE /* SideBarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B63247765B000068ADE /* SideBarCell.swift */; };
-		05601B6624778A2300068ADE /* Extensions+sidBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6524778A2300068ADE /* Extensions+sidBar.swift */; };
 		05601B6824779ED700068ADE /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6724779ED700068ADE /* ProfileController.swift */; };
 		05601B6A24779EE500068ADE /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6924779EE500068ADE /* SettingsController.swift */; };
 		05601B702478638F00068ADE /* CameraView+gestureRecognizers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05601B6F2478638F00068ADE /* CameraView+gestureRecognizers.swift */; };
@@ -41,24 +38,45 @@
 		05F917CC2474A31D000228F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05F917CA2474A31D000228F9 /* LaunchScreen.storyboard */; };
 		05F917D824750287000228F9 /* CameraView+buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917D724750287000228F9 /* CameraView+buttons.swift */; };
 		05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917D92475A5CF000228F9 /* LoginViewController.swift */; };
+		05F9DA97250018ED007AC1B6 /* ChickCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F9DA96250018ED007AC1B6 /* ChickCell.swift */; };
+		05F9DA99250018F8007AC1B6 /* DudeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F9DA98250018F8007AC1B6 /* DudeCell.swift */; };
+		05F9DA9B25001B54007AC1B6 /* GPMediaContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F9DA9A25001B54007AC1B6 /* GPMediaContent.swift */; };
+		05F9DA9D25001BF8007AC1B6 /* SideBarCellItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F9DA9C25001BF8007AC1B6 /* SideBarCellItem.swift */; };
+		05F9DAA025003ADB007AC1B6 /* ConnectionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F9DA9F25003ADB007AC1B6 /* ConnectionsController.swift */; };
+		05F9DAA825007174007AC1B6 /* BlinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F9DAA725007174007AC1B6 /* BlinkTests.swift */; };
+		05F9DAB625007190007AC1B6 /* BlinkUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F9DAB525007190007AC1B6 /* BlinkUITests.swift */; };
 		56793090DDDFA92FAA4F1A0C /* Pods_Blink.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC95E7DF65B0DF0CD303B26 /* Pods_Blink.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		05F9DAAA25007174007AC1B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 05F917B42474A31C000228F9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05F917BB2474A31C000228F9;
+			remoteInfo = Blink;
+		};
+		05F9DAB825007190007AC1B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 05F917B42474A31C000228F9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05F917BB2474A31C000228F9;
+			remoteInfo = Blink;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		050F91CA2475E96F003C29F9 /* RegisterForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterForm.swift; sourceTree = "<group>"; };
-		051A849024FD6DC800B387D6 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConnectionsController.swift; path = Blink.swift/Controller/CameraController/ConnectionsController.swift; sourceTree = SOURCE_ROOT; };
+		050F91CA2475E96F003C29F9 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		051A849224FD6DE000B387D6 /* FriendsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
 		051A849424FD742000B387D6 /* BaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCell.swift; sourceTree = "<group>"; };
 		051A849624FD752900B387D6 /* ShowcaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ShowcaseController.swift; path = Blink.swift/Controller/SidePullOutMenu/ShowcaseController.swift; sourceTree = SOURCE_ROOT; };
-		05519CA324D4D9E4002D8C72 /* GPMediaContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPMediaContent.swift; sourceTree = "<group>"; };
 		055DF15F249B1DA8003364F7 /* CameraView+constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView+constraints.swift"; sourceTree = "<group>"; };
 		055DF161249C011F003364F7 /* SendMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMessageController.swift; sourceTree = "<group>"; };
-		055DF164249C0314003364F7 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		055DF164249C0314003364F7 /* MessagesUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesUserCell.swift; sourceTree = "<group>"; };
 		055DF166249C13B7003364F7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		055DF168249C15BB003364F7 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = APIService.swift; path = Messages/APIService.swift; sourceTree = "<group>"; };
-		05601B4124763E3500068ADE /* SideBarMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarMenu.swift; sourceTree = "<group>"; };
+		05601B4124763E3500068ADE /* SideBarMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarMenuController.swift; sourceTree = "<group>"; };
 		05601B63247765B000068ADE /* SideBarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarCell.swift; sourceTree = "<group>"; };
-		05601B6524778A2300068ADE /* Extensions+sidBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+sidBar.swift"; sourceTree = "<group>"; };
 		05601B6724779ED700068ADE /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		05601B6924779EE500068ADE /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		05601B6F2478638F00068ADE /* CameraView+gestureRecognizers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView+gestureRecognizers.swift"; sourceTree = "<group>"; };
@@ -81,6 +99,17 @@
 		05F917CD2474A31D000228F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		05F917D724750287000228F9 /* CameraView+buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView+buttons.swift"; sourceTree = "<group>"; };
 		05F917D92475A5CF000228F9 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		05F9DA96250018ED007AC1B6 /* ChickCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChickCell.swift; sourceTree = "<group>"; };
+		05F9DA98250018F8007AC1B6 /* DudeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DudeCell.swift; sourceTree = "<group>"; };
+		05F9DA9A25001B54007AC1B6 /* GPMediaContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPMediaContent.swift; sourceTree = "<group>"; };
+		05F9DA9C25001BF8007AC1B6 /* SideBarCellItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarCellItem.swift; sourceTree = "<group>"; };
+		05F9DA9F25003ADB007AC1B6 /* ConnectionsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsController.swift; sourceTree = "<group>"; };
+		05F9DAA525007174007AC1B6 /* BlinkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlinkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		05F9DAA725007174007AC1B6 /* BlinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlinkTests.swift; sourceTree = "<group>"; };
+		05F9DAA925007174007AC1B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		05F9DAB325007190007AC1B6 /* BlinkUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BlinkUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		05F9DAB525007190007AC1B6 /* BlinkUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlinkUITests.swift; sourceTree = "<group>"; };
+		05F9DAB725007190007AC1B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3FC95E7DF65B0DF0CD303B26 /* Pods_Blink.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Blink.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F97D02BDE085BE10ADD9B3E /* Pods-Blink.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blink.release.xcconfig"; path = "Target Support Files/Pods-Blink/Pods-Blink.release.xcconfig"; sourceTree = "<group>"; };
 		6C41B17BED3B5B5D4C9F7B9A /* Pods-Blink.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blink.debug.xcconfig"; path = "Target Support Files/Pods-Blink/Pods-Blink.debug.xcconfig"; sourceTree = "<group>"; };
@@ -95,36 +124,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		05F9DAA225007174007AC1B6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		05F9DAB025007190007AC1B6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		055DF163249C0133003364F7 /* Messages */ = {
+		05601B6B24785C1300068ADE /* Login Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				055DF161249C011F003364F7 /* SendMessageController.swift */,
-				055DF164249C0314003364F7 /* UserCell.swift */,
-			);
-			path = Messages;
-			sourceTree = "<group>";
-		};
-		05601B3E24763BB500068ADE /* SidePullOutMenu */ = {
-			isa = PBXGroup;
-			children = (
-				05601B6E24785C6F00068ADE /* PullOutMenuControllers */,
-				05601B63247765B000068ADE /* SideBarCell.swift */,
-				05601B6524778A2300068ADE /* Extensions+sidBar.swift */,
-				05601B4124763E3500068ADE /* SideBarMenu.swift */,
-			);
-			path = SidePullOutMenu;
-			sourceTree = "<group>";
-		};
-		05601B6B24785C1300068ADE /* Login */ = {
-			isa = PBXGroup;
-			children = (
-				050F91CA2475E96F003C29F9 /* RegisterForm.swift */,
+				050F91CA2475E96F003C29F9 /* RegisterViewController.swift */,
 				05F917D92475A5CF000228F9 /* LoginViewController.swift */,
 			);
-			path = Login;
+			path = "Login Controllers";
 			sourceTree = "<group>";
 		};
 		05601B6C24785C2900068ADE /* Utility */ = {
@@ -138,7 +161,7 @@
 			path = Utility;
 			sourceTree = "<group>";
 		};
-		05601B6D24785C4A00068ADE /* CameraController */ = {
+		05601B6D24785C4A00068ADE /* Camera Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				05F917C32474A31C000228F9 /* CameraViewController.swift */,
@@ -147,33 +170,27 @@
 				05F917D724750287000228F9 /* CameraView+buttons.swift */,
 				05601B6F2478638F00068ADE /* CameraView+gestureRecognizers.swift */,
 			);
-			path = CameraController;
+			path = "Camera Controllers";
 			sourceTree = "<group>";
 		};
-		05601B6E24785C6F00068ADE /* PullOutMenuControllers */ = {
+		05601B6E24785C6F00068ADE /* PullOutMenu Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				051A849624FD752900B387D6 /* ShowcaseController.swift */,
-				051A849024FD6DC800B387D6 /* ConnectionsController.swift */,
 				051A849224FD6DE000B387D6 /* FriendsController.swift */,
 				05601B6724779ED700068ADE /* ProfileController.swift */,
 				05601B6924779EE500068ADE /* SettingsController.swift */,
+				05F9DA9F25003ADB007AC1B6 /* ConnectionsController.swift */,
 			);
-			path = PullOutMenuControllers;
-			sourceTree = "<group>";
-		};
-		058A13DC2478B12B0014FD48 /* Animations */ = {
-			isa = PBXGroup;
-			children = (
-				058A13DA2478B1160014FD48 /* Animations.swift */,
-			);
-			path = Animations;
+			path = "PullOutMenu Controllers";
 			sourceTree = "<group>";
 		};
 		058A13DD247C43BE0014FD48 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				055DF166249C13B7003364F7 /* User.swift */,
+				05F9DA9A25001B54007AC1B6 /* GPMediaContent.swift */,
+				05F9DA9C25001BF8007AC1B6 /* SideBarCellItem.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -181,7 +198,11 @@
 		058A13DE247C43C50014FD48 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				058A13DC2478B12B0014FD48 /* Animations */,
+				055DF164249C0314003364F7 /* MessagesUserCell.swift */,
+				05601B63247765B000068ADE /* SideBarCell.swift */,
+				05F9DA9E25001C1E007AC1B6 /* SideBar View */,
+				051A849424FD742000B387D6 /* BaseCell.swift */,
+				05F9DA9025001759007AC1B6 /* Gene Pool View */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -189,32 +210,31 @@
 		058A13DF247C43D70014FD48 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				051A849424FD742000B387D6 /* BaseCell.swift */,
-				058A13E6247DB1E20014FD48 /* Gene Pool */,
-				05601B6B24785C1300068ADE /* Login */,
-				05601B3E24763BB500068ADE /* SidePullOutMenu */,
-				05601B6D24785C4A00068ADE /* CameraController */,
+				05601B4124763E3500068ADE /* SideBarMenuController.swift */,
+				055DF161249C011F003364F7 /* SendMessageController.swift */,
+				05601B6E24785C6F00068ADE /* PullOutMenu Controllers */,
+				058A13E6247DB1E20014FD48 /* GenePool Controllers */,
+				05601B6B24785C1300068ADE /* Login Controllers */,
+				05601B6D24785C4A00068ADE /* Camera Controllers */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		058A13E6247DB1E20014FD48 /* Gene Pool */ = {
+		058A13E6247DB1E20014FD48 /* GenePool Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				0563CD3F2499647B0082315F /* GenePoolViewController.swift */,
-				05519CA324D4D9E4002D8C72 /* GPMediaContent.swift */,
-				0563CD3D2490B7A40082315F /* FooterView.swift */,
-				058A13E9247DBCF50014FD48 /* ImageCells.swift */,
-				058A13E7247DB5570014FD48 /* GenderSelector.swift */,
 				05AEB81124A54D0100A2DEC7 /* GenePoolRegisterController.swift */,
 			);
-			path = "Gene Pool";
+			path = "GenePool Controllers";
 			sourceTree = "<group>";
 		};
 		05F917B32474A31C000228F9 = {
 			isa = PBXGroup;
 			children = (
 				05F917BE2474A31C000228F9 /* Blink */,
+				05F9DAA625007174007AC1B6 /* BlinkTests */,
+				05F9DAB425007190007AC1B6 /* BlinkUITests */,
 				05F917BD2474A31C000228F9 /* Products */,
 				DA5D4C49B60558C0E15FCC53 /* Pods */,
 				1ED2712AE4E1B3D70BE8435B /* Frameworks */,
@@ -225,6 +245,8 @@
 			isa = PBXGroup;
 			children = (
 				05F917BC2474A31C000228F9 /* Blink.app */,
+				05F9DAA525007174007AC1B6 /* BlinkTests.xctest */,
+				05F9DAB325007190007AC1B6 /* BlinkUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -233,7 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				055DF168249C15BB003364F7 /* APIService.swift */,
-				055DF163249C0133003364F7 /* Messages */,
+				058A13DA2478B1160014FD48 /* Animations.swift */,
 				058A13DD247C43BE0014FD48 /* Model */,
 				058A13DE247C43C50014FD48 /* View */,
 				058A13DF247C43D70014FD48 /* Controller */,
@@ -245,6 +267,43 @@
 			);
 			name = Blink;
 			path = Blink.swift;
+			sourceTree = "<group>";
+		};
+		05F9DA9025001759007AC1B6 /* Gene Pool View */ = {
+			isa = PBXGroup;
+			children = (
+				0563CD3D2490B7A40082315F /* FooterView.swift */,
+				058A13E9247DBCF50014FD48 /* ImageCells.swift */,
+				05F9DA96250018ED007AC1B6 /* ChickCell.swift */,
+				05F9DA98250018F8007AC1B6 /* DudeCell.swift */,
+				058A13E7247DB5570014FD48 /* GenderSelector.swift */,
+			);
+			path = "Gene Pool View";
+			sourceTree = "<group>";
+		};
+		05F9DA9E25001C1E007AC1B6 /* SideBar View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "SideBar View";
+			sourceTree = "<group>";
+		};
+		05F9DAA625007174007AC1B6 /* BlinkTests */ = {
+			isa = PBXGroup;
+			children = (
+				05F9DAA725007174007AC1B6 /* BlinkTests.swift */,
+				05F9DAA925007174007AC1B6 /* Info.plist */,
+			);
+			path = BlinkTests;
+			sourceTree = "<group>";
+		};
+		05F9DAB425007190007AC1B6 /* BlinkUITests */ = {
+			isa = PBXGroup;
+			children = (
+				05F9DAB525007190007AC1B6 /* BlinkUITests.swift */,
+				05F9DAB725007190007AC1B6 /* Info.plist */,
+			);
+			path = BlinkUITests;
 			sourceTree = "<group>";
 		};
 		1ED2712AE4E1B3D70BE8435B /* Frameworks */ = {
@@ -286,18 +345,62 @@
 			productReference = 05F917BC2474A31C000228F9 /* Blink.app */;
 			productType = "com.apple.product-type.application";
 		};
+		05F9DAA425007174007AC1B6 /* BlinkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 05F9DAAC25007174007AC1B6 /* Build configuration list for PBXNativeTarget "BlinkTests" */;
+			buildPhases = (
+				05F9DAA125007174007AC1B6 /* Sources */,
+				05F9DAA225007174007AC1B6 /* Frameworks */,
+				05F9DAA325007174007AC1B6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				05F9DAAB25007174007AC1B6 /* PBXTargetDependency */,
+			);
+			name = BlinkTests;
+			productName = BlinkTests;
+			productReference = 05F9DAA525007174007AC1B6 /* BlinkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		05F9DAB225007190007AC1B6 /* BlinkUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 05F9DABA25007190007AC1B6 /* Build configuration list for PBXNativeTarget "BlinkUITests" */;
+			buildPhases = (
+				05F9DAAF25007190007AC1B6 /* Sources */,
+				05F9DAB025007190007AC1B6 /* Frameworks */,
+				05F9DAB125007190007AC1B6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				05F9DAB925007190007AC1B6 /* PBXTargetDependency */,
+			);
+			name = BlinkUITests;
+			productName = BlinkUITests;
+			productReference = 05F9DAB325007190007AC1B6 /* BlinkUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		05F917B42474A31C000228F9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1140;
+				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Brian Foley";
 				TargetAttributes = {
 					05F917BB2474A31C000228F9 = {
 						CreatedOnToolsVersion = 11.4.1;
+					};
+					05F9DAA425007174007AC1B6 = {
+						CreatedOnToolsVersion = 12.0;
+						TestTargetID = 05F917BB2474A31C000228F9;
+					};
+					05F9DAB225007190007AC1B6 = {
+						CreatedOnToolsVersion = 12.0;
+						TestTargetID = 05F917BB2474A31C000228F9;
 					};
 				};
 			};
@@ -315,6 +418,8 @@
 			projectRoot = "";
 			targets = (
 				05F917BB2474A31C000228F9 /* Blink */,
+				05F9DAA425007174007AC1B6 /* BlinkTests */,
+				05F9DAB225007190007AC1B6 /* BlinkUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -327,6 +432,20 @@
 				05F917CC2474A31D000228F9 /* LaunchScreen.storyboard in Resources */,
 				05F917C92474A31D000228F9 /* Assets.xcassets in Resources */,
 				0563CD4424996F100082315F /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		05F9DAA325007174007AC1B6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		05F9DAB125007190007AC1B6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,7 +498,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				05601B4224763E3500068ADE /* SideBarMenu.swift in Sources */,
+				05601B4224763E3500068ADE /* SideBarMenuController.swift in Sources */,
 				055DF169249C15BB003364F7 /* APIService.swift in Sources */,
 				0563CD402499647B0082315F /* GenePoolViewController.swift in Sources */,
 				05F917C42474A31C000228F9 /* CameraViewController.swift in Sources */,
@@ -388,32 +507,63 @@
 				058A13E3247C8B240014FD48 /* CameraView+captureOutput.swift in Sources */,
 				051A849324FD6DE000B387D6 /* FriendsController.swift in Sources */,
 				0563CD3E2490B7A40082315F /* FooterView.swift in Sources */,
-				05519CA424D4D9E4002D8C72 /* GPMediaContent.swift in Sources */,
 				0563CD4624997AAF0082315F /* Extensions.swift in Sources */,
 				051A849724FD752900B387D6 /* ShowcaseController.swift in Sources */,
+				05F9DA97250018ED007AC1B6 /* ChickCell.swift in Sources */,
+				05F9DA99250018F8007AC1B6 /* DudeCell.swift in Sources */,
 				058A13E8247DB5570014FD48 /* GenderSelector.swift in Sources */,
-				050F91CB2475E96F003C29F9 /* RegisterForm.swift in Sources */,
+				050F91CB2475E96F003C29F9 /* RegisterViewController.swift in Sources */,
 				0563CD4824999CCF0082315F /* Switcher.swift in Sources */,
-				055DF165249C0314003364F7 /* UserCell.swift in Sources */,
+				055DF165249C0314003364F7 /* MessagesUserCell.swift in Sources */,
 				05F917D824750287000228F9 /* CameraView+buttons.swift in Sources */,
 				058A13DB2478B1160014FD48 /* Animations.swift in Sources */,
+				05F9DAA025003ADB007AC1B6 /* ConnectionsController.swift in Sources */,
 				055DF162249C011F003364F7 /* SendMessageController.swift in Sources */,
-				05601B6624778A2300068ADE /* Extensions+sidBar.swift in Sources */,
 				055DF160249B1DA8003364F7 /* CameraView+constraints.swift in Sources */,
 				05601B6A24779EE500068ADE /* SettingsController.swift in Sources */,
 				05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */,
 				05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */,
 				055DF167249C13B7003364F7 /* User.swift in Sources */,
-				051A849124FD6DC800B387D6 /* ConnectionsController.swift in Sources */,
 				05AEB81224A54D0100A2DEC7 /* GenePoolRegisterController.swift in Sources */,
 				05601B6824779ED700068ADE /* ProfileController.swift in Sources */,
+				05F9DA9D25001BF8007AC1B6 /* SideBarCellItem.swift in Sources */,
+				05F9DA9B25001B54007AC1B6 /* GPMediaContent.swift in Sources */,
 				05601B64247765B000068ADE /* SideBarCell.swift in Sources */,
 				051A849524FD742000B387D6 /* BaseCell.swift in Sources */,
 				058A13EA247DBCF50014FD48 /* ImageCells.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		05F9DAA125007174007AC1B6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05F9DAA825007174007AC1B6 /* BlinkTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		05F9DAAF25007190007AC1B6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05F9DAB625007190007AC1B6 /* BlinkUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		05F9DAAB25007174007AC1B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 05F917BB2474A31C000228F9 /* Blink */;
+			targetProxy = 05F9DAAA25007174007AC1B6 /* PBXContainerItemProxy */;
+		};
+		05F9DAB925007190007AC1B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 05F917BB2474A31C000228F9 /* Blink */;
+			targetProxy = 05F9DAB825007190007AC1B6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		05F917CA2474A31D000228F9 /* LaunchScreen.storyboard */ = {
@@ -583,6 +733,88 @@
 			};
 			name = Release;
 		};
+		05F9DAAD25007174007AC1B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = J6UP4S3UAZ;
+				INFOPLIST_FILE = BlinkTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = test.BlinkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Blink.app/Blink";
+			};
+			name = Debug;
+		};
+		05F9DAAE25007174007AC1B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = J6UP4S3UAZ;
+				INFOPLIST_FILE = BlinkTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = test.BlinkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Blink.app/Blink";
+			};
+			name = Release;
+		};
+		05F9DABB25007190007AC1B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = J6UP4S3UAZ;
+				INFOPLIST_FILE = BlinkUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = test.BlinkUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Blink;
+			};
+			name = Debug;
+		};
+		05F9DABC25007190007AC1B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = J6UP4S3UAZ;
+				INFOPLIST_FILE = BlinkUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = test.BlinkUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Blink;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -600,6 +832,24 @@
 			buildConfigurations = (
 				05F917D12474A31D000228F9 /* Debug */,
 				05F917D22474A31D000228F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		05F9DAAC25007174007AC1B6 /* Build configuration list for PBXNativeTarget "BlinkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				05F9DAAD25007174007AC1B6 /* Debug */,
+				05F9DAAE25007174007AC1B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		05F9DABA25007190007AC1B6 /* Build configuration list for PBXNativeTarget "BlinkUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				05F9DABB25007190007AC1B6 /* Debug */,
+				05F9DABC25007190007AC1B6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
