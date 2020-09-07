@@ -5,6 +5,7 @@
 //  Created by Brian Foley on 6/18/20.
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
+//  TODO: Implement caching for users
 
 import Foundation
 import Firebase
