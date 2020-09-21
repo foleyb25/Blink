@@ -11,11 +11,9 @@ import UIKit
 class SideBarCellItem: NSObject {
     let name: String
     let imageName: String
-    let controller: UIViewController
     
-    init(name: String, imageName: String, controller: UIViewController) {
+    init(name: String, imageName: String) {
         self.name = name
         self.imageName = imageName
-        self.controller = controller
     }
 }

@@ -216,6 +216,7 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
      - CameraViewController.swift
     */
     @objc func genePoolButtonPressed() {
+        print(Switcher.shared.settings?.genderId)
         if Switcher.shared.settings?.genderId != nil {
             navigationController?.pushViewController(genePoolController, animated: true)
             return

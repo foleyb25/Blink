@@ -101,7 +101,7 @@ class SideBarMenuController: NSObject, UICollectionViewDataSource, UICollectionV
     let cellId = "cellid"
     
     private lazy var cellItems: [SideBarCellItem] = {
-        return [SideBarCellItem(name: "Profile", imageName: "person.fill", controller: ProfileController()), SideBarCellItem(name: "Showcase", imageName: "star.fill", controller: ShowcaseController()), SideBarCellItem(name: "Friends", imageName: "person.3.fill", controller: FriendsController()), SideBarCellItem(name: "Connections", imageName: "shuffle", controller: ConnectionsController()),  SideBarCellItem(name: "Settings", imageName: "gear", controller: SettingsController())]
+        return [SideBarCellItem(name: "Profile", imageName: "person.fill"), SideBarCellItem(name: "Showcase", imageName: "star.fill"), SideBarCellItem(name: "Friends", imageName: "person.3.fill"), SideBarCellItem(name: "Connections", imageName: "shuffle"),  SideBarCellItem(name: "Settings", imageName: "gear")]
     }()
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -130,8 +130,31 @@ class SideBarMenuController: NSObject, UICollectionViewDataSource, UICollectionV
             print("Cant transition recording in process")
             return
         }
-        let controller = cellItems[indexPath.item].controller
-        camViewController.present(controller, animated: true, completion: nil)
+
+        var controller: UIViewController?
+        
+        switch cellItems[indexPath.item].name {
+        case "Profile":
+            controller = ProfileController()
+            break
+        case "Showcase":
+            controller = ShowcaseController()
+            break
+        case "Friends":
+            controller = FriendsController()
+            break
+        case "Connections":
+            controller = ConnectionsController()
+            break
+        case "Settings":
+            controller = SettingsController()
+            break
+        default:
+            print("Could not find selected path")
+        }
+        guard let controllerToPresent = controller else { return }
+        
+        camViewController.present(controllerToPresent, animated: true, completion: nil)
     }
 }
 

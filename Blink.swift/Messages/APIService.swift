@@ -40,7 +40,7 @@ class APIService: NSObject {
                 
                 guard let dictionary = snapshot.value as? [String: Any] else { return }
                 let settings = Settings(dictionary: dictionary)
-            
+                
                 DispatchQueue.main.async {
                     completion(settings)
                 }

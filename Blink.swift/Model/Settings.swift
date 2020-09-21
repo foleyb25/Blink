@@ -13,6 +13,6 @@ struct Settings {
     var genderId: String?
     
     init(dictionary: [String: Any]) {
-        self.genderId = dictionary["genderId"] as? String
+        self.genderId = dictionary["genderid"] as? String
     }
 }

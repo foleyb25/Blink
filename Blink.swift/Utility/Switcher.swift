@@ -20,11 +20,7 @@ class Switcher {
     var rootVC: UIViewController?
     
     // only set root vc when user has been set. creates navigation bugs if not set
-    var currentUser: User? {
-        didSet {
-           
-        }
-    }
+    var currentUser: User? 
     
     var settings: Settings?
     
@@ -68,7 +64,7 @@ class Switcher {
             
             APIService.shared.fetchUserSettings { (settings) in
                 self.settings = settings
-                
+                print(settings.genderId)
             }
             
             rootVC = self.cameraNavController
