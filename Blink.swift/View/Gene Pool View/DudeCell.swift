@@ -12,6 +12,6 @@ class DudeCell: BaseCell {
     
     override func setupViews() {
         super.setupViews()
-        backgroundColor = .red
+        backgroundColor = .green
     }
 }

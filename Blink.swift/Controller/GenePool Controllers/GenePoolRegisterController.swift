@@ -5,6 +5,7 @@
 //  Created by Brian Foley on 6/25/20.
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
+//  If user has not yet registered info for the gene pool, present this screen
 
 import UIKit
 

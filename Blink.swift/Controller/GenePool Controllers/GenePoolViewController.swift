@@ -66,8 +66,6 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         return gs
     }()
     
-    
-    
     override func viewDidLoad() {
         setupProfileView()
         setupSelector()
@@ -114,7 +112,7 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
         view.addSubview(collection)
         collection.dataSource = self
         collection.delegate = self
-        collection.register(ImageCells.self, forCellWithReuseIdentifier: cellId)
+        collection.register(GPMediaCell.self, forCellWithReuseIdentifier: cellId)
         collection.showsHorizontalScrollIndicator = false
         collection.contentInsetAdjustmentBehavior = .never
         collection.isPagingEnabled = true
@@ -157,7 +155,7 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
     
     //Brings the imageprofile view menu down to orignal state
     func pullDownProfileView() {
-        //this kills the scroll, this is needed if user is currently scrolling down while button selecting the gender selector
+        //this kills the scroll, this is needed if user is currently scrolling down while interacting with the gender selector
         imageScrollView?.setContentOffset(imageScrollView!.contentOffset, animated: true)
         profileViewTopAnchor?.constant = 0.0
          UIView.animate(withDuration: 0.5) {
@@ -165,7 +163,6 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
             
         }
         imageScrollView?.contentOffset.y = 0.0
-        //imageScrollView?.isScrollEnabled = true
     }
     
     func scrollToMenuIndex(menuIndex: Int) {
@@ -183,17 +180,22 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
        }
        
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-           let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ImageCells
+           let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! GPMediaCell
            cell.scrollDelegate = self
            return cell
        }
     
-    var lastIndex: Int = 0
+    var lastIndex: Int = 0 // keep track of the last index navigated to. init to 0 since index 0 is dequeued initially
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let index = Int(targetContentOffset.pointee.x / view.frame.width)
         let indexPath = IndexPath(item: index, section: 0)
+        
+        // switch the gender selector.
         genderSelector.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+        
+        //Horizontal scrolling ends and the gender selector and profile view are pulled back down as well as the vertical content offset is set to 0. This is a collection view scroll "reset"
+        //logic here disables collection view "reset" if the user swipes to horizontally swipe passed the boundary of the collection view. eg. < index 0 or > index 1
         if lastIndex != index {
             pullDownProfileView()
             lastIndex = index
@@ -216,11 +218,13 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
+    
+    // extension variable below. holds a reference to the vertical scroll view in GPMediaCell
     var imageScrollView: UIScrollView?
 }
 
     
-
+/// Extension for GenePoolViewController which implements the scrollDelegate. This recieves data from GPMediaCell and tells this class to increase/decrease the size of the profile view. Additionally, it tells this class to reset the vertical content offset
 extension GenePoolViewController: ScrollDelegate {
     func scrollUp(delta: CGFloat, scrollView: UIScrollView) {
         imageScrollView = scrollView

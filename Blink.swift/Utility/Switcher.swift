@@ -22,10 +22,11 @@ class Switcher {
     // only set root vc when user has been set. creates navigation bugs if not set
     var currentUser: User? {
         didSet {
-           rootVC = self.cameraNavController
-           setRootVC()
+           
         }
     }
+    
+    var settings: Settings?
     
     lazy var cameraNavController: UINavigationController = {
         let camVc = CameraViewController()
@@ -60,9 +61,18 @@ class Switcher {
     
         if(Auth.auth().currentUser != nil) {
             rootVC = nil
-            APIService.shared.fetchUser { (user: User) in
+            APIService.shared.fetchUser { (user) in
                 self.currentUser = user
+                
             }
+            
+            APIService.shared.fetchUserSettings { (settings) in
+                self.settings = settings
+                
+            }
+            
+            rootVC = self.cameraNavController
+            setRootVC()
        } else {
             currentUser = nil
             rootVC = nil
@@ -107,11 +117,8 @@ class Switcher {
     */
     func updateUserInfowith(genderId: String?, didRegisterGP: Bool?) {
         if let gid = genderId {
-            currentUser?.genderId = gid
-        }
-        
-        if let didRegister = didRegisterGP {
-            currentUser?.didRegisterGP = didRegister
+            settings?.genderId = gid
         }
     }
+    
 }

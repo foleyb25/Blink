@@ -26,10 +26,11 @@
 		0563CD4424996F100082315F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0563CD4324996F100082315F /* GoogleService-Info.plist */; };
 		0563CD4624997AAF0082315F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563CD4524997AAF0082315F /* Extensions.swift */; };
 		0563CD4824999CCF0082315F /* Switcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563CD4724999CCF0082315F /* Switcher.swift */; };
+		0587107725194D31007B95E3 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0587107625194D31007B95E3 /* Settings.swift */; };
 		058A13DB2478B1160014FD48 /* Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13DA2478B1160014FD48 /* Animations.swift */; };
 		058A13E3247C8B240014FD48 /* CameraView+captureOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E2247C8B240014FD48 /* CameraView+captureOutput.swift */; };
 		058A13E8247DB5570014FD48 /* GenderSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E7247DB5570014FD48 /* GenderSelector.swift */; };
-		058A13EA247DBCF50014FD48 /* ImageCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E9247DBCF50014FD48 /* ImageCells.swift */; };
+		058A13EA247DBCF50014FD48 /* GPMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E9247DBCF50014FD48 /* GPMediaCell.swift */; };
 		05AEB81224A54D0100A2DEC7 /* GenePoolRegisterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05AEB81124A54D0100A2DEC7 /* GenePoolRegisterController.swift */; };
 		05F917C02474A31C000228F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917BF2474A31C000228F9 /* AppDelegate.swift */; };
 		05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F917C12474A31C000228F9 /* SceneDelegate.swift */; };
@@ -85,10 +86,11 @@
 		0563CD4324996F100082315F /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		0563CD4524997AAF0082315F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		0563CD4724999CCF0082315F /* Switcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Switcher.swift; path = Blink.swift/Utility/Switcher.swift; sourceTree = SOURCE_ROOT; };
+		0587107625194D31007B95E3 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		058A13DA2478B1160014FD48 /* Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animations.swift; sourceTree = "<group>"; };
 		058A13E2247C8B240014FD48 /* CameraView+captureOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView+captureOutput.swift"; sourceTree = "<group>"; };
 		058A13E7247DB5570014FD48 /* GenderSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelector.swift; sourceTree = "<group>"; };
-		058A13E9247DBCF50014FD48 /* ImageCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCells.swift; sourceTree = "<group>"; };
+		058A13E9247DBCF50014FD48 /* GPMediaCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPMediaCell.swift; sourceTree = "<group>"; };
 		05AEB81124A54D0100A2DEC7 /* GenePoolRegisterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenePoolRegisterController.swift; sourceTree = "<group>"; };
 		05F917BC2474A31C000228F9 /* Blink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05F917BF2474A31C000228F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				055DF166249C13B7003364F7 /* User.swift */,
+				0587107625194D31007B95E3 /* Settings.swift */,
 				05F9DA9A25001B54007AC1B6 /* GPMediaContent.swift */,
 				05F9DA9C25001BF8007AC1B6 /* SideBarCellItem.swift */,
 			);
@@ -273,7 +276,7 @@
 			isa = PBXGroup;
 			children = (
 				0563CD3D2490B7A40082315F /* FooterView.swift */,
-				058A13E9247DBCF50014FD48 /* ImageCells.swift */,
+				058A13E9247DBCF50014FD48 /* GPMediaCell.swift */,
 				05F9DA96250018ED007AC1B6 /* ChickCell.swift */,
 				05F9DA98250018F8007AC1B6 /* DudeCell.swift */,
 				058A13E7247DB5570014FD48 /* GenderSelector.swift */,
@@ -518,6 +521,7 @@
 				05F917D824750287000228F9 /* CameraView+buttons.swift in Sources */,
 				058A13DB2478B1160014FD48 /* Animations.swift in Sources */,
 				05F9DAA025003ADB007AC1B6 /* ConnectionsController.swift in Sources */,
+				0587107725194D31007B95E3 /* Settings.swift in Sources */,
 				055DF162249C011F003364F7 /* SendMessageController.swift in Sources */,
 				055DF160249B1DA8003364F7 /* CameraView+constraints.swift in Sources */,
 				05601B6A24779EE500068ADE /* SettingsController.swift in Sources */,
@@ -530,7 +534,7 @@
 				05F9DA9B25001B54007AC1B6 /* GPMediaContent.swift in Sources */,
 				05601B64247765B000068ADE /* SideBarCell.swift in Sources */,
 				051A849524FD742000B387D6 /* BaseCell.swift in Sources */,
-				058A13EA247DBCF50014FD48 /* ImageCells.swift in Sources */,
+				058A13EA247DBCF50014FD48 /* GPMediaCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

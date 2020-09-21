@@ -216,14 +216,14 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
      - CameraViewController.swift
     */
     @objc func genePoolButtonPressed() {
-        let didRegister = Switcher.shared.currentUser?.didRegisterGP ?? false
-        if didRegister {
+        if Switcher.shared.settings?.genderId != nil {
             navigationController?.pushViewController(genePoolController, animated: true)
-        } else {
-            let genePoolRegisterController = GenePoolRegisterController()
-            genePoolRegisterController.cameraViewController = self
-            navigationController?.pushViewController(genePoolRegisterController, animated: true)
+            return
         }
+        
+        let genePoolRegisterController = GenePoolRegisterController()
+        genePoolRegisterController.cameraViewController = self
+        navigationController?.pushViewController(genePoolRegisterController, animated: true)
 
     }
 }

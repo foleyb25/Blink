@@ -21,10 +21,28 @@ class APIService: NSObject {
                 
                 guard let dictionary = snapshot.value as? [String: Any] else { return }
                 
-                let user = User(dictionary: dictionary)
+                let userId = snapshot.key
+                
+                let user = User(dictionary: dictionary, uid: userId)
             
                 DispatchQueue.main.async {
                     completion(user)
+                }
+            }) { (err) in
+                print("Failed to fetch user:", err)
+            }
+    }
+    
+    func fetchUserSettings(completion: @escaping (Settings) -> ()) {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            
+            Database.database().reference().child("settings").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                
+                guard let dictionary = snapshot.value as? [String: Any] else { return }
+                let settings = Settings(dictionary: dictionary)
+            
+                DispatchQueue.main.async {
+                    completion(settings)
                 }
             }) { (err) in
                 print("Failed to fetch user:", err)
@@ -46,7 +64,9 @@ class APIService: NSObject {
                 
                 guard let userDictionary = value as? [String: Any] else { return }
                 
-                let user = User(dictionary: userDictionary)
+                let userId = snapshot.key
+                
+                let user = User(dictionary: userDictionary, uid: userId)
                 users.append(user)
             })
             
@@ -180,9 +200,9 @@ class APIService: NSObject {
     func updateDBwith(genderId: String, completion: @escaping (Bool) -> ()) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
     
-        let value = ["genderid": genderId, "didregister": true] as [String : Any]
+        let value = ["genderid": genderId] as [String : Any]
 
-        Database.database().reference().child("users").child(uid).updateChildValues(value) { (err, ref) in
+        Database.database().reference().child("settings").child(uid).updateChildValues(value) { (err, ref) in
             if let error = err {
                 print("Failed to save user info into db:", error)
                 DispatchQueue.main.async {

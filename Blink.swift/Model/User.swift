@@ -8,23 +8,21 @@
 
 import UIKit
 
-class User: NSObject {
+struct User {
     
-    var firstName: String?
-    var lastName: String?
-    var username: String?
-    var profileImageURL: String?
-    var genderId: String?
-    var friends: [String]?
-    var didRegisterGP: Bool?
+    let uid: String?
+    let firstName: String?
+    let lastName: String?
+    let username: String?
+    let profileImageURL: String?
     
-    init(dictionary: [String: Any]) {
+    
+    init(dictionary: [String: Any], uid: String?) {
+        self.uid = uid
         self.firstName = dictionary["firstname"] as? String
         self.lastName = dictionary["lastname"] as? String
         self.username = dictionary["username"] as? String
         self.profileImageURL = dictionary["profileimageurl"] as? String
-        self.genderId = dictionary["genderid"] as? String
-        self.friends = dictionary["friends"] as? [String]
-        self.didRegisterGP = dictionary["didregister"] as? Bool
     }
+     
 }

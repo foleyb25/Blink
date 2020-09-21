@@ -5,6 +5,10 @@
 //  Created by Brian Foley on 5/26/20.
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
+//  TODO: Find a way to dequeue individual 'chick' cells and 'dude' cells for each collection view dequeued in GenePoolViewController.swift
+//  TODO: insert gene pool media array and deque the amount of cells in this array
+
+/// GP Media Cell class represents the vertical scroll views of the Gene Pool. In the main GenePoolViewController two cells are dequeued which are navigated by scrolling horizontally. This class is dequeued in each of those 2 cells, 1 for "chicks" and one for "dudes". This enables vertical scrolling and navigating individual gene pool content media files.
 
 import UIKit
 
@@ -13,7 +17,7 @@ protocol ScrollDelegate: AnyObject {
     func scrollDown(delta: CGFloat, scrollView :UIScrollView)
 }
 
-class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class GPMediaCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
      weak var scrollDelegate: ScrollDelegate?
     
@@ -27,8 +31,6 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
         cv.contentInsetAdjustmentBehavior = .always
         return cv
     }()
-
-    let safeAreaBottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
     
     override func setupViews() {
         super.setupViews()
@@ -44,7 +46,7 @@ class ImageCells: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate
         imageCollection.register(FooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerId)
         addConstraintsWithFormat("H:|[v0]|", views: imageCollection)
         addConstraintsWithFormat("V:|[v0]|", views: imageCollection)
-        imageCollection.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: safeAreaBottom, right: 0)
+        imageCollection.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: safeAreaInsets.bottom, right: 0)
         imageCollection.showsVerticalScrollIndicator = false
     }
     

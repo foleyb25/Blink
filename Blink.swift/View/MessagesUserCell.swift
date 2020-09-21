@@ -5,6 +5,8 @@
 //  Created by Brian Foley on 6/18/20.
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
+//  TODO: Sort Users into Sections
+//  TODO: Fetch only friends of user
 
 import UIKit
 

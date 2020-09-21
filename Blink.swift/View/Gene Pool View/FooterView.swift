@@ -5,12 +5,11 @@
 //  Created by Brian Foley on 6/10/20.
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
+/// This class represents the footer view in the gene pool. It consists of a button that will show more Gene Pool media content from 25 images/videos to an additional 25.
 
 import UIKit
 
 class FooterView: UICollectionViewCell {
-    
-    let safeAreaBottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
     
     lazy var showMoreButton: UIButton = {
         let button = UIButton(type: .system)

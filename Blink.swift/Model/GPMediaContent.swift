@@ -9,11 +9,17 @@
 import UIKit
 
 class GPMediaContent: NSObject {
-    var username: String?
+    var mediaThumbnailURL: String?
     var mediaURL: String?
+    var creationDate: Date?
+    var location: CGPoint?
+    var caption: String?
     
     init(dictionary: [String: Any]) {
-        username = dictionary["username"] as? String
+        mediaThumbnailURL = dictionary["thumbnailURL"] as? String
         mediaURL = dictionary["mediaURL"] as? String
+        creationDate = dictionary["username"] as? Date
+        location = dictionary["location"] as? CGPoint
+        caption = dictionary["caption"] as? String
     }
 }
