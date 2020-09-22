@@ -6,6 +6,8 @@
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
 
+
+
 import UIKit
 
 class ChickCell: BaseCell {
@@ -15,3 +17,4 @@ class ChickCell: BaseCell {
         backgroundColor = .red
     }
 }
+

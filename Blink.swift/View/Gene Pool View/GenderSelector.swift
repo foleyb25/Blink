@@ -83,9 +83,9 @@ class GenderSelector: UIView, UICollectionViewDataSource, UICollectionViewDelega
         return 2
     }
     
-        func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-            genePoolController?.scrollToMenuIndex(menuIndex: indexPath.item)
-        }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        //genePoolController?.scrollToMenuIndex(menuIndex: indexPath.item)
+    }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! SelectionCell

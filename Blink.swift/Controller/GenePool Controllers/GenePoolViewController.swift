@@ -14,6 +14,134 @@
 
 import UIKit
 
+class GenePoolViewController: UICollectionViewController {
+    
+    enum Section: String, CaseIterable {
+      case profileView = "Profile View"
+      case imageCollection = "Image Collection"
+    }
+    
+    enum Item: String, CaseIterable {
+        case chick = "chickItem"
+        case dude = "dudeItem"
+    }
+    
+    let profileViewHeight: Int = 300
+    
+    init() {
+        let layout = UICollectionViewCompositionalLayout { (sectionNumber, env) -> NSCollectionLayoutSection? in
+            let sectionType = Section.allCases[sectionNumber]
+            switch sectionType {
+            case .profileView:
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(300))
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                return section
+//            case .genderSelector:
+//                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+//                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), subitems: [item])
+//                let section = NSCollectionLayoutSection(group: group)
+//                section.orthogonalScrollingBehavior = .paging
+//                return section
+            case .imageCollection:
+                //calculate the estimated height of cells based on number of videos
+                let height = Int(200 * 4) + 300
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(CGFloat(height)))
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.orthogonalScrollingBehavior = .groupPagingCentered
+                return section
+            }
+        }
+        super.init(collectionViewLayout: layout)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.register(ProfileViewCell.self, forCellWithReuseIdentifier: ProfileViewCell.reuseId)
+        collectionView.register(GPMediaCell.self, forCellWithReuseIdentifier: GPMediaCell.gpMediaCellId)
+        collectionView.refreshControl = refreshControl
+        collectionView.backgroundColor = .white
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavBar()
+    }
+    
+    @objc func handleRefresh() {
+        print("handle Refresh")
+        self.collectionView.refreshControl?.endRefreshing()
+    }
+    
+    internal func setupNavBar() {
+        //makes nav bar background invisible
+        self.navigationController?.navigationBar.setBackgroundImage(.none, for: .default)
+        self.navigationController?.navigationBar.shadowImage = .none
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.backgroundColor = .none
+    }
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return Section.allCases.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            return 2
+        default:
+            print("Unknown Value")
+        }
+        return 0
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        //var cell: BaseCell?
+        let sectionType = Section.allCases[indexPath.section]
+//        let itemType = Item.allCases[indexPath.item]
+        switch sectionType {
+        
+        case .imageCollection:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GPMediaCell.gpMediaCellId, for: indexPath) as! GPMediaCell
+            cell.horizontalScrollIndex = indexPath.item
+            return cell
+        case .profileView:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileViewCell.reuseId, for: indexPath) as! ProfileViewCell
+            return cell
+        }
+        
+//        switch sectionType {
+//        case .imageCollection:
+//            switch itemType {
+//            case .dude:
+//                cell = collectionView.dequeueReusableCell(withReuseIdentifier: DudeCell.reuseId, for: indexPath) as? DudeCell
+//            case .chick:
+//                cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChickCell.reuseId, for: indexPath) as? ChickCell
+//            }
+//        case .genderSelector:
+//            cell = collectionView.dequeueReusableCell(withReuseIdentifier: GenderSelectorCell.reuseId, for: indexPath) as? GenderSelectorCell
+//        case .profileView:
+//            cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileViewCell.reuseId, for: indexPath) as? ProfileViewCell
+//        }
+    }
+    
+}
+/*
+import UIKit
+
 class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     let cellId = "CellId"
@@ -182,6 +310,7 @@ class GenePoolViewController: UIViewController, UICollectionViewDataSource, UICo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! GPMediaCell
            cell.scrollDelegate = self
+           cell.horizontalScrollIndex = indexPath.item
            return cell
        }
     
@@ -241,3 +370,4 @@ extension GenePoolViewController: ScrollDelegate {
     
 
 }
+*/

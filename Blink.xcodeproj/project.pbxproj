@@ -27,6 +27,7 @@
 		0563CD4624997AAF0082315F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563CD4524997AAF0082315F /* Extensions.swift */; };
 		0563CD4824999CCF0082315F /* Switcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0563CD4724999CCF0082315F /* Switcher.swift */; };
 		0587107725194D31007B95E3 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0587107625194D31007B95E3 /* Settings.swift */; };
+		058710C4251978DE007B95E3 /* ProfileViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058710C3251978DE007B95E3 /* ProfileViewCell.swift */; };
 		058A13DB2478B1160014FD48 /* Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13DA2478B1160014FD48 /* Animations.swift */; };
 		058A13E3247C8B240014FD48 /* CameraView+captureOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E2247C8B240014FD48 /* CameraView+captureOutput.swift */; };
 		058A13E8247DB5570014FD48 /* GenderSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058A13E7247DB5570014FD48 /* GenderSelector.swift */; };
@@ -87,6 +88,7 @@
 		0563CD4524997AAF0082315F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		0563CD4724999CCF0082315F /* Switcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Switcher.swift; path = Blink.swift/Utility/Switcher.swift; sourceTree = SOURCE_ROOT; };
 		0587107625194D31007B95E3 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		058710C3251978DE007B95E3 /* ProfileViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewCell.swift; sourceTree = "<group>"; };
 		058A13DA2478B1160014FD48 /* Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animations.swift; sourceTree = "<group>"; };
 		058A13E2247C8B240014FD48 /* CameraView+captureOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView+captureOutput.swift"; sourceTree = "<group>"; };
 		058A13E7247DB5570014FD48 /* GenderSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelector.swift; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 				05F9DA96250018ED007AC1B6 /* ChickCell.swift */,
 				05F9DA98250018F8007AC1B6 /* DudeCell.swift */,
 				058A13E7247DB5570014FD48 /* GenderSelector.swift */,
+				058710C3251978DE007B95E3 /* ProfileViewCell.swift */,
 			);
 			path = "Gene Pool View";
 			sourceTree = "<group>";
@@ -525,6 +528,7 @@
 				055DF162249C011F003364F7 /* SendMessageController.swift in Sources */,
 				055DF160249B1DA8003364F7 /* CameraView+constraints.swift in Sources */,
 				05601B6A24779EE500068ADE /* SettingsController.swift in Sources */,
+				058710C4251978DE007B95E3 /* ProfileViewCell.swift in Sources */,
 				05F917DA2475A5CF000228F9 /* LoginViewController.swift in Sources */,
 				05F917C22474A31C000228F9 /* SceneDelegate.swift in Sources */,
 				055DF167249C13B7003364F7 /* User.swift in Sources */,

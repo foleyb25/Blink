@@ -6,6 +6,7 @@
 //  Copyright © 2020 Brian Foley. All rights reserved.
 //
 
+
 import UIKit
 
 class DudeCell: BaseCell {
@@ -15,3 +16,4 @@ class DudeCell: BaseCell {
         backgroundColor = .green
     }
 }
+

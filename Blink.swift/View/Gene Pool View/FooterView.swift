@@ -22,10 +22,10 @@ class FooterView: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = .white
+        backgroundColor = .blue
         addSubview(showMoreButton)
         showMoreButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        showMoreButton.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
+        showMoreButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         showMoreButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         showMoreButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
     }

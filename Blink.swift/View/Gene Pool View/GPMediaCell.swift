@@ -21,8 +21,17 @@ class GPMediaCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegat
     
      weak var scrollDelegate: ScrollDelegate?
     
+    static let gpMediaCellId = "gpmediacellid"
+    
     let chickCellId = "chickCellId"
+    let dudeCellId = "dudeCellId"
+    
     let footerId = "FooterId"
+    
+    var dudeCell = ["cell1","cell2","cell3", "cell3","cell3","cell3","cell3"]
+    var chickCell = ["cell1","cell2","cell3","cell3","cell3","cell3","cell3"]
+    
+    var horizontalScrollIndex: Int = 0
     
     let imageCollection: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
@@ -42,6 +51,7 @@ class GPMediaCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegat
         imageCollection.dataSource = self
         imageCollection.delegate = self
         imageCollection.register(ChickCell.self, forCellWithReuseIdentifier: chickCellId)
+        imageCollection.register(DudeCell.self, forCellWithReuseIdentifier: dudeCellId)
         addSubview(imageCollection)
         imageCollection.register(FooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerId)
         addConstraintsWithFormat("H:|[v0]|", views: imageCollection)
@@ -52,7 +62,6 @@ class GPMediaCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegat
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: footerId, for: indexPath) as! FooterView
-
         return footer
     }
 
@@ -62,11 +71,20 @@ class GPMediaCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 25
+        print(horizontalScrollIndex)
+        if(horizontalScrollIndex == 0) {
+            return chickCell.count
+        } else {
+            return dudeCell.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueReusableCell(withReuseIdentifier: chickCellId, for: indexPath) as! ChickCell
+        if horizontalScrollIndex == 0 {
+            return collectionView.dequeueReusableCell(withReuseIdentifier: chickCellId, for: indexPath) as! ChickCell
+        } else {
+            return collectionView.dequeueReusableCell(withReuseIdentifier: dudeCellId, for: indexPath) as! DudeCell
+        }
     }
     
      func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -83,10 +101,6 @@ class GPMediaCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegat
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 1, left: 1, bottom: 0, right: 1)
-    }
-    
-    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
-        print("Scrolled to top")
     }
     
     var lastContentOffset: CGFloat?
