@@ -15,7 +15,6 @@ import UIKit
 
 extension CameraViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    
     /**
     Hides buttons to prevent crashes and calls capturePhoto in CameraViewController.swift class
     
@@ -30,16 +29,9 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
      - CameraViewController.swift
     */
     @objc func capturePhotoPressed() {
-        captureButton.isHidden = true
-        videoButton.isHidden = true
-        flashButton.isHidden = true
-        flipButton.isHidden = true
-        pickerButton.isHidden = true
-        navigationController?.navigationBar.isHidden = true
         //Transfers to capture photo output delegate extension
         capturePhoto()
     }
-    
     
     /**
      Hides buttons to prevent crashes and calls record() in CameraViewController.swift class
@@ -55,18 +47,14 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
      - CameraViewController.swift
     */
     @objc func recordPressed() {
-        isRecording = true
-        captureButton.isHidden = true
-        flashButton.isHidden = true
-        flipButton.isHidden = true
-        pickerButton.isHidden = true
-        navigationController?.navigationBar.isHidden = true
+        
         if let tapGesture = self.tapGesture {
             view.removeGestureRecognizer(tapGesture)
         }
         if let panGesture = self.recordPanGesture {
             view.addGestureRecognizer(panGesture)
         }
+        
         //Transfers to capture video data delegate extension
         record()
     }
@@ -86,50 +74,22 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
      - CameraViewController.swift
     */
     @objc func handleImagePickerButton() {
-         let imagePickerController = UIImagePickerController()
-               imagePickerController.delegate = self
-               imagePickerController.allowsEditing = false
-               present(imagePickerController, animated: true, completion: nil)
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.allowsEditing = false
+        present(imagePickerController, animated: true, completion: nil)
     }
+    
     
     //@Override
     internal func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-            self.image = editedImage
+            togglePreviewMode(url: nil, image: editedImage)
         } else if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            self.image = originalImage
+            togglePreviewMode(url: nil, image: originalImage)
         }
-        
-        setMediaPreview(url: nil)
         
         dismiss(animated: true, completion: nil)
-    }
-    
-    /**
-     Removes photo or video from media preview layer
-    
-     ## Notes
-      Cancel button is displayed only in preview mode. Setting values to nil makes preview layer(s) transparent
-    
-     - Warning: None
-     - Parameter None
-     - Returns: None
-     
-     ## Called in
-     - CameraViewController.swift
-    */
-    @objc func cancelPressed() {
-        if player != nil {
-            player = nil
-            videoWriter = nil
-            videoWriterInput = nil
-            // playerLayer is the video preview layer
-            playerLayer.player = nil
-        } else {
-            // image preview is the image preview layer
-            imagePreview.image = nil
-        }
-        togglePreviewMode(isInPreviewMode: false)
     }
     
     /**
@@ -168,27 +128,6 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
             self.flashMode = .off
             flashButton.setBackgroundImage(UIImage(systemName: "bolt.slash"), for: .normal)
         }
-    }
-    
-    /**
-     Sends media content to sendMessageController and presents message controller
-     
-    ## Notes
-     Displays only in preview mode
-     
-     - Warning: None
-     - Parameter None
-     - Returns: None
-     
-     ## Called in
-     - CameraViewController.swift
-    */
-    @objc func sendPressed() {
-        lockPreviewMode = true
-        let sendMessageController = SendMessageController()
-        sendMessageController.image = self.image
-        sendMessageController.camController = self
-        self.navigationController?.pushViewController(sendMessageController, animated: true)
     }
     
     /**

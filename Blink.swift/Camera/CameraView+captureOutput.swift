@@ -92,11 +92,15 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
                videoWriterInput?.markAsFinished()
                
                videoWriter?.finishWriting { [weak self] in
-                   
-                self?._captureState = .idle
-                   DispatchQueue.main.async {
-                        self?.setMediaPreview(url: url)
-                   }
+                    self?._captureState = .idle
+                    DispatchQueue.main.async {
+                        //self?.player = nil
+                        self?.videoWriter = nil
+                        self?.videoWriterInput = nil
+                        // playerLayer is the video preview layer
+                        //self?.playerLayer.player = nil
+                        self?.togglePreviewMode(url: url, image: nil)
+                    }
                }
            default:
                break
@@ -108,10 +112,10 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
         if let imageData = photo.fileDataRepresentation() {
            let dataProvider = CGDataProvider(data: imageData as CFData)
            let cgImageRef = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: CGColorRenderingIntent.defaultIntent)
-            image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: getImageOrientation(forCamera: self.currentCamera))
+           let image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: getImageOrientation(forCamera: self.currentCamera))
             //
            DispatchQueue.main.async {
-            self.setMediaPreview(url: nil)
+            self.togglePreviewMode(url: nil, image: image)
            }
        }
     }
@@ -154,15 +158,25 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
        switch _captureState {
         
        case .idle:
-           Animations.animateRecordButton(videoButton: videoButton, captureButton: captureButton)
+            Animations.shared.animateRecordButton(videoButton: videoButton, captureButton: captureButton)
            _captureState = .start
+            isRecording = true
+            toggleButtons(isHidden: true)
        case .capturing:
             isRecording = false
            _captureState = .end
-           Animations.animateMoveRecordButtonBack(button: videoButton)
+            Animations.shared.animateMoveRecordButtonBack(button: videoButton)
+            toggleButtons(isHidden: false)
        default:
             print("unknown capture state")
        }
                
+    }
+    
+    private func toggleButtons(isHidden: Bool) {
+        captureButton.isHidden = isHidden
+        flashButton.isHidden = isHidden
+        flipButton.isHidden = isHidden
+        pickerButton.isHidden = isHidden
     }
 }

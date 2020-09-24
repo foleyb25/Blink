@@ -56,7 +56,7 @@ class SideBarMenuController: NSObject, UICollectionViewDataSource, UICollectionV
             
             // if Camera is recording put a red pulse animation over black layer
             if cameraViewController!.isRecording {
-                Animations.animatePulsatingLayer(layer: blackView.layer)
+                Animations.shared.animatePulsatingLayer(layer: blackView.layer)
             }
             
             collectionView.frame = CGRect(x: -window.frame.width, y: 0, width: window.frame.width/2, height: window.frame.height)

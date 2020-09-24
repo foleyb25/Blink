@@ -27,10 +27,7 @@ extension CameraViewController {
         pickerButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         pickerButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
 
-        cancelButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 60).isActive = true
-        cancelButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-        cancelButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        cancelButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+       
         
         flipButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor).isActive = true
         flipButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -35).isActive = true
@@ -41,11 +38,6 @@ extension CameraViewController {
         flashButton.bottomAnchor.constraint(equalTo: flipButton.topAnchor, constant: -35).isActive = true
         flashButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         flashButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        
-        sendButton.centerXAnchor.constraint(equalTo: flipButton.centerXAnchor).isActive = true
-        sendButton.topAnchor.constraint(equalTo: flipButton.bottomAnchor, constant: 35).isActive = true
-        sendButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        sendButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
         
         friendsButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         friendsButton.widthAnchor.constraint(equalToConstant: 44).isActive = true

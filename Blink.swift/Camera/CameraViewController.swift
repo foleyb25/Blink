@@ -80,26 +80,9 @@ class CameraViewController: UIViewController {
     internal var swipeRightGesture: UISwipeGestureRecognizer?
    // internal var panGesture: UIGestureRecognizer?
     
-    //stores captured image
-    var image: UIImage?
+
     
-    let imagePreview: UIImageView = {
-        let viewItem = UIImageView()
-        viewItem.frame = UIScreen.main.bounds
-        viewItem.contentMode = .scaleAspectFill
-        viewItem.clipsToBounds = true
-        return viewItem
-    }()
     
-    //capturing movies
-    internal var playerLayer : AVPlayerLayer = {
-        let layer = AVPlayerLayer()
-        layer.frame = UIScreen.main.bounds
-        layer.videoGravity = .resizeAspectFill
-        return layer
-    }()
-    
-    var player: AVPlayer?
     var videoWriter: AVAssetWriter!
     var videoWriterInput: AVAssetWriterInput!
     var audioWriterInput: AVAssetWriterInput!
@@ -178,19 +161,6 @@ class CameraViewController: UIViewController {
        return button
     }()
     
-    internal let cancelButton: UIButton = {
-        let button = UIButton()
-        button.addTarget(self, action: #selector(cancelPressed), for: .touchDown)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.tintColor = .white
-        if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "trash"), for: .normal)
-        } else {
-            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
-        }
-        return button
-    }()
-    
     internal let flipButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(flipCameraPressed), for: .touchDown)
@@ -211,19 +181,6 @@ class CameraViewController: UIViewController {
         button.tintColor = .white
         if #available(iOS 13.0, *) {
             button.setBackgroundImage(UIImage(systemName: "bolt.circle"), for: .normal)
-        } else {
-            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
-        }
-        return button
-    }()
-    
-    internal let sendButton: UIButton = {
-        let button = UIButton()
-        button.addTarget(self, action: #selector(sendPressed), for: .touchDown)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.tintColor = .white
-        if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "paperplane"), for: .normal)
         } else {
             button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
         }
@@ -348,15 +305,17 @@ class CameraViewController: UIViewController {
     //MARK: View Will Appear
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-       setupNavBar()
+        setupNavBar()
         
+        /*
         //transition back from the sendMessageController calls View Will Appear. Keep The camera in preview mode and return
         if lockPreviewMode {
             togglePreviewMode(isInPreviewMode: true)
             lockPreviewMode = false
             return
         }
-            
+        */
+ 
         sessionQueue.async {
             switch self.setupResult {
             case .success:
@@ -398,7 +357,7 @@ class CameraViewController: UIViewController {
                 }
             }
         }
-        togglePreviewMode(isInPreviewMode: false)
+        //togglePreviewMode(isInPreviewMode: false)
     }
     
     //MARK: Setup View
@@ -408,17 +367,15 @@ class CameraViewController: UIViewController {
         view.addSubview(pickerButton)
         view.addSubview(videoButton)
         view.addSubview(timingLabel)
-        view.addSubview(cancelButton)
         view.addSubview(flipButton)
         view.addSubview(flashButton)
-        view.addSubview(sendButton)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: friendsButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: genePoolButton)
         setButtonConstraints()
         addGestureRecognizers()
         
-        sendButton.isEnabled = false
-        cancelButton.isEnabled = false
+       // sendButton.isEnabled = false
+        //cancelButton.isEnabled = false
         videoButton.isEnabled = false
         captureButton.isEnabled = false
         flashButton.isEnabled = false
@@ -428,13 +385,15 @@ class CameraViewController: UIViewController {
         previewLayer.session = session
         
         previewView.layer.addSublayer(previewLayer)
-        previewView.layer.addSublayer(imagePreview.layer)
-        previewView.layer.addSublayer(playerLayer)
+      //  previewView.layer.addSublayer(imagePreview.layer)
+       // previewView.layer.addSublayer(playerLayer)
     }
     
+    var isInPreviewMode: Bool = false
     
     internal func setupNavBar() {
         //makes nav bar background invisible
+        self.navigationController?.navigationBar.isHidden = isInPreviewMode
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
@@ -442,36 +401,55 @@ class CameraViewController: UIViewController {
     }
     
     // MARK: Toggle Preview Mode
-    internal func togglePreviewMode(isInPreviewMode: Bool) {
-        if isInPreviewMode {
-            captureButton.isHidden = true
-            videoButton.isHidden = true
-            flashButton.isHidden = true
-            flipButton.isHidden = true
-            pickerButton.isHidden = true
-            cancelButton.isHidden = false
-            sendButton.isHidden = false
-            if let gesture = tapGesture {
-                view.removeGestureRecognizer(gesture)
-            }
-            //previewAnimation()
-            navigationController?.navigationBar.isHidden = true
-        } else {
-            captureButton.isHidden = false
-            videoButton.isHidden = false
-            flashButton.isHidden = false
-            flipButton.isHidden = false
-            pickerButton.isHidden = false
-            cancelButton.isHidden = true
-            sendButton.isHidden = true
-            if let tapgesture = tapGesture {
-                view.addGestureRecognizer(tapgesture)
-            }
-            if let panGesture = recordPanGesture {
-                view.removeGestureRecognizer(panGesture)
-            }
-            navigationController?.navigationBar.isHidden = false
+    internal func togglePreviewMode(url: URL?, image: UIImage?) {
+        isInPreviewMode = true
+        self.navigationController?.navigationBar.isHidden = isInPreviewMode
+        let previewMediaView = PreviewMediaView()
+        previewMediaView.frame = UIScreen.main.bounds
+        view.addSubview(previewMediaView)
+        
+        if let _url = url {
+            previewMediaView.playerLayer.player = AVPlayer(url: _url)
+            previewMediaView.playerLayer.frame = UIScreen.main.bounds
+            previewMediaView.playerLayer.player?.actionAtItemEnd = .none
+            previewMediaView.playerLayer.videoGravity = .resizeAspectFill
+            previewMediaView.playerLayer.player!.play()
+        } else if let _image = image {
+            previewMediaView.imagePreview.image = _image
         }
+        
+        
+        /*
+        
+   //     cancelButton.isHidden = false
+   //     sendButton.isHidden = false
+        */
+        /*
+        if let gesture = tapGesture {
+            view.removeGestureRecognizer(gesture)
+        }
+ */
+        //previewAnimation()
+        
+            
+        /*
+        captureButton.isHidden = false
+        videoButton.isHidden = false
+        flashButton.isHidden = false
+        flipButton.isHidden = false
+        pickerButton.isHidden = false
+  //      cancelButton.isHidden = true
+  //      sendButton.isHidden = true
+        */
+        /*
+        if let tapgesture = tapGesture {
+            view.addGestureRecognizer(tapgesture)
+        }
+        if let panGesture = recordPanGesture {
+            view.removeGestureRecognizer(panGesture)
+        }
+        //navigationController?.navigationBar.isHidden = false
+        */
     }
     
     let photoOutput = AVCapturePhotoOutput()
@@ -674,6 +652,7 @@ class CameraViewController: UIViewController {
         }
     }
     
+    /*
     //MARK: Set Media Preview
     func setMediaPreview(url: URL?) {
         //setup image preview
@@ -694,14 +673,15 @@ class CameraViewController: UIViewController {
         self.player!.play()
         togglePreviewMode(isInPreviewMode: true)
     }
-    
+    */
+ 
     /*
     func record() {
         guard let movieFileOutput = self.movieFileOutput else {
             return
         }
     }
-   
+    
         /*MovieFileRecording*/
         sessionQueue.async {
             if !movieFileOutput.isRecording {
@@ -812,8 +792,8 @@ class CameraViewController: UIViewController {
                 self.captureButton.isEnabled = isSessionRunning
                 self.flipButton.isEnabled = isSessionRunning
                 self.flashButton.isEnabled = isSessionRunning
-                self.cancelButton.isEnabled = isSessionRunning
-                self.sendButton.isEnabled = isSessionRunning
+             //   self.cancelButton.isEnabled = isSessionRunning
+             //   self.sendButton.isEnabled = isSessionRunning
                 self.pickerButton.isEnabled = isSessionRunning
             }
         }
@@ -824,7 +804,6 @@ class CameraViewController: UIViewController {
             self.setRecommendedFrameRateRangeForPressureState(systemPressureState: systemPressureState)
         }
         keyValueObservations.append(systemPressureStateObservation)
-        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd(notification:)), name: .AVPlayerItemDidPlayToEndTime, object: player?.currentItem)
         NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: .AVCaptureDeviceSubjectAreaDidChange, object: videoDeviceInput.device)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: session)
         /*
@@ -845,14 +824,6 @@ class CameraViewController: UIViewController {
             keyValueObservation.invalidate()
         }
         keyValueObservations.removeAll()
-    }
-    
-    //restarts video once the end is reached
-    @objc func playerItemDidReachEnd(notification: Notification) {
-            print("Reached Player End")
-           if let playerItem = notification.object as? AVPlayerItem {
-               playerItem.seek(to: CMTime.zero, completionHandler: nil)
-           }
     }
     
     // MARK: Runtime Error Management
