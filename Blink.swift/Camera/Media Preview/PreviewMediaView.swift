@@ -67,7 +67,7 @@ class PreviewMediaView: UIView {
         setupConstraints()
         NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd(notification:)), name: .AVPlayerItemDidPlayToEndTime, object: playerLayer.player?.currentItem)
     }
-    
+
     //restarts video once the end is reached
     @objc func playerItemDidReachEnd(notification: Notification) {
             print("Reached Player End")
@@ -75,7 +75,6 @@ class PreviewMediaView: UIView {
                playerItem.seek(to: CMTime.zero, completionHandler: nil)
            }
     }
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

@@ -67,8 +67,6 @@ class SendMessageController: UIViewController, UITableViewDelegate, UITableViewD
                 print("Sending to gene Pool")
                 APIService.shared.sendMediaToGenePool(image: gpimage) { (Bool) in
                     self.navigationController?.popToRootViewController(animated: true)
-                    self.camController?.lockPreviewMode = false
-                    //self.camController?.imagePreview.image = nil
                 }
                 
             } else {

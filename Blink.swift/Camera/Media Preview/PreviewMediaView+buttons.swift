@@ -48,7 +48,6 @@ extension PreviewMediaView {
     @objc func sendPressed() {
         guard let owningVC = getOwningViewController() as? CameraViewController else { return }
         
-        //lockPreviewMode = true
         let sendMessageController = SendMessageController()
         sendMessageController.image = self.image
         sendMessageController.camController = owningVC

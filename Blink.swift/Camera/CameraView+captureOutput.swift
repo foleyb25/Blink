@@ -112,7 +112,8 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate, AV
         if let imageData = photo.fileDataRepresentation() {
            let dataProvider = CGDataProvider(data: imageData as CFData)
            let cgImageRef = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: CGColorRenderingIntent.defaultIntent)
-           let image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: getImageOrientation(forCamera: self.currentCamera))
+            
+           let image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: self.currentCamera == .rear ? .right : .leftMirrored)
             //
            DispatchQueue.main.async {
             self.togglePreviewMode(url: nil, image: image)

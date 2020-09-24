@@ -12,6 +12,7 @@
 //  TODO: Allow for videos to be selected from image picker
 
 import UIKit
+import AVFoundation
 
 extension CameraViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -103,7 +104,63 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
      - CameraViewController.swift
     */
     @objc func flipCameraPressed() {
-        flipCamera()
+        guard let session = self.session else { return }
+        sessionQueue.async {
+            let currentVideoDevice = self.videoDeviceInput.device
+            let currentPosition = currentVideoDevice.position
+            let preferredPosition: AVCaptureDevice.Position
+            let preferredDeviceType: AVCaptureDevice.DeviceType
+            switch currentPosition {
+                case .unspecified, .front:
+                    preferredPosition = .back
+                    preferredDeviceType = .builtInDualCamera
+                case .back:
+                    preferredPosition = .front
+                    preferredDeviceType = .builtInWideAngleCamera
+                @unknown default:
+                    print("Unknown capture position. Defaulting to back, dual-camera.")
+                    preferredPosition = .back
+                    preferredDeviceType = .builtInDualCamera
+            }
+            let devices = self.videoDeviceDiscoverySession.devices
+            var newVideoDevice: AVCaptureDevice? = nil
+            // First, seek a device with both the preferred position and device type. Otherwise, seek a device with only the preferred position.
+            if let device = devices.first(where: { $0.position == preferredPosition && $0.deviceType == preferredDeviceType }) {
+                newVideoDevice = device
+            } else if let device = devices.first(where: { $0.position == preferredPosition }) {
+                newVideoDevice = device
+            }
+            if let videoDevice = newVideoDevice {
+                do {
+                    let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
+                    session.beginConfiguration()
+                    // Remove the existing device input first, because AVCaptureSession doesn't support
+                    // simultaneous use of the rear and front cameras.
+                    session.removeInput(self.videoDeviceInput)
+                    if session.canAddInput(videoDeviceInput) {
+                        NotificationCenter.default.removeObserver(self, name: .AVCaptureDeviceSubjectAreaDidChange, object: currentVideoDevice)
+                        NotificationCenter.default.addObserver(self, selector: #selector(self.subjectAreaDidChange), name: .AVCaptureDeviceSubjectAreaDidChange, object: videoDeviceInput.device)
+                        session.addInput(videoDeviceInput)
+                        self.videoDeviceInput = videoDeviceInput
+                    } else {
+                        session.addInput(self.videoDeviceInput)
+                    }
+                    self.photoOutput.isDepthDataDeliveryEnabled = self.photoOutput.isDepthDataDeliverySupported
+                    session.commitConfiguration()
+                    self.beginZoomScale = CGFloat(1.0)
+                } catch {
+                    print("Error occurred while creating video device input: \(error)")
+                }
+                
+            }
+            
+            if self.currentCamera == .front {
+               self.currentCamera = .rear
+            } else {
+               self.currentCamera = .front
+            }
+            
+        }
     }
     
     /**
