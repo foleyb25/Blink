@@ -16,92 +16,26 @@
 
 import UIKit
 import AVFoundation
-import Photos
 import Firebase
 
-/*
-class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureFileOutputRecordingDelegate, UIGestureRecognizerDelegate
-*/
-class CameraViewController: UIViewController {
+class CameraViewController: UIViewController, MultiCamSessionDelegate {
+
+    var multiCamSession: MultiCamSession?
     
-    enum CameraSelection: String {
-        /// Camera on the back of the device
-        case rear = "rear"
-        /// Camera on the front of the device
-        case front = "front"
-    }
-    
-    enum Flashmode: String {
-        case auto = "auto"
-        case on = "on"
-        case off = "off"
-    }
-    
-    enum SessionSetupResult {
-        case success
-        case camNotAuthorized
-        case configurationFailed
-    }
-    
-    enum _CaptureState {
-        case idle
-        case start
-        case capturing
-        case end
-        case finished
-    }
-    
-    var audioAuthorized = true
-    
-    public var currentCamera = CameraSelection.rear
-    public var flashMode = Flashmode.auto
-    public var setupResult: SessionSetupResult = .success
-    
-    public let videoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera], mediaType: .video, position: .unspecified)
-    @objc dynamic var videoDeviceInput: AVCaptureDeviceInput!
-    public private(set) var session: AVCaptureSession? //public getter internal setter
-    public var isSessionRunning = false
-    var isRecording = false
-    // Communicate with the session and other session objects on this queue.
-    let sessionQueue = DispatchQueue(label: "session_queue")
-    // Communicate with live video recording
-    let videoSessionQueue = DispatchQueue(label: "video_capture_session_queue")
-    var backgroundRecordingID: UIBackgroundTaskIdentifier?
-    
-    // Gesture Recognizer Variables
-    var beginZoomScale = CGFloat(1.0)
-    var zoomScale = CGFloat(1.0)
-    var previousPanTranslation: CGFloat = 0.0
-    public var maxZoomScale = CGFloat.greatestFiniteMagnitude
-    var recordPanGesture: UIPanGestureRecognizer?
-    var pinchGesture: UIPinchGestureRecognizer?
-    var tapGesture: UITapGestureRecognizer?
-    var focusTapGesture: UITapGestureRecognizer?
-    var swipeRightGesture: UISwipeGestureRecognizer?
-    
-    //AVAssetWriter & Recording Variables
-    var videoWriter: AVAssetWriter!
-    var videoWriterInput: AVAssetWriterInput!
-    var audioWriterInput: AVAssetWriterInput!
-    var fileName = ""
-    var adapter: AVAssetWriterInputPixelBufferAdaptor?
-    var _time: Double = 0
-    
-    var _captureState = _CaptureState.idle
-    
-    var previewLayer: AVCaptureVideoPreviewLayer = {
-       let pl = AVCaptureVideoPreviewLayer()
+    var backViewLayer:AVCaptureVideoPreviewLayer = {
+        let pl = AVCaptureVideoPreviewLayer()
         pl.videoGravity = .resizeAspectFill
         pl.frame = UIScreen.main.bounds
         pl.backgroundColor = UIColor.clear.cgColor
         return pl
     }()
     
-    let previewView: UIView = {
-        let pv = UIView()
-        pv.translatesAutoresizingMaskIntoConstraints = false
-        pv.frame = UIScreen.main.bounds
-        return pv
+    var frontViewLayer:AVCaptureVideoPreviewLayer = {
+        let pl = AVCaptureVideoPreviewLayer()
+        pl.videoGravity = .resizeAspectFill
+        pl.frame = UIScreen.main.bounds
+        pl.backgroundColor = UIColor.clear.cgColor
+        return pl
     }()
     
     let captureButton: UIButton = {
@@ -110,11 +44,7 @@ class CameraViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.titleLabel!.font = UIFont.systemFont(ofSize: 20)
         button.tintColor = .white
-        if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
-        } else {
-            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
-        }
+        button.setBackgroundImage(UIImage(systemName: "circle"), for: .normal)
         return button
     }()
     
@@ -135,12 +65,7 @@ class CameraViewController: UIViewController {
         button.layer.masksToBounds = true
         button.setTitle("", for: .normal)
         button.tintColor = .white
-        if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "video.circle"), for: .normal)
-
-        } else {
-            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
-        }
+        button.setBackgroundImage(UIImage(systemName: "video.circle"), for: .normal)
         return button
     }()
     
@@ -150,11 +75,7 @@ class CameraViewController: UIViewController {
        button.translatesAutoresizingMaskIntoConstraints = false
        button.titleLabel!.font = UIFont.systemFont(ofSize: 20)
        button.tintColor = .white
-       if #available(iOS 13.0, *) {
-           button.setBackgroundImage(UIImage(systemName: "cube.box"), for: .normal)
-       } else {
-           button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
-       }
+       button.setBackgroundImage(UIImage(systemName: "cube.box"), for: .normal)
        return button
     }()
     
@@ -163,11 +84,7 @@ class CameraViewController: UIViewController {
         button.addTarget(self, action: #selector(flipCameraPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white
-        if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "arrow.2.circlepath"), for: .normal)
-        } else {
-            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
-        }
+        button.setBackgroundImage(UIImage(systemName: "arrow.2.circlepath"), for: .normal)
         return button
     }()
     
@@ -176,11 +93,16 @@ class CameraViewController: UIViewController {
         button.addTarget(self, action: #selector(toggleFlashPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white
-        if #available(iOS 13.0, *) {
-            button.setBackgroundImage(UIImage(systemName: "bolt.circle"), for: .normal)
-        } else {
-            button.setBackgroundImage(UIImage(named: "logo_no_bg"), for: .normal)
-        }
+        button.setBackgroundImage(UIImage(systemName: "bolt.circle"), for: .normal)
+        return button
+    }()
+    
+    let dualCamDisplayButton: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(handleDualCameraDisplay), for: .touchDown)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
+        button.setBackgroundImage(UIImage(systemName: "02.square"), for: .normal)
         return button
     }()
     
@@ -190,11 +112,7 @@ class CameraViewController: UIViewController {
         button.addTarget(self, action: #selector(friendsButtonPressed), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white
-        if #available(iOS 13.0, *) {
-            button.setImage(UIImage(systemName: "person.3.fill"), for: .normal)
-        } else {
-            button.setImage(UIImage(named: "logo_no_bg"), for: .normal)
-        }
+        button.setImage(UIImage(systemName: "person.3.fill"), for: .normal)
         return button
     }()
 
@@ -223,6 +141,17 @@ class CameraViewController: UIViewController {
     }()
     
     // MARK: View Controller Life Cycle
+    /*
+     Setup the capture session.
+     In general, it's not safe to mutate an AVCaptureSession or any of its
+     inputs, outputs, or connections from multiple threads at the same time. This is
+     why checkSetupResult is called from MultiCamSession through delegation. this is to ensure
+     it is called on the dualcamsessionqueue and start session is not called before configuration
+     is complete.
+    
+     configureCamerasInputOutput is called on dualsessioncameraqueue so the main queu jumps out of this
+     call almost immmediately. This is true for all multicamera session configuration calls
+     */
     override func viewDidLoad() {
         super.viewDidLoad()
         //check to see if user is logged in
@@ -232,123 +161,28 @@ class CameraViewController: UIViewController {
             }
             dismiss(animated: false, completion: nil)
         }
-        session = AVCaptureSession()
+        multiCamSession = MultiCamSession()
+        guard let mcs = multiCamSession else {return}
+        mcs.multiCamDelegate = self
+        backViewLayer.session = multiCamSession
+        frontViewLayer.session = multiCamSession
+        
+        mcs.configureCamerasInputOutput()
         setupView()
-        
-        /*
-         Check the video authorization status. Video access is required and audio
-         access is optional. If the user denies audio access, AVCam won't
-         record audio during movie recording.
-         */
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .authorized:
-            // The user has previously granted access to the camera.
-            break
-        case .notDetermined:
-            /*
-             The user has not yet been presented with the option to grant
-             video access. Suspend the session queue to delay session
-             setup until the access request has completed.
-             */
-             sessionQueue.suspend()
-             AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
-                 if !granted {
-                     self.setupResult = .camNotAuthorized
-                 }
-                 self.sessionQueue.resume()
-             })
-             /*
-             Note that audio access will be implicitly requested when we
-             create an AVCaptureDeviceInput for audio during session setup.
-             */
-        case .denied:
-            print("denied")
-            sessionQueue.suspend()
-            AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
-                if !granted {
-                    self.setupResult = .camNotAuthorized
-                }
-                self.sessionQueue.resume()
-            })
-        case .restricted:
-            print("restricted")
-            sessionQueue.suspend()
-            AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
-                if !granted {
-                    self.setupResult = .camNotAuthorized
-                }
-                self.sessionQueue.resume()
-            })
-        default:
-            // The user has previously denied access.
-            setupResult = .camNotAuthorized
-        }
-        /*
-         Setup the capture session.
-         In general, it's not safe to mutate an AVCaptureSession or any of its
-         inputs, outputs, or connections from multiple threads at the same time.
-        
-         Don't perform these tasks on the main queue because
-         AVCaptureSession.startRunning() is a blocking call, which can
-         take a long time. Dispatch session setup to the sessionQueue, so
-         that the main queue isn't blocked, which keeps the UI responsive.
-         */
-        sessionQueue.async {
-            self.configureSession()
-        }
     }
     
     //MARK: View Will Appear
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavBar()
- 
-        sessionQueue.async {
-            switch self.setupResult {
-            case .success:
-                    // Only setup observers and start the session if setup succeeded.
-                if !self.audioAuthorized {
-                    DispatchQueue.main.async {
-                        let changePrivacySetting = "AVCam doesn't have permission to use the Microphone, please change privacy settings"
-                        let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the Microphone")
-                        let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"), style: .`default`, handler: { _ in UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
-                            }))
-                        self.present(alertController, animated: true, completion: nil)
-                    }
-                }
-                self.addObservers()
-                guard let session = self.session else { return }
-                session.startRunning()
-                self.isSessionRunning = session.isRunning
-                    
-            case .camNotAuthorized:
-                DispatchQueue.main.async {
-                    let changePrivacySetting = "AVCam doesn't have permission to use the camera, please change privacy settings"
-                    let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the camera")
-                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"), style: .`default`, handler: { _ in UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
-                        }))
-                    self.present(alertController, animated: true, completion: nil)
-                }
-               
-            case .configurationFailed:
-                DispatchQueue.main.async {
-                    let alertMsg = "Alert message when something goes wrong during capture session configuration"
-                    let message = NSLocalizedString("Unable to capture media", comment: alertMsg)
-                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
-                    self.present(alertController, animated: true, completion: nil)
-                }
-            }
-        }
     }
     
     //MARK: Setup View
-    fileprivate func setupView() {
-        view.addSubview(previewView)
+    private func setupView() {
+        guard let mcs = self.multiCamSession else {return}
+        view.layer.addSublayer(backViewLayer)
+        
+        view.addSubview(dualCamDisplayButton)
         view.addSubview(captureButton)
         view.addSubview(pickerButton)
         view.addSubview(videoButton)
@@ -358,22 +192,13 @@ class CameraViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: friendsButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: genePoolButton)
         setButtonConstraints()
-        addGestureRecognizers()
-        
-        videoButton.isEnabled = false
-        captureButton.isEnabled = false
-        flashButton.isEnabled = false
-        flipButton.isEnabled = false
-        pickerButton.isEnabled = false
-        
-        previewLayer.session = session
-        
-        previewView.layer.addSublayer(previewLayer)
+        //add gesture recognizers dealing with the UI as well as the camera(s)
+        mcs.addCameraGestureRecognizers()
+        addUIGestureRecognizers()
+            
     }
     
-    
-    
-    internal func setupNavBar() {
+    private func setupNavBar() {
         //makes nav bar background invisible
         self.navigationController?.navigationBar.isHidden = isInPreviewMode
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -385,7 +210,7 @@ class CameraViewController: UIViewController {
     // MARK: Toggle Preview Mode
     var isInPreviewMode: Bool = false
     
-    internal func togglePreviewMode(url: URL?, image: UIImage?) {
+    func togglePreviewMode(url: URL?, image: UIImage?) {
         isInPreviewMode = true
         self.navigationController?.navigationBar.isHidden = isInPreviewMode
         let previewMediaView = PreviewMediaView()
@@ -394,6 +219,7 @@ class CameraViewController: UIViewController {
         
         if let _url = url {
             previewMediaView.playerLayer.player = AVPlayer(url: _url)
+            previewMediaView.url = url
             previewMediaView.playerLayer.frame = UIScreen.main.bounds
             previewMediaView.playerLayer.player?.actionAtItemEnd = .none
             previewMediaView.playerLayer.videoGravity = .resizeAspectFill
@@ -401,63 +227,80 @@ class CameraViewController: UIViewController {
         } else if let _image = image {
             previewMediaView.imagePreview.image = _image
         }
-        
     }
     
-    let photoOutput = AVCapturePhotoOutput()
-    var videoDataOutput = AVCaptureVideoDataOutput()
-    var audioDataOutput = AVCaptureAudioDataOutput()
-
-    // MARK: KVO and Notifications
-    private var keyValueObservations = [NSKeyValueObservation]()
-    /// - Tag: ObserveInterruption
-    private func addObservers() {
-        guard let session = self.session else { return }
-        let keyValueObservation = session.observe(\.isRunning, options: .new) { _, change in
-            guard let isSessionRunning = change.newValue else { return }
-            
-            DispatchQueue.main.async {
-                self.videoButton.isEnabled = isSessionRunning
-                self.captureButton.isEnabled = isSessionRunning
-                self.flipButton.isEnabled = isSessionRunning
-                self.flashButton.isEnabled = isSessionRunning
-             //   self.cancelButton.isEnabled = isSessionRunning
-             //   self.sendButton.isEnabled = isSessionRunning
-                self.pickerButton.isEnabled = isSessionRunning
+    func toggleButtons(isHidden: Bool) {
+        captureButton.isHidden = isHidden
+        flashButton.isHidden = isHidden
+        flipButton.isHidden = isHidden
+        pickerButton.isHidden = isHidden
+        videoButton.isHidden = isHidden
+        dualCamDisplayButton.isHidden = isHidden
+    }
+    
+    //MARK: Delegate calls to multiCamSession
+    func getView() -> UIView? {
+        return view
+    }
+    
+    func getFrontViewLayer() -> AVCaptureVideoPreviewLayer? {
+        return frontViewLayer
+    }
+    
+    func getBackViewLayer() -> AVCaptureVideoPreviewLayer? {
+        return backViewLayer
+    }
+    
+    func checkSetupResult() {
+        guard let mcs = multiCamSession else {return}
+        switch ( mcs.getSetupResult() ) {
+        case .success:
+            // Only setup observers and start the session if setup succeeded.
+            if !mcs.audioAuthorized {
+                let changePrivacySetting = "AVCam doesn't have permission to use the Microphone, please change privacy settings"
+                let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the Microphone")
+                let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"), style: .`default`, handler: { _ in UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+                    }))
+                self.present(alertController, animated: true, completion: nil)
+                return
             }
-        }
+            mcs.addObservers()
+            mcs.isSessionRunning = mcs.isRunning
+            mcs.startRunning()
+              
+        case .camNotAuthorized:
+            let changePrivacySetting = "AVCam doesn't have permission to use the camera, please change privacy settings"
+            let message = NSLocalizedString(changePrivacySetting, comment: "Alert message when the user has denied access to the camera")
+            let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("Settings", comment: "Alert button to open Settings"), style: .`default`, handler: { _ in UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+                }))
+            self.present(alertController, animated: true, completion: nil)
+            return
         
-        keyValueObservations.append(keyValueObservation)
-        let systemPressureStateObservation = observe(\.videoDeviceInput.device.systemPressureState, options: .new) { _, change in
-            guard let systemPressureState = change.newValue else { return }
-            self.setRecommendedFrameRateRangeForPressureState(systemPressureState: systemPressureState)
+        case .configurationFailed:
+            let alertMsg = "Alert message when something goes wrong during capture session configuration"
+            let message = NSLocalizedString("Unable to capture media", comment: alertMsg)
+            let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
+            self.present(alertController, animated: true, completion: nil)
         }
-        keyValueObservations.append(systemPressureStateObservation)
-        NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: .AVCaptureDeviceSubjectAreaDidChange, object: videoDeviceInput.device)
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: session)
-        /*
-         A session can only run when the app is full screen. It will be interrupted
-         in a multi-app layout, introduced in iOS 9, see also the documentation of
-         AVCaptureSessionInterruptionReason. Add observers to handle these session
-         interruptions and show a preview is paused message. See the documentation
-         of AVCaptureSessionWasInterruptedNotification for other interruption reasons.
-         */
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: session)
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: session)
-        
     }
- 
-    private func removeObservers() {
-        NotificationCenter.default.removeObserver(self)
-        for keyValueObservation in keyValueObservations {
-            keyValueObservation.invalidate()
-        }
-        keyValueObservations.removeAll()
-    }
-    
+    //End Delegate Calls
 }
 
-
+extension CameraViewController {
+    
+    func animateFlipCamera(from: AVCaptureVideoPreviewLayer, to: AVCaptureVideoPreviewLayer) {
+        
+//        UIView.animate(withDuration: 1) {
+//            from.transform = CATransform3DMakeRotation(10, -1, -1, 0)
+//        }
+        
+    }
+}
 
 
    

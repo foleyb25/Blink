@@ -11,7 +11,8 @@ import AVFoundation
 
 class PreviewMediaView: UIView {
     
-    //var player: AVPlayer?
+    // stores url of video file. used for filemanager deletion
+    var url: URL?
     
     //stores captured image
     var image: UIImage?
@@ -70,7 +71,6 @@ class PreviewMediaView: UIView {
 
     //restarts video once the end is reached
     @objc func playerItemDidReachEnd(notification: Notification) {
-            print("Reached Player End")
            if let playerItem = notification.object as? AVPlayerItem {
                playerItem.seek(to: CMTime.zero, completionHandler: nil)
            }

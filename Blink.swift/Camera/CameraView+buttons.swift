@@ -31,7 +31,7 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
     */
     @objc func capturePhotoPressed() {
         //Transfers to capture photo output delegate extension
-        capturePhoto()
+        multiCamSession?.capturePhoto()
     }
     
     /**
@@ -49,15 +49,15 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
     */
     @objc func recordPressed() {
         
-        if let tapGesture = self.tapGesture {
+        if let tapGesture = multiCamSession?.tapGesture {
             view.removeGestureRecognizer(tapGesture)
         }
-        if let panGesture = self.recordPanGesture {
+        if let panGesture = multiCamSession?.recordPanGesture {
             view.addGestureRecognizer(panGesture)
         }
         
         //Transfers to capture video data delegate extension
-        record()
+        multiCamSession?.record()
     }
     
     
@@ -104,63 +104,8 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
      - CameraViewController.swift
     */
     @objc func flipCameraPressed() {
-        guard let session = self.session else { return }
-        sessionQueue.async {
-            let currentVideoDevice = self.videoDeviceInput.device
-            let currentPosition = currentVideoDevice.position
-            let preferredPosition: AVCaptureDevice.Position
-            let preferredDeviceType: AVCaptureDevice.DeviceType
-            switch currentPosition {
-                case .unspecified, .front:
-                    preferredPosition = .back
-                    preferredDeviceType = .builtInDualCamera
-                case .back:
-                    preferredPosition = .front
-                    preferredDeviceType = .builtInWideAngleCamera
-                @unknown default:
-                    print("Unknown capture position. Defaulting to back, dual-camera.")
-                    preferredPosition = .back
-                    preferredDeviceType = .builtInDualCamera
-            }
-            let devices = self.videoDeviceDiscoverySession.devices
-            var newVideoDevice: AVCaptureDevice? = nil
-            // First, seek a device with both the preferred position and device type. Otherwise, seek a device with only the preferred position.
-            if let device = devices.first(where: { $0.position == preferredPosition && $0.deviceType == preferredDeviceType }) {
-                newVideoDevice = device
-            } else if let device = devices.first(where: { $0.position == preferredPosition }) {
-                newVideoDevice = device
-            }
-            if let videoDevice = newVideoDevice {
-                do {
-                    let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
-                    session.beginConfiguration()
-                    // Remove the existing device input first, because AVCaptureSession doesn't support
-                    // simultaneous use of the rear and front cameras.
-                    session.removeInput(self.videoDeviceInput)
-                    if session.canAddInput(videoDeviceInput) {
-                        NotificationCenter.default.removeObserver(self, name: .AVCaptureDeviceSubjectAreaDidChange, object: currentVideoDevice)
-                        NotificationCenter.default.addObserver(self, selector: #selector(self.subjectAreaDidChange), name: .AVCaptureDeviceSubjectAreaDidChange, object: videoDeviceInput.device)
-                        session.addInput(videoDeviceInput)
-                        self.videoDeviceInput = videoDeviceInput
-                    } else {
-                        session.addInput(self.videoDeviceInput)
-                    }
-                    self.photoOutput.isDepthDataDeliveryEnabled = self.photoOutput.isDepthDataDeliverySupported
-                    session.commitConfiguration()
-                    self.beginZoomScale = CGFloat(1.0)
-                } catch {
-                    print("Error occurred while creating video device input: \(error)")
-                }
-                
-            }
-            
-            if self.currentCamera == .front {
-               self.currentCamera = .rear
-            } else {
-               self.currentCamera = .front
-            }
-            
-        }
+        animateFlipCamera(from: backViewLayer, to: frontViewLayer)
+        multiCamSession?.flipCamera()
     }
     
     /**
@@ -174,16 +119,18 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
      - CameraViewController.swift
     */
     @objc func toggleFlashPressed() {
-        switch self.flashMode {
-        case .off:
-            self.flashMode = .auto
-            flashButton.setBackgroundImage(UIImage(systemName: "bolt.circle"), for: .normal)
+        switch(multiCamSession?.toggleFlash()) {
         case .auto:
-            self.flashMode = .on
-            flashButton.setBackgroundImage(UIImage(systemName: "bolt.fill"), for: .normal)
+            flashButton.setBackgroundImage(UIImage(systemName: "bolt.circle"), for: .normal)
+            break;
         case .on:
-            self.flashMode = .off
+            flashButton.setBackgroundImage(UIImage(systemName: "bolt.fill"), for: .normal)
+            break;
+        case .off:
             flashButton.setBackgroundImage(UIImage(systemName: "bolt.slash"), for: .normal)
+            break;
+        default:
+            print("Unkown flash toggle state")
         }
     }
     
@@ -222,5 +169,15 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
         genePoolRegisterController.cameraViewController = self
         navigationController?.pushViewController(genePoolRegisterController, animated: true)
 
+    }
+    
+    @objc func handleDualCameraDisplay() {
+        guard let mcs = multiCamSession else {return}
+        mcs.handleDualCameraDisplay()
+        if (mcs.isInDualCameraMode) {
+            flipButton.isHidden = true
+        } else {
+            flipButton.isHidden = false
+        }
     }
 }

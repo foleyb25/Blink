@@ -10,7 +10,7 @@
 import UIKit
 import AVFoundation
 
-extension CameraViewController: UIGestureRecognizerDelegate {
+extension MultiCamSession: UIGestureRecognizerDelegate {
     
     /**
      Adds gesture recognizers pertaining to the Camera View Controller
@@ -25,35 +25,24 @@ extension CameraViewController: UIGestureRecognizerDelegate {
      ## Called in
      - CameraViewController.swift
     */
-    internal func addGestureRecognizers() {
+    func addCameraGestureRecognizers() {
         ///pinch to zoom
-        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoomGesture(pinch:)))
-        self.view.addGestureRecognizer(pinchGesture)
+        guard let view = multiCamDelegate?.getView() else {return}
         
-        ///double tap to switch camera
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(flipCameraPressed))
-        tapGesture.numberOfTapsRequired = 2
-        self.view.addGestureRecognizer(tapGesture)
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoomGesture(pinch:)))
+        view.addGestureRecognizer(pinchGesture)
         
         /// tap to focus
         let focusTapGesture = UITapGestureRecognizer(target: self, action: #selector(focusAndExposeTap(_:)))
         focusTapGesture.numberOfTapsRequired = 1
-        self.view.addGestureRecognizer(focusTapGesture)
-        
-        /// swipe right to present side menu bar
-        let swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(friendsButtonPressed))
-        swipeRightGesture.direction = .right
-        self.view.addGestureRecognizer(swipeRightGesture)
+        view.addGestureRecognizer(focusTapGesture)
         
         /// swipe up and down while recording to zoom
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(recordZoomGesture(pan:)))
-        
-        
+
         /// assign gestures to global variables so they can be toggled on/off
         self.pinchGesture = pinchGesture
-        self.tapGesture = tapGesture
         self.focusTapGesture = focusTapGesture
-        self.swipeRightGesture = swipeRightGesture
         self.recordPanGesture = panGesture
     }
     
@@ -71,8 +60,8 @@ extension CameraViewController: UIGestureRecognizerDelegate {
      - Parameter UIPinchGestureRecognizer
      - Returns: None
     */
-    @objc internal func zoomGesture(pinch: UIPinchGestureRecognizer) {
-        let captureDevice = self.videoDeviceInput.device
+    @objc func zoomGesture(pinch: UIPinchGestureRecognizer) {
+        guard let captureDevice = currentDeviceInput?.device else { return }
         if pinch.state == .changed {
             do {
                 try captureDevice.lockForConfiguration()
@@ -99,20 +88,20 @@ extension CameraViewController: UIGestureRecognizerDelegate {
      - Parameter UIPanGestureRecognizer
      - Returns: None
     */
-    @objc internal func recordZoomGesture(pan: UIPanGestureRecognizer) {
+    @objc func recordZoomGesture(pan: UIPanGestureRecognizer) {
 
-        let currentTranslation    = pan.translation(in: view).y
+        let currentTranslation    = pan.translation(in: multiCamDelegate?.getView()).y
         let translationDifference = currentTranslation - beginZoomScale
 
         do {
-            let captureDevice = self.videoDeviceInput.device
+            let captureDevice = self.currentDeviceInput?.device
             
-            try captureDevice.lockForConfiguration()
-            defer { captureDevice.unlockForConfiguration() }
+            try captureDevice?.lockForConfiguration()
+            defer { captureDevice?.unlockForConfiguration() }
 
-            zoomScale = min(max(beginZoomScale - (translationDifference * 0.0125), 1.0),  captureDevice.activeFormat.videoMaxZoomFactor)
+            zoomScale = min(max(beginZoomScale - (translationDifference * 0.0125), 1.0),  captureDevice!.activeFormat.videoMaxZoomFactor)
 
-            captureDevice.videoZoomFactor = zoomScale
+            captureDevice?.videoZoomFactor = zoomScale
             
 
         } catch {
@@ -135,9 +124,14 @@ extension CameraViewController: UIGestureRecognizerDelegate {
      - Returns: None
      
     */
-    @objc internal func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
-        let devicePoint = previewLayer.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
-        focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint, monitorSubjectAreaChange: true)
+    @objc func focusAndExposeTap(_ gestureRecognizer: UITapGestureRecognizer) {
+        let devicePoint = multiCamDelegate?.getFrontViewLayer()?.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
+        dualVideoSessionOutputQueue.async {
+            self.focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint!, monitorSubjectAreaChange: true)
+        }
+        
+//        let devicePoint = multiCamDelegate?.getBackViewLayer()?.captureDevicePointConverted(fromLayerPoint: gestureRecognizer.location(in: gestureRecognizer.view))
+//        focus(with: .autoFocus, exposureMode: .autoExpose, at: devicePoint!, monitorSubjectAreaChange: true)
     }
     
     /**
@@ -161,8 +155,7 @@ extension CameraViewController: UIGestureRecognizerDelegate {
         at devicePoint: CGPoint,
         monitorSubjectAreaChange: Bool) {
         
-        sessionQueue.async {
-            let device = self.videoDeviceInput.device
+        guard let device = self.currentDeviceInput?.device else { return }
             do {
                 try device.lockForConfiguration()
                 
@@ -184,7 +177,6 @@ extension CameraViewController: UIGestureRecognizerDelegate {
             } catch {
                 print("Could not lock device for configuration: \(error)")
             }
-        }
     }
     
     /**
@@ -200,8 +192,26 @@ extension CameraViewController: UIGestureRecognizerDelegate {
      
     */
     @objc func subjectAreaDidChange(notification: NSNotification) {
-        print("SUBJECT AREA CHANGE")
         let devicePoint = CGPoint(x: 0.5, y: 0.5)
         focus(with: .continuousAutoFocus, exposureMode: .continuousAutoExposure, at: devicePoint, monitorSubjectAreaChange: false)
+    }
+    
+}
+
+extension CameraViewController {
+    
+    func addUIGestureRecognizers() {
+        ///double tap to switch camera
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(flipCameraPressed))
+        tapGesture.numberOfTapsRequired = 2
+        view.addGestureRecognizer(tapGesture)
+        
+        /// swipe right to present side menu bar
+        let swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(friendsButtonPressed))
+        swipeRightGesture.direction = .right
+        self.view.addGestureRecognizer(swipeRightGesture)
+        
+        multiCamSession?.tapGesture = tapGesture
+        multiCamSession?.swipeRightGesture = swipeRightGesture
     }
 }

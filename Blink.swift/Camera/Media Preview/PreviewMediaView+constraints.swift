@@ -11,14 +11,18 @@ import UIKit
 extension PreviewMediaView {
     
     func setupConstraints() {
-        cancelButton.topAnchor.constraint(equalTo: topAnchor, constant: 60).isActive = true
-        cancelButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-        cancelButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        cancelButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
         
-        sendButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-        sendButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -35).isActive = true
-        sendButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        sendButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        NSLayoutConstraint.activate([
+            cancelButton.topAnchor.constraint(equalTo: topAnchor, constant: 60),
+            cancelButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -30),
+            cancelButton.heightAnchor.constraint(equalToConstant: 44),
+            cancelButton.widthAnchor.constraint(equalToConstant: 44),
+            
+            sendButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -30),
+            sendButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -35),
+            sendButton.heightAnchor.constraint(equalToConstant: 44),
+            sendButton.widthAnchor.constraint(equalToConstant: 44)
+        ])
+      
     }
 }

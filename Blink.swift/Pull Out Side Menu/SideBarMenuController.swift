@@ -55,9 +55,9 @@ class SideBarMenuController: NSObject, UICollectionViewDataSource, UICollectionV
             window.addSubview(collectionView)
             
             // if Camera is recording put a red pulse animation over black layer
-            if cameraViewController!.isRecording {
-                Animations.shared.animatePulsatingLayer(layer: blackView.layer)
-            }
+//            if cameraViewController!.isRecording {
+//                Animations.shared.animatePulsatingLayer(layer: blackView.layer)
+//            }
             
             collectionView.frame = CGRect(x: -window.frame.width, y: 0, width: window.frame.width/2, height: window.frame.height)
             
@@ -126,10 +126,10 @@ class SideBarMenuController: NSObject, UICollectionViewDataSource, UICollectionV
         guard let camViewController = cameraViewController else {
             return
         }
-        if camViewController.isRecording {
-            print("Cant transition recording in process")
-            return
-        }
+//        if camViewController.isRecording {
+//            print("Cant transition recording in process")
+//            return
+//        }
 
         var controller: UIViewController?
         

@@ -30,6 +30,16 @@ extension PreviewMediaView {
         self.imagePreview.image = nil
         self.playerLayer.player = nil
         self.removeFromSuperview()
+        
+        //Only try to remove file if video was taken, Images do not store in the file manager
+        guard let url = self.url else {return}
+        
+        do {
+            try FileManager.default.removeItem(at: url)
+            print("Successfully removed item at url: ", url)
+        } catch {
+            print(error)
+        }
     }
     
     /**

@@ -8,20 +8,19 @@
 import UIKit
 import AVFoundation
 
-extension CameraViewController {
+extension MultiCamSession {
     
     // MARK: Runtime Error Management
     @objc func sessionRuntimeError(notification: NSNotification) {
         print("Session Runtime Error")
         guard let error = notification.userInfo?[AVCaptureSessionErrorKey] as? AVError else { return }
-        guard let session = self.session else { return }
         print("Capture session runtime error: \(error)")
         // If media services were reset, and the last start succeeded, restart the session.
         if error.code == .mediaServicesWereReset {
-            sessionQueue.async {
+            dualVideoSessionOutputQueue.async {
                 if self.isSessionRunning {
-                    session.startRunning()
-                    self.isSessionRunning = session.isRunning
+                    self.startRunning()
+                    self.isSessionRunning = self.isRunning
                 }
             }
         }
@@ -35,13 +34,18 @@ extension CameraViewController {
          */
         let pressureLevel = systemPressureState.level
         if pressureLevel == .serious || pressureLevel == .critical {
-            if isRecording == false {
+            if self.isRecording == false {
                 do {
-                    try self.videoDeviceInput.device.lockForConfiguration()
+                    try backCaptureDevice!.lockForConfiguration()
                     print("WARNING: Reached elevated system pressure level: \(pressureLevel). Throttling frame rate.")
-                    self.videoDeviceInput.device.activeVideoMinFrameDuration = CMTime(value: 1, timescale: 20)
-                    self.videoDeviceInput.device.activeVideoMaxFrameDuration = CMTime(value: 1, timescale: 15)
-                    self.videoDeviceInput.device.unlockForConfiguration()
+                    self.backCaptureDevice!.activeVideoMinFrameDuration = CMTime(value: 1, timescale: 20)
+                    self.backCaptureDevice!.activeVideoMaxFrameDuration = CMTime(value: 1, timescale: 15)
+                    self.backCaptureDevice!.unlockForConfiguration()
+                    
+                    try frontCaptureDevice!.lockForConfiguration()
+                    self.frontCaptureDevice!.activeVideoMinFrameDuration = CMTime(value: 1, timescale: 20)
+                    self.frontCaptureDevice!.activeVideoMaxFrameDuration = CMTime(value: 1, timescale: 15)
+                    self.frontCaptureDevice!.unlockForConfiguration()
                 } catch {
                     print("Could not lock device for configuration: \(error)")
                 }
